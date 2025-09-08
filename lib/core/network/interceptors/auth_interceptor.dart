@@ -66,7 +66,7 @@ class AuthInterceptor extends Interceptor {
         } catch (e) {
           // Refresh failed, clear tokens and redirect to login
           await _storage.deleteAll();
-          // TODO: Navigate to login screen
+          // 로그인 화면으로 리다이렉트는 AuthProvider에서 처리
         }
       }
     }

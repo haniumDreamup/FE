@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/services/tts_service.dart';
 
 /// 접근성 기능 관리 Provider
@@ -28,7 +29,44 @@ class AccessibilityProvider extends ChangeNotifier {
   
   Future<void> _initialize() async {
     await _ttsService.initialize();
-    // TODO: SharedPreferences에서 설정 불러오기
+    await _loadSettings();
+  }
+  
+  Future<void> _loadSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    
+    _voiceGuidanceEnabled = prefs.getBool('voice_guidance') ?? true;
+    _largeTextEnabled = prefs.getBool('large_text') ?? false;
+    _highContrastEnabled = prefs.getBool('high_contrast') ?? false;
+    _simplifiedUIEnabled = prefs.getBool('simplified_ui') ?? true;
+    _vibrationEnabled = prefs.getBool('vibration') ?? true;
+    _autoReadScreenEnabled = prefs.getBool('auto_read') ?? false;
+    _speechRate = prefs.getDouble('speech_rate') ?? 0.4;
+    _volume = prefs.getDouble('volume') ?? 1.0;
+    _pitch = prefs.getDouble('pitch') ?? 1.0;
+    _textScaleFactor = prefs.getDouble('text_scale') ?? 1.0;
+    
+    await _ttsService.setEnabled(_voiceGuidanceEnabled);
+    await _ttsService.setSpeechRate(_speechRate);
+    await _ttsService.setVolume(_volume);
+    await _ttsService.setPitch(_pitch);
+    
+    notifyListeners();
+  }
+  
+  Future<void> _saveSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    
+    await prefs.setBool('voice_guidance', _voiceGuidanceEnabled);
+    await prefs.setBool('large_text', _largeTextEnabled);
+    await prefs.setBool('high_contrast', _highContrastEnabled);
+    await prefs.setBool('simplified_ui', _simplifiedUIEnabled);
+    await prefs.setBool('vibration', _vibrationEnabled);
+    await prefs.setBool('auto_read', _autoReadScreenEnabled);
+    await prefs.setDouble('speech_rate', _speechRate);
+    await prefs.setDouble('volume', _volume);
+    await prefs.setDouble('pitch', _pitch);
+    await prefs.setDouble('text_scale', _textScaleFactor);
   }
   
   // Getters
@@ -47,11 +85,12 @@ class AccessibilityProvider extends ChangeNotifier {
   Future<void> setVoiceGuidanceEnabled(bool enabled) async {
     _voiceGuidanceEnabled = enabled;
     await _ttsService.setEnabled(enabled);
+    await _saveSettings();
     notifyListeners();
   }
   
   /// 큰 글씨 모드 설정
-  void setLargeTextEnabled(bool enabled) {
+  Future<void> setLargeTextEnabled(bool enabled) async {
     _largeTextEnabled = enabled;
     _textScaleFactor = enabled ? 1.3 : 1.0;
     
@@ -59,50 +98,55 @@ class AccessibilityProvider extends ChangeNotifier {
       _ttsService.speak(enabled ? "큰 글씨로 바꿨어요" : "보통 글씨로 바꿨어요");
     }
     
+    await _saveSettings();
     notifyListeners();
   }
   
   /// 고대비 모드 설정
-  void setHighContrastEnabled(bool enabled) {
+  Future<void> setHighContrastEnabled(bool enabled) async {
     _highContrastEnabled = enabled;
     
     if (_voiceGuidanceEnabled) {
       _ttsService.speak(enabled ? "선명한 색으로 바꿨어요" : "보통 색으로 바꿨어요");
     }
     
+    await _saveSettings();
     notifyListeners();
   }
   
   /// 단순화된 UI 설정
-  void setSimplifiedUIEnabled(bool enabled) {
+  Future<void> setSimplifiedUIEnabled(bool enabled) async {
     _simplifiedUIEnabled = enabled;
     
     if (_voiceGuidanceEnabled) {
       _ttsService.speak(enabled ? "쉬운 화면으로 바꿨어요" : "모든 기능을 볼 수 있어요");
     }
     
+    await _saveSettings();
     notifyListeners();
   }
   
   /// 진동 피드백 설정
-  void setVibrationEnabled(bool enabled) {
+  Future<void> setVibrationEnabled(bool enabled) async {
     _vibrationEnabled = enabled;
     
     if (_voiceGuidanceEnabled) {
       _ttsService.speak(enabled ? "진동을 켰어요" : "진동을 껐어요");
     }
     
+    await _saveSettings();
     notifyListeners();
   }
   
   /// 화면 자동 읽기 설정
-  void setAutoReadScreenEnabled(bool enabled) {
+  Future<void> setAutoReadScreenEnabled(bool enabled) async {
     _autoReadScreenEnabled = enabled;
     
     if (_voiceGuidanceEnabled) {
       _ttsService.speak(enabled ? "화면을 자동으로 읽어드릴게요" : "자동 읽기를 껐어요");
     }
     
+    await _saveSettings();
     notifyListeners();
   }
   

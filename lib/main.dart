@@ -26,9 +26,9 @@ void main() async {
   final offlineService = OfflineService();
   await offlineService.initialize();
   
-  // Initialize notification service (Firebase 설정 후 활성화)
-  // final notificationService = NotificationService();
-  // await notificationService.initialize();
+  // Initialize notification service
+  final notificationService = NotificationService();
+  await notificationService.initialize();
   
   // Initialize TTS service
   final ttsService = TtsService();

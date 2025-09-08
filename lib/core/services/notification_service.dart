@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -12,7 +13,7 @@ class NotificationService {
   factory NotificationService() => _instance;
   NotificationService._internal();
 
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  FirebaseMessaging? _firebaseMessaging;
   final FlutterLocalNotificationsPlugin _localNotifications = FlutterLocalNotificationsPlugin();
   
   String? _fcmToken;
@@ -20,6 +21,12 @@ class NotificationService {
 
   Future<void> initialize() async {
     try {
+      // 웹에서는 Firebase 초기화를 건너뜀
+      if (kIsWeb) {
+        print('웹 환경에서는 Firebase 알림이 제한적입니다');
+        return;
+      }
+      
       // Initialize Firebase
       await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform,
@@ -399,6 +406,56 @@ class NotificationService {
   
   Future<void> cancelAllNotifications() async {
     await _localNotifications.cancelAll();
+  }
+  
+  // Public wrapper methods for medication reminder service
+  Future<void> showNotification({
+    required String title,
+    required String body,
+    String? payload,
+  }) async {
+    if (kIsWeb) {
+      print('웹 알림: $title - $body');
+      return;
+    }
+    await _showLocalNotification(title: title, body: body, payload: payload, type: 'GENERAL');
+  }
+  
+  Future<void> scheduleNotification({
+    required int id,
+    required String title,
+    required String body,
+    required DateTime scheduledDate,
+    String? payload,
+  }) async {
+    const androidDetails = AndroidNotificationDetails(
+      'scheduled_notification',
+      '예약 알림',
+      channelDescription: '예약된 알림',
+      importance: Importance.high,
+      priority: Priority.high,
+    );
+    
+    const iosDetails = DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+    );
+    
+    const details = NotificationDetails(
+      android: androidDetails,
+      iOS: iosDetails,
+    );
+    
+    await _localNotifications.zonedSchedule(
+      id,
+      title,
+      body,
+      tz.TZDateTime.from(scheduledDate, tz.local),
+      details,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      payload: payload,
+    );
   }
 }
 

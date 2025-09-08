@@ -4,6 +4,9 @@ import 'package:flutter/services.dart';
 /// 토스 스타일 테마 설정
 /// 미니멀하고 깔끔한 디자인 with BIF 접근성
 class TossTheme {
+  // Primary color for easier access
+  static const Color primaryColor = Color(0xFF0064FF);
+  
   // 토스 컬러 시스템
   static const Color tossBlue = Color(0xFF0064FF);
   static const Color tossBlack = Color(0xFF1A1A1A);

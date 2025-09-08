@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import '../../core/services/token_refresh_service.dart';
 import '../../data/repositories/auth_repository.dart';
 import '../../domain/entities/user.dart';
 
 class AuthProvider extends ChangeNotifier {
   final AuthRepository _authRepository;
+  final TokenRefreshService _tokenService = TokenRefreshService();
   
   User? _currentUser;
   bool _isAuthenticated = false;
@@ -26,6 +28,10 @@ class AuthProvider extends ChangeNotifier {
     try {
       _currentUser = await _authRepository.login(email, password);
       _isAuthenticated = true;
+      
+      // 토큰 자동 갱신 시작
+      await _tokenService.startTokenRefreshTimer();
+      
       _isLoading = false;
       notifyListeners();
       
@@ -44,6 +50,9 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
     
     try {
+      // 토큰 자동 갱신 중지
+      _tokenService.stopTokenRefreshTimer();
+      
       await _authRepository.logout();
       
       _currentUser = null;
@@ -64,6 +73,11 @@ class AuthProvider extends ChangeNotifier {
     try {
       _currentUser = await _authRepository.checkAuthStatus();
       _isAuthenticated = _currentUser != null;
+      
+      // 인증된 경우 토큰 갱신 타이머 시작
+      if (_isAuthenticated) {
+        await _tokenService.startTokenRefreshTimer();
+      }
     } catch (e) {
       _isAuthenticated = false;
       _currentUser = null;
@@ -73,5 +87,27 @@ class AuthProvider extends ChangeNotifier {
     }
     
     return _isAuthenticated;
+  }
+  
+  // 토큰 유효성 확인
+  Future<bool> validateToken() async {
+    return await _tokenService.isTokenValid();
+  }
+  
+  // 수동 토큰 갱신
+  Future<bool> refreshToken() async {
+    final success = await _tokenService.refreshTokenManually();
+    if (!success) {
+      // 토큰 갱신 실패 시 로그아웃 처리
+      await logout();
+    }
+    return success;
+  }
+  
+  @override
+  void dispose() {
+    // Provider 해제 시 토큰 갱신 타이머 정리
+    _tokenService.stopTokenRefreshTimer();
+    super.dispose();
   }
 }

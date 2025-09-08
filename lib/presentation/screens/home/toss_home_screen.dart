@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/config/toss_theme.dart';
+import '../../../core/services/medication_reminder_service.dart';
 import '../../providers/accessibility_provider.dart';
 
 class TossHomeScreen extends StatefulWidget {
@@ -97,8 +98,17 @@ class _TossHomeScreenState extends State<TossHomeScreen>
                 const SizedBox(width: 8),
                 _buildAppBarAction(
                   icon: Icons.notifications_none_rounded,
-                  onTap: () {
-                    accessibility.speak('알림 화면으로 이동합니다');
+                  onTap: () async {
+                    accessibility.speak('테스트 알림을 발송합니다');
+                    final reminderService = MedicationReminderService();
+                    await reminderService.sendTestNotification();
+                    
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('테스트 알림을 발송했어요! 📱'),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
                   },
                 ),
                 const SizedBox(width: 8),

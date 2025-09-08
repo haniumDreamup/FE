@@ -8,6 +8,7 @@ import '../screens/medication/medication_list_screen.dart';
 import '../screens/schedule/schedule_screen.dart';
 import '../screens/emergency/emergency_screen.dart';
 import '../screens/network/network_discovery_screen.dart';
+import '../screens/settings/accessibility_settings_screen.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
@@ -40,6 +41,10 @@ class AppRouter {
       GoRoute(
         path: '/network-discovery',
         builder: (context, state) => const NetworkDiscoveryScreen(),
+      ),
+      GoRoute(
+        path: '/accessibility-settings',
+        builder: (context, state) => const AccessibilitySettingsScreen(),
       ),
     ],
     errorBuilder: (context, state) => Scaffold(

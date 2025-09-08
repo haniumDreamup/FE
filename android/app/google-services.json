@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "YOUR_PROJECT_NUMBER",
-    "project_id": "bif-ai-reminder",
-    "storage_bucket": "bif-ai-reminder.appspot.com"
+    "project_number": "361112360154",
+    "project_id": "bif-ai",
+    "storage_bucket": "bif-ai.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "YOUR_APP_ID",
+        "mobilesdk_app_id": "1:361112360154:android:f8f30bbd8b7225272181e3",
         "android_client_info": {
-          "package_name": "com.bifai.reminder"
+          "package_name": "com.bifai.reminder.bifai_app"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "YOUR_API_KEY"
+          "current_key": "AIzaSyAX__g9mNxidSPqnennaTp41KA9VrERjOA"
         }
       ],
       "services": {

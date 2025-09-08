@@ -3,7 +3,9 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../../core/config/theme_config.dart';
 import '../../../core/constants/app_constants.dart';
+import '../../../core/utils/error_handler.dart';
 import '../../providers/auth_provider.dart';
+import '../../widgets/common/loading_overlay.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -47,14 +49,12 @@ class _LoginScreenState extends State<LoginScreen> {
       });
       
       if (success) {
+        ErrorHandler.showSuccessSnackBar(context, '로그인 성공! 환영합니다 👋');
         context.go('/home');
       } else {
-        // Show error message
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(authProvider.errorMessage ?? '로그인에 실패했어요'),
-            backgroundColor: ThemeConfig.errorColor,
-          ),
+        ErrorHandler.showErrorSnackBar(
+          context, 
+          authProvider.errorMessage ?? '로그인에 실패했어요',
         );
       }
     }
@@ -63,8 +63,11 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
+      body: LoadingOverlay(
+        isLoading: _isLoading,
+        message: '로그인 중입니다...',
+        child: SafeArea(
+          child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
           child: Form(
             key: _formKey,
@@ -229,6 +232,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ],
             ),
           ),
+        ),
         ),
       ),
     );
