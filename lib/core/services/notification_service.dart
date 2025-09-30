@@ -5,8 +5,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/timezone.dart' as tz;
-import 'package:timezone/data/latest.dart' as tz;
 import '../../firebase_options.dart';
+import '../utils/logger.dart';
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
@@ -23,7 +23,10 @@ class NotificationService {
     try {
       // 웹에서는 Firebase 초기화를 건너뜀
       if (kIsWeb) {
-        print('웹 환경에서는 Firebase 알림이 제한적입니다');
+        if (kDebugMode) {
+          Logger.debug('웹 환경에서는 Firebase 알림이 제한적입니다');
+        }
+        await _initializeWebNotifications();
         return;
       }
       
@@ -45,16 +48,16 @@ class NotificationService {
       _setupMessageHandlers();
       
       // Handle token refresh
-      _firebaseMessaging.onTokenRefresh.listen(_onTokenRefresh);
+      _firebaseMessaging?.onTokenRefresh?.listen(_onTokenRefresh);
       
-      print('알림 서비스 초기화 완료');
+      Logger.debug('알림 서비스 초기화 완료');
     } catch (e) {
-      print('알림 서비스 초기화 실패: $e');
+      Logger.error("Error occurred", e);
     }
   }
   
   Future<void> _requestPermissions() async {
-    final settings = await _firebaseMessaging.requestPermission(
+    final settings = await _firebaseMessaging?.requestPermission(
       alert: true,
       announcement: false,
       badge: true,
@@ -64,7 +67,7 @@ class NotificationService {
       sound: true,
     );
     
-    print('알림 권한 상태: ${settings.authorizationStatus}');
+    Logger.debug('알림 권한 상태: ${settings?.authorizationStatus}');
   }
   
   Future<void> _initializeLocalNotifications() async {
@@ -103,13 +106,13 @@ class NotificationService {
   
   Future<void> _getToken() async {
     try {
-      _fcmToken = await _firebaseMessaging.getToken();
+      _fcmToken = await _firebaseMessaging?.getToken();
       if (_fcmToken != null) {
-        print('FCM 토큰: $_fcmToken');
+        Logger.debug('FCM 토큰: $_fcmToken');
         await _saveToken(_fcmToken!);
       }
     } catch (e) {
-      print('FCM 토큰 가져오기 실패: $e');
+      Logger.error("Error occurred", e);
     }
   }
   
@@ -121,7 +124,7 @@ class NotificationService {
   void _onTokenRefresh(String newToken) async {
     _fcmToken = newToken;
     await _saveToken(newToken);
-    print('FCM 토큰 갱신됨: $newToken');
+    Logger.debug('FCM 토큰 갱신됨: $newToken');
     // TODO: Send new token to backend
   }
   
@@ -140,14 +143,14 @@ class NotificationService {
   }
   
   Future<void> _checkInitialMessage() async {
-    final message = await _firebaseMessaging.getInitialMessage();
+    final message = await _firebaseMessaging?.getInitialMessage();
     if (message != null) {
       _handleMessageOpenedApp(message);
     }
   }
   
   void _handleForegroundMessage(RemoteMessage message) {
-    print('포그라운드 메시지 수신: ${message.messageId}');
+    Logger.debug('포그라운드 메시지 수신: ${message.messageId}');
     
     // Parse message data
     final type = message.data['type'] ?? 'GENERAL';
@@ -167,7 +170,7 @@ class NotificationService {
   }
   
   void _handleMessageOpenedApp(RemoteMessage message) {
-    print('알림으로 앱 열림: ${message.messageId}');
+    Logger.debug('알림으로 앱 열림: ${message.messageId}');
     
     final type = message.data['type'] ?? 'GENERAL';
     
@@ -219,7 +222,7 @@ class NotificationService {
     final medicationName = data['medicationName'] ?? '';
     final time = data['time'] ?? '';
     
-    print('약 복용 알림: $medicationName at $time');
+    Logger.debug('약 복용 알림: $medicationName at $time');
     
     // Update UI or local storage if needed
   }
@@ -229,16 +232,16 @@ class NotificationService {
     final time = data['time'] ?? '';
     final location = data['location'] ?? '';
     
-    print('일정 알림: $scheduleName at $time ($location)');
+    Logger.debug('일정 알림: $scheduleName at $time ($location)');
   }
   
   void _handleEmergencyAlert(Map<String, dynamic> data) {
     final userName = data['userName'] ?? '';
     final message = data['message'] ?? '';
-    final latitude = data['latitude'];
-    final longitude = data['longitude'];
-    
-    print('긴급 알림: $userName - $message');
+    // final latitude = data['latitude'];
+    // final longitude = data['longitude'];
+
+    Logger.debug('긴급 알림: $userName - $message');
     
     // Show urgent notification
     _showUrgentNotification(
@@ -251,14 +254,14 @@ class NotificationService {
     final activityType = data['activityType'] ?? '';
     final details = data['details'] ?? '';
     
-    print('활동 완료: $activityType - $details');
+    Logger.debug('활동 완료: $activityType - $details');
   }
   
   void _handleDailySummary(Map<String, dynamic> data) {
     final medicationsTaken = data['medicationsTaken'] ?? '0';
     final schedulesCompleted = data['schedulesCompleted'] ?? '0';
     
-    print('일일 요약: 약 $medicationsTaken개, 일정 $schedulesCompleted개');
+    Logger.debug('일일 요약: 약 $medicationsTaken개, 일정 $schedulesCompleted개');
   }
   
   Future<void> _showLocalNotification({
@@ -339,29 +342,29 @@ class NotificationService {
   }
   
   void _onNotificationTapped(NotificationResponse response) {
-    print('알림 탭: ${response.payload}');
+    Logger.debug('알림 탭: ${response.payload}');
     // Handle notification tap
   }
   
   // Navigation methods (will be implemented with Navigator service)
   void _navigateToMedications(Map<String, dynamic> data) {
     // TODO: Navigate to medications page
-    print('약물 페이지로 이동');
+    Logger.debug('약물 페이지로 이동');
   }
   
   void _navigateToSchedule(Map<String, dynamic> data) {
     // TODO: Navigate to schedule page
-    print('일정 페이지로 이동');
+    Logger.debug('일정 페이지로 이동');
   }
   
   void _navigateToEmergency(Map<String, dynamic> data) {
     // TODO: Navigate to emergency page
-    print('긴급 페이지로 이동');
+    Logger.debug('긴급 페이지로 이동');
   }
   
   void _navigateToSummary(Map<String, dynamic> data) {
     // TODO: Navigate to summary page
-    print('요약 페이지로 이동');
+    Logger.debug('요약 페이지로 이동');
   }
   
   // Schedule local notifications
@@ -415,10 +418,25 @@ class NotificationService {
     String? payload,
   }) async {
     if (kIsWeb) {
-      print('웹 알림: $title - $body');
+      if (kDebugMode) {
+        Logger.debug('웹 알림: $title - $body');
+      }
       return;
     }
     await _showLocalNotification(title: title, body: body, payload: payload, type: 'GENERAL');
+  }
+
+  /// 웹 환경용 알림 초기화
+  Future<void> _initializeWebNotifications() async {
+    try {
+      if (kDebugMode) {
+        Logger.debug('웹 알림 서비스 초기화 완료 (제한적 기능)');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        Logger.error("Error occurred", e);
+      }
+    }
   }
   
   Future<void> scheduleNotification({
@@ -465,7 +483,7 @@ Future<void> _handleBackgroundMessage(RemoteMessage message) async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  print('백그라운드 메시지 수신: ${message.messageId}');
+  Logger.debug('백그라운드 메시지 수신: ${message.messageId}');
   
   // Handle background message
   // Note: Can't update UI directly here
