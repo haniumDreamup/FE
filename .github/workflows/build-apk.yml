@@ -1,0 +1,56 @@
+name: Build Flutter APK
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:  # 수동 실행 가능
+
+jobs:
+  build:
+    name: Build APK
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'zulu'
+        java-version: '17'
+
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.32.6'
+        channel: 'stable'
+
+    - name: Get dependencies
+      run: flutter pub get
+
+    - name: Build APK
+      run: flutter build apk --release
+
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: bifai-app-release
+        path: build/app/outputs/flutter-apk/app-release.apk
+        retention-days: 30
+
+    - name: Create Release Info
+      run: |
+        echo "## APK 빌드 성공! 🎉" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 다운로드 방법:" >> $GITHUB_STEP_SUMMARY
+        echo "1. 상단 'Summary' 탭 클릭" >> $GITHUB_STEP_SUMMARY
+        echo "2. 'Artifacts' 섹션에서 'bifai-app-release' 다운로드" >> $GITHUB_STEP_SUMMARY
+        echo "3. 압축 해제 후 app-release.apk 파일을 폰에 전송" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 빌드 정보:" >> $GITHUB_STEP_SUMMARY
+        echo "- Flutter 버전: 3.32.6" >> $GITHUB_STEP_SUMMARY
+        echo "- 빌드 타입: Release" >> $GITHUB_STEP_SUMMARY
+        echo "- API URL: http://43.200.49.171:8080" >> $GITHUB_STEP_SUMMARY
