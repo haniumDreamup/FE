@@ -28,8 +28,10 @@ jobs:
         flutter-version: '3.32.6'
         channel: 'stable'
 
-    - name: Clean build
-      run: flutter clean
+    - name: Clean build and cache
+      run: |
+        flutter clean
+        flutter pub cache repair
 
     - name: Get dependencies
       run: flutter pub get
