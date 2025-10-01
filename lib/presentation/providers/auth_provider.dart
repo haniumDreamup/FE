@@ -20,21 +20,59 @@ class AuthProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
   
+  /// 회원가입
+  Future<bool> register({
+    required String username,
+    required String email,
+    required String password,
+    required String name,
+    String? phoneNumber,
+  }) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      _currentUser = await _authRepository.register(
+        username: username,
+        email: email,
+        password: password,
+        name: name,
+        phoneNumber: phoneNumber,
+      );
+      _isAuthenticated = true;
+
+      // 토큰 자동 갱신 시작
+      await _tokenService.startTokenRefreshTimer();
+
+      _isLoading = false;
+      notifyListeners();
+
+      return true;
+    } catch (e) {
+      _errorMessage = e.toString().replaceAll('Exception: ', '');
+      _isLoading = false;
+      _isAuthenticated = false;
+      notifyListeners();
+      return false;
+    }
+  }
+
   Future<bool> login(String email, String password) async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
-    
+
     try {
       _currentUser = await _authRepository.login(email, password);
       _isAuthenticated = true;
-      
+
       // 토큰 자동 갱신 시작
       await _tokenService.startTokenRefreshTimer();
-      
+
       _isLoading = false;
       notifyListeners();
-      
+
       return true;
     } catch (e) {
       _errorMessage = e.toString().replaceAll('Exception: ', '');

@@ -293,9 +293,9 @@ class EnhancedEmergencyContactService {
   }
 
   /// 연락처 검증 (POST /api/emergency-contacts/{id}/verify)
-  Future<EmergencyContactModel> verifyContact(int contactId) async {
+  Future<EmergencyContactModel> verifyContact(int contactId, String verificationCode) async {
     try {
-      final response = await _apiClient.dio.post(ApiEndpoints.verifyContactPath(contactId));
+      final response = await _apiClient.dio.post(ApiEndpoints.verifyContactPath(contactId, verificationCode));
 
       if (response.data['success'] == true) {
         return EmergencyContactModel.fromJson(response.data['data']);

@@ -20,12 +20,63 @@ class AuthRepository {
        _storage = storage ?? const FlutterSecureStorage(),
        _deviceInfo = deviceInfo ?? DeviceInfoPlugin();
   
+  /// 회원가입 (POST /api/v1/auth/register)
+  Future<User> register({
+    required String username,
+    required String email,
+    required String password,
+    required String name,
+    String? phoneNumber,
+  }) async {
+    try {
+      // Get device info
+      String deviceId = await _getDeviceId();
+      String deviceType = Platform.isIOS ? 'ios' : 'android';
+
+      final response = await _apiClient.post(
+        ApiEndpoints.register,
+        data: {
+          'username': username,
+          'email': email,
+          'password': password,
+          'name': name,
+          if (phoneNumber != null) 'phoneNumber': phoneNumber,
+          'deviceId': deviceId,
+          'deviceType': deviceType,
+        },
+      );
+
+      if (response.data['success'] == true) {
+        final data = response.data['data'];
+
+        // Save tokens (자동 로그인)
+        await _storage.write(key: 'access_token', value: data['accessToken']);
+        await _storage.write(key: 'refresh_token', value: data['refreshToken']);
+
+        // Update API client token
+        _apiClient.updateAuthToken(data['accessToken']);
+
+        // Return user
+        return UserModel.fromJson(data['user']);
+      } else {
+        throw Exception(response.data['error']['message'] ?? '회원가입 실패');
+      }
+    } on DioException catch (e) {
+      if (e.response?.data != null && e.response?.data['error'] != null) {
+        throw Exception(e.response!.data['error']['message']);
+      }
+      throw Exception('네트워크 오류가 발생했어요');
+    } catch (e) {
+      throw Exception('회원가입 중 오류가 발생했어요');
+    }
+  }
+
   Future<User> login(String email, String password) async {
     try {
       // Get device info
       String deviceId = await _getDeviceId();
       String deviceType = Platform.isIOS ? 'ios' : 'android';
-      
+
       final response = await _apiClient.post(
         ApiEndpoints.login,
         data: {
@@ -35,17 +86,17 @@ class AuthRepository {
           'deviceType': deviceType,
         },
       );
-      
+
       if (response.data['success'] == true) {
         final data = response.data['data'];
-        
+
         // Save tokens
         await _storage.write(key: 'access_token', value: data['accessToken']);
         await _storage.write(key: 'refresh_token', value: data['refreshToken']);
-        
+
         // Update API client token
         _apiClient.updateAuthToken(data['accessToken']);
-        
+
         // Return user
         return UserModel.fromJson(data['user']);
       } else {
