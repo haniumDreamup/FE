@@ -440,7 +440,7 @@ class _ScheduleListScreenState extends State<ScheduleListScreen> {
               _buildDetailRow('태그', schedule.tags!.join(', ')),
             SizedBox(height: 30.h),
             AccessibleButton(
-              text: '닫기',
+              label: '닫기',
               onPressed: () => Navigator.pop(context),
               backgroundColor: TossColors.grey100,
               textColor: TossColors.grey700,

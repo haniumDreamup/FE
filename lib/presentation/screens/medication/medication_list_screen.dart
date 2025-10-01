@@ -337,7 +337,7 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
               _buildDetailRow('참고사항', medication.notes!),
             SizedBox(height: 30.h),
             AccessibleButton(
-              text: '닫기',
+              label: '닫기',
               onPressed: () => Navigator.pop(context),
               backgroundColor: TossColors.grey100,
               textColor: TossColors.grey700,

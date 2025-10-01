@@ -154,7 +154,7 @@ class _EmergencyScreenState extends State<EmergencyScreen> {
             children: [
               Expanded(
                 child: AccessibleButton(
-                  text: '안전 알림 전송',
+                  label: '안전 알림 전송',
                   onPressed: () => _sendSafetyCheck(provider),
                   backgroundColor: TossColors.green100,
                   textColor: TossColors.green700,
@@ -165,7 +165,7 @@ class _EmergencyScreenState extends State<EmergencyScreen> {
               SizedBox(width: 12.w),
               Expanded(
                 child: AccessibleButton(
-                  text: '위치 공유',
+                  label: '위치 공유',
                   onPressed: () => _shareLocation(provider),
                   backgroundColor: TossColors.blue100,
                   textColor: TossColors.blue700,
@@ -229,7 +229,7 @@ class _EmergencyScreenState extends State<EmergencyScreen> {
             }),
             if (provider.emergencyContacts.length > 3) ...[
               AccessibleButton(
-                text: '모든 연락처 보기',
+                label: '모든 연락처 보기',
                 onPressed: () => _showAllContacts(provider.emergencyContacts),
                 backgroundColor: TossColors.grey100,
                 textColor: TossColors.grey700,
@@ -266,7 +266,7 @@ class _EmergencyScreenState extends State<EmergencyScreen> {
           ),
           SizedBox(height: 16.h),
           AccessibleButton(
-            text: '연락처 추가하기',
+            label: '연락처 추가하기',
             onPressed: () => _showAddContactDialog(),
             backgroundColor: TossColors.blue500,
             textColor: Colors.white,
