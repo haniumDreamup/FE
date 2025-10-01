@@ -4,7 +4,6 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import '../network/api_client.dart';
 import '../constants/api_endpoints.dart';
 import 'offline_service.dart';
-import '../../data/models/cached_medication.dart';
 
 /// 오프라인/온라인 데이터 동기화 서비스
 class SyncService {
@@ -88,75 +87,18 @@ class SyncService {
   /// 서버에서 최신 데이터 다운로드
   Future<void> _downloadLatestData() async {
     try {
-      // 약물 정보 다운로드
-      if (_offlineService.needsSync('medications')) {
-        await _downloadMedications();
-      }
-      
-      // 일정 정보 다운로드
-      if (_offlineService.needsSync('schedules')) {
-        await _downloadSchedules();
-      }
-      
       // 사용자 정보 다운로드
       if (_offlineService.needsSync('user', maxAge: Duration(days: 1))) {
         await _downloadUserData();
       }
+
+      // TODO: Schedule API 확인 후 추가
+      // TODO: Medication API는 백엔드 미구현
     } catch (e) {
       throw Exception('Failed to download data: $e');
     }
   }
   
-  /// 약물 정보 다운로드
-  Future<void> _downloadMedications() async {
-    // TODO: 백엔드에 Medication API 구현 필요
-    print('Medication sync skipped - API not implemented');
-    /* try {
-      final response = await _apiClient.get(ApiEndpoints.medicationsToday);
-
-      if (response.statusCode == 200) {
-        final medicationsData = response.data['data'] as List;
-        final medications = medicationsData.map((data) {
-          return CachedMedication(
-            id: data['id'],
-            name: data['name'],
-            dosage: data['dosage'],
-            time: data['time'],
-            description: data['description'],
-            imageUrl: data['imageUrl'],
-            taken: data['taken'] ?? false,
-            takenAt: data['takenAt'] != null
-                ? DateTime.parse(data['takenAt'])
-                : null,
-            note: data['note'],
-            pendingSync: false,
-          );
-        }).toList();
-
-        await _offlineService.saveMedications(medications);
-      }
-    } catch (e) {
-      print('Failed to download medications: $e');
-    } */
-  }
-  
-  /// 일정 정보 다운로드
-  Future<void> _downloadSchedules() async {
-    // TODO: 백엔드에 Schedule API 확인 필요
-    print('Schedule sync skipped - API endpoint to be confirmed');
-    /* try {
-      final response = await _apiClient.get(ApiEndpoints.schedulesToday);
-
-      if (response.statusCode == 200) {
-        final schedulesData = response.data['data'] as List;
-        await _offlineService.saveSchedules(
-          schedulesData.cast<Map<String, dynamic>>(),
-        );
-      }
-    } catch (e) {
-      print('Failed to download schedules: $e');
-    } */
-  }
 
   /// 사용자 정보 다운로드
   Future<void> _downloadUserData() async {
@@ -173,50 +115,8 @@ class SyncService {
   
   /// 로컬 변경사항 업로드
   Future<void> _uploadPendingChanges() async {
-    // 동기화 대기 중인 약물 복용 기록
-    final pendingMedications = _offlineService.getPendingSyncMedications();
-    
-    for (var medication in pendingMedications) {
-      await _uploadMedicationStatus(medication);
-    }
-  }
-  
-  /// 약물 복용 상태 업로드
-  Future<void> _uploadMedicationStatus(CachedMedication medication) async {
-    // TODO: 백엔드에 Medication API 구현 필요
-    print('Medication upload skipped - API not implemented');
-    /* int attempts = 0;
-
-    while (attempts < _maxRetryAttempts) {
-      try {
-        final endpoint = ApiEndpoints.takeMedication
-            .replaceAll('{id}', medication.id.toString());
-
-        final response = await _apiClient.post(
-          endpoint,
-          data: {
-            'taken': medication.taken,
-            'takenAt': medication.takenAt?.toIso8601String(),
-            'note': medication.note,
-          },
-        );
-
-        if (response.statusCode == 200) {
-          // 동기화 성공 - 플래그 해제
-          medication.pendingSync = false;
-          await medication.save();
-          return;
-        }
-      } catch (e) {
-        attempts++;
-        if (attempts >= _maxRetryAttempts) {
-          print('Failed to sync medication ${medication.id} after $attempts attempts');
-        } else {
-          // 재시도 전 대기
-          await Future.delayed(Duration(seconds: attempts * 2));
-        }
-      }
-    } */
+    // TODO: Medication API 백엔드 미구현
+    // TODO: Schedule API 확인 필요
   }
   
   /// 충돌 해결

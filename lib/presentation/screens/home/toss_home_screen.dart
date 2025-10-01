@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/config/toss_theme.dart';
-import '../../../core/services/medication_reminder_service.dart';
 import '../../providers/accessibility_provider.dart';
 
 class TossHomeScreen extends StatefulWidget {

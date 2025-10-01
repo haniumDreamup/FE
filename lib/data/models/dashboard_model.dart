@@ -1,5 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'medication_model.dart';
 import 'schedule_model.dart';
 
 part 'dashboard_model.g.dart';
@@ -8,7 +7,6 @@ part 'dashboard_model.g.dart';
 class DashboardModel {
   final String greeting;
   final DashboardSummary summary;
-  final List<MedicationModel> todayMedications;
   final List<ScheduleModel> todaySchedules;
   final List<DashboardNotification> notifications;
   final WeatherInfo? weather;
@@ -16,7 +14,6 @@ class DashboardModel {
   const DashboardModel({
     required this.greeting,
     required this.summary,
-    required this.todayMedications,
     required this.todaySchedules,
     required this.notifications,
     this.weather,
@@ -30,16 +27,12 @@ class DashboardModel {
 
 @JsonSerializable()
 class DashboardSummary {
-  final int totalMedications;
-  final int completedMedications;
   final int totalSchedules;
   final int completedSchedules;
   final int unreadNotifications;
   final double completionRate;
 
   const DashboardSummary({
-    required this.totalMedications,
-    required this.completedMedications,
     required this.totalSchedules,
     required this.completedSchedules,
     required this.unreadNotifications,
@@ -51,9 +44,7 @@ class DashboardSummary {
 
   Map<String, dynamic> toJson() => _$DashboardSummaryToJson(this);
 
-  bool get allMedicationsTaken => totalMedications > 0 && completedMedications == totalMedications;
   bool get allSchedulesCompleted => totalSchedules > 0 && completedSchedules == totalSchedules;
-  int get pendingMedications => totalMedications - completedMedications;
   int get pendingSchedules => totalSchedules - completedSchedules;
 }
 
