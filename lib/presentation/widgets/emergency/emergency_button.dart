@@ -59,14 +59,13 @@ class EmergencyButton extends StatelessWidget {
     switch (emergencyType) {
       case EmergencyType.medical:
         return TossColors.red50;
-      case EmergencyType.safety:
-        return TossColors.yellow50;
       case EmergencyType.lost:
         return TossColors.blue50;
-      case EmergencyType.accident:
-        return TossColors.red50;
-      case EmergencyType.help:
+      case EmergencyType.panicButton:
+      case EmergencyType.manualAlert:
         return const Color(0xFFF3E8FF); // Purple 50
+      default:
+        return TossColors.grey50;
     }
   }
 
@@ -74,14 +73,13 @@ class EmergencyButton extends StatelessWidget {
     switch (emergencyType) {
       case EmergencyType.medical:
         return TossColors.red500;
-      case EmergencyType.safety:
-        return TossColors.yellow500;
       case EmergencyType.lost:
         return TossColors.blue500;
-      case EmergencyType.accident:
-        return TossColors.red500;
-      case EmergencyType.help:
+      case EmergencyType.panicButton:
+      case EmergencyType.manualAlert:
         return const Color(0xFF8B5CF6); // Purple 500
+      default:
+        return TossColors.grey500;
     }
   }
 
@@ -89,14 +87,13 @@ class EmergencyButton extends StatelessWidget {
     switch (emergencyType) {
       case EmergencyType.medical:
         return TossColors.red700;
-      case EmergencyType.safety:
-        return TossColors.yellow700;
       case EmergencyType.lost:
         return TossColors.blue700;
-      case EmergencyType.accident:
-        return TossColors.red700;
-      case EmergencyType.help:
+      case EmergencyType.panicButton:
+      case EmergencyType.manualAlert:
         return const Color(0xFF6B21A8); // Purple 700
+      default:
+        return TossColors.grey700;
     }
   }
 }

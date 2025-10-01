@@ -3,6 +3,9 @@ import '../models/medication_model.dart';
 import '../../core/network/api_client.dart';
 import '../../core/constants/api_endpoints.dart';
 
+// TODO: 백엔드에 Medication API 구현 필요
+// 현재 백엔드에 MedicationController가 없어서 주석 처리됨
+
 class MedicationService {
   final ApiClient _apiClient;
 
@@ -10,7 +13,9 @@ class MedicationService {
 
   /// 오늘의 약물 목록 조회
   Future<List<MedicationModel>> getTodayMedications() async {
-    try {
+    // TODO: 백엔드 API 구현 대기중
+    throw UnimplementedError('Medication API not implemented yet');
+    /* try {
       final response = await _apiClient.dio.get(ApiEndpoints.medicationsToday);
       
       if (response.data['success'] == true) {
@@ -28,7 +33,8 @@ class MedicationService {
 
   /// 특정 날짜의 약물 목록 조회
   Future<List<MedicationModel>> getMedicationsByDate(DateTime date) async {
-    try {
+    throw UnimplementedError('Medication API not implemented yet');
+    /* try {
       final dateString = '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
       final response = await _apiClient.dio.get(
         ApiEndpoints.medications,
@@ -50,7 +56,8 @@ class MedicationService {
 
   /// 약물 상세 정보 조회
   Future<MedicationModel> getMedicationDetail(int medicationId) async {
-    try {
+    throw UnimplementedError('Medication API not implemented yet');
+    /* try {
       final response = await _apiClient.dio.get(
         ApiEndpoints.medicationDetailPath(medicationId)
       );
@@ -69,7 +76,8 @@ class MedicationService {
 
   /// 약물 복용 체크
   Future<MedicationModel> takeMedication(int medicationId, bool taken, {String? notes}) async {
-    try {
+    throw UnimplementedError('Medication API not implemented yet');
+    /* try {
       final response = await _apiClient.dio.post(
         ApiEndpoints.takeMedicationPath(medicationId),
         data: {
@@ -93,7 +101,8 @@ class MedicationService {
 
   /// 약물 복용률 조회 (7일)
   Future<Map<String, dynamic>> getMedicationStats() async {
-    try {
+    throw UnimplementedError('Medication API not implemented yet');
+    /* try {
       final response = await _apiClient.dio.get('${ApiEndpoints.medications}/stats');
       
       if (response.data['success'] == true) {
@@ -105,7 +114,7 @@ class MedicationService {
       throw _handleDioException(e);
     } catch (e) {
       throw Exception('통계 조회 중 오류가 발생했습니다: $e');
-    }
+    } */
   }
 
   Exception _handleDioException(DioException e) {

@@ -92,14 +92,14 @@ class AuthRepository {
       
       // Update API client token
       _apiClient.updateAuthToken(token);
-      
-      // Get user profile
-      final response = await _apiClient.get(ApiEndpoints.userProfile);
-      
+
+      // Get user info (from /api/v1/users/me)
+      final response = await _apiClient.get(ApiEndpoints.userMe);
+
       if (response.data['success'] == true) {
         return UserModel.fromJson(response.data['data']);
       }
-      
+
       return null;
     } catch (e) {
       // Try to refresh token

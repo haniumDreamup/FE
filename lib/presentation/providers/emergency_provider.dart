@@ -38,7 +38,7 @@ class EmergencyProvider extends ChangeNotifier {
     _error = null;
 
     try {
-      await _emergencyService.handleEmergencyCall(request);
+      await _emergencyService.handleEmergencyAlert(request);
       notifyListeners();
     } catch (e) {
       _error = e.toString();
@@ -54,7 +54,8 @@ class EmergencyProvider extends ChangeNotifier {
     _error = null;
 
     try {
-      await _emergencyService.sendSafetyCheck();
+      final request = EmergencyCallRequest(type: 'SAFETY');
+      await _emergencyService.handleEmergencyAlert(request);
       notifyListeners();
     } catch (e) {
       _error = e.toString();
@@ -70,7 +71,12 @@ class EmergencyProvider extends ChangeNotifier {
     _error = null;
 
     try {
-      await _emergencyService.shareLocation(latitude, longitude);
+      final request = EmergencyCallRequest(
+        type: 'LOCATION_SHARE',
+        latitude: latitude,
+        longitude: longitude,
+      );
+      await _emergencyService.handleEmergencyAlert(request);
       notifyListeners();
     } catch (e) {
       _error = e.toString();
