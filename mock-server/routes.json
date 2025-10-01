@@ -1,0 +1,20 @@
+{
+  "/api/v1/mobile/home/dashboard": "/home",
+  "/api/v1/mobile/medications/today": "/medications",
+  "/api/v1/mobile/medications/*": "/medications",
+  "/api/v1/mobile/medications/:id": "/medications/:id",
+  "/api/v1/mobile/medications/:id/take": "/medications/:id",
+  "/api/v1/mobile/schedules/today": "/schedules",
+  "/api/v1/mobile/schedules/*": "/schedules",
+  "/api/v1/mobile/schedules/:id": "/schedules/:id",
+  "/api/v1/mobile/schedules/:id/complete": "/schedules/:id",
+  "/api/v1/mobile/emergency/*": "/emergency",
+  "/api/v1/mobile/notifications/*": "/notifications",
+  "/api/v1/mobile/user/profile": "/userProfile",
+  "/api/guardians": "/guardians",
+  "/api/geofences": "/geofences",
+  "/api/statistics/*": "/statistics",
+  "/auth/login": "/auth",
+  "/auth/logout": "/auth",
+  "/auth/refresh": "/auth"
+}

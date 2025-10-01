@@ -419,11 +419,10 @@ class _EmergencyScreenState extends State<EmergencyScreen> {
   
   void _handleEmergencyCall(EmergencyType type) {
     final provider = context.read<EmergencyProvider>();
-    
+
     final request = EmergencyCallRequest(
-      emergencyType: type.code,
+      type: type.code,
       description: '${type.displayName} 상황으로 도움이 필요합니다.',
-      timestamp: DateTime.now(),
     );
 
     provider.handleEmergencyCall(request);
