@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import '../screens/auth/login_screen.dart';
 import '../screens/auth/splash_screen.dart';
 import '../screens/home/home_screen.dart';
-import '../screens/home/toss_home_screen.dart';
 import '../screens/schedule/schedule_screen.dart';
 import '../screens/emergency/emergency_screen.dart';
 import '../screens/network/network_discovery_screen.dart';
@@ -23,7 +22,7 @@ class AppRouter {
       ),
       GoRoute(
         path: '/home',
-        builder: (context, state) => const TossHomeScreen(), // 토스 스타일 홈
+        builder: (context, state) => const HomeScreen(),
       ),
       GoRoute(
         path: '/schedule',
