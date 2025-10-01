@@ -29,7 +29,7 @@ class AuthRepository {
       final response = await _apiClient.post(
         ApiEndpoints.login,
         data: {
-          'username': email,
+          'usernameOrEmail': email,
           'password': password,
           'deviceId': deviceId,
           'deviceType': deviceType,
