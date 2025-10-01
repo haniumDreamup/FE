@@ -41,7 +41,7 @@ class StatisticsService {
   }) async {
     try {
       final response = await _apiClient.dio.get(
-        ApiEndpoints.dailyActivity,
+        ApiEndpoints.dailyActivityList,
         queryParameters: {
           if (date != null) 'date': date.toIso8601String().split('T')[0],
           if (userId != null) 'userId': userId,

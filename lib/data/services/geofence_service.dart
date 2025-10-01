@@ -102,7 +102,7 @@ class GeofenceService {
   Future<List<GeofenceModel>> getGeofencesPaged({int page = 0, int size = 20}) async {
     try {
       final response = await _apiClient.dio.get(
-        ApiEndpoints.geofencesPaged,
+        ApiEndpoints.geofencePaged,
         queryParameters: {
           'page': page,
           'size': size,
