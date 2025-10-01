@@ -17,11 +17,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   final _formKey = GlobalKey<FormState>();
 
   // Mock user data
-  final TextEditingController _nameController = TextEditingController(label: '홍길동');
-  final TextEditingController _emailController = TextEditingController(label: 'hong@example.com');
-  final TextEditingController _phoneController = TextEditingController(label: '010-1234-5678');
-  final TextEditingController _birthController = TextEditingController(label: '1990-01-01');
-  final TextEditingController _addressController = TextEditingController(label: '서울시 강남구 테헤란로 123');
+  final TextEditingController _nameController = TextEditingController(text: '홍길동');
+  final TextEditingController _emailController = TextEditingController(text: 'hong@example.com');
+  final TextEditingController _phoneController = TextEditingController(text: '010-1234-5678');
+  final TextEditingController _birthController = TextEditingController(text: '1990-01-01');
+  final TextEditingController _addressController = TextEditingController(text: '서울시 강남구 테헤란로 123');
 
   @override
   void dispose() {

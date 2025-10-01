@@ -64,7 +64,7 @@ class StatisticsService {
   Future<SingleDayActivityModel> getSingleDayActivity(DateTime date, {int? userId}) async {
     try {
       final response = await _apiClient.dio.get(
-        ApiEndpoints.singleDayActivity,
+        ApiEndpoints.dailyActivitySingle,
         queryParameters: {
           'date': date.toIso8601String().split('T')[0],
           if (userId != null) 'userId': userId,
@@ -118,7 +118,7 @@ class StatisticsService {
   }) async {
     try {
       final response = await _apiClient.dio.get(
-        ApiEndpoints.statisticsSummary,
+        ApiEndpoints.summaryStatistics,
         queryParameters: {
           'period': period,
           if (userId != null) 'userId': userId,
