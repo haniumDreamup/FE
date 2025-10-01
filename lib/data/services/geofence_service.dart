@@ -277,7 +277,7 @@ class GeofenceModel {
       type: json['type'] ?? 'SAFE_ZONE',
       centerLatitude: (json['centerLatitude'] ?? 0.0).toDouble(),
       centerLongitude: (json['centerLongitude'] ?? 0.0).toDouble(),
-      radius: (json['radius'] ?? 100.0).toDouble(),
+      radius: (json['radiusMeters'] ?? json['radius'] ?? 100.0).toDouble(),
       isActive: json['isActive'] ?? true,
       priority: json['priority'] ?? 1,
       alertType: json['alertType'] ?? 'BOTH',
@@ -297,7 +297,7 @@ class GeofenceModel {
       'type': type,
       'centerLatitude': centerLatitude,
       'centerLongitude': centerLongitude,
-      'radius': radius,
+      'radiusMeters': radius.round(),
       'isActive': isActive,
       'priority': priority,
       'alertType': alertType,
@@ -372,7 +372,7 @@ class GeofenceCreateRequest {
       'type': type,
       'centerLatitude': centerLatitude,
       'centerLongitude': centerLongitude,
-      'radius': radius,
+      'radiusMeters': radius.round(),
       'alertType': alertType,
       'notifyGuardians': notifyGuardians,
       'priority': priority,
@@ -416,7 +416,7 @@ class GeofenceUpdateRequest {
     if (type != null) data['type'] = type;
     if (centerLatitude != null) data['centerLatitude'] = centerLatitude;
     if (centerLongitude != null) data['centerLongitude'] = centerLongitude;
-    if (radius != null) data['radius'] = radius;
+    if (radius != null) data['radiusMeters'] = radius!.round();
     if (alertType != null) data['alertType'] = alertType;
     if (notifyGuardians != null) data['notifyGuardians'] = notifyGuardians;
     if (isActive != null) data['isActive'] = isActive;
