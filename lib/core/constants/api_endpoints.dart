@@ -84,53 +84,50 @@ class ApiEndpoints {
   static const String syncSettings = '$apiV1/accessibility/settings/sync';
   static const String accessibilityStatistics = '$apiV1/accessibility/statistics';
 
-  // Pose endpoints
+  // Pose endpoints (백엔드 구현: POST /api/v1/pose/data, POST batch, GET fall-status, POST feedback)
   static const String poseData = '$apiV1/pose/data';
-  static const String poseHistory = '$apiV1/pose/history/{userId}';
-  static const String poseStatistics = '$apiV1/pose/statistics/{userId}';
-  static const String poseAlert = '$apiV1/pose/alert';
+  static const String poseBatch = '$apiV1/pose/data/batch';
+  static const String fallStatus = '$apiV1/pose/fall-status/{userId}';
+  static const String fallFeedback = '$apiV1/pose/fall-event/{eventId}/feedback';
 
-  // Geofence endpoints
+  // Geofence endpoints (백엔드 구현: GET/POST/PUT/DELETE /api/geofences 및 다양한 조회)
   static const String geofences = '$apiVersion/geofences';
   static const String geofenceDetail = '$apiVersion/geofences/{id}';
-  static const String userGeofences = '$apiVersion/geofences/user/{userId}';
-  static const String geofenceViolations = '$apiVersion/geofences/user/{userId}/violations';
-  static const String currentGeofence = '$apiVersion/geofences/user/{userId}/current';
-  static const String activateGeofence = '$apiVersion/geofences/{id}/activate';
-  static const String deactivateGeofence = '$apiVersion/geofences/{id}/deactivate';
-  static const String checkGeofence = '$apiVersion/geofences/check';
-  static const String geofenceHistory = '$apiVersion/geofences/{id}/history';
+  static const String geofencePaged = '$apiVersion/geofences/paged';
+  static const String geofenceByType = '$apiVersion/geofences/type/{type}';
+  static const String toggleGeofence = '$apiVersion/geofences/{id}/toggle';
+  static const String updateGeofencePriorities = '$apiVersion/geofences/priorities';
+  static const String geofenceStats = '$apiVersion/geofences/stats';
 
-  // Statistics endpoints
-  static const String userStatistics = '$apiVersion/statistics/user/{userId}';
-  static const String emergencyStatistics = '$apiVersion/statistics/emergency/{userId}';
-  static const String dailyActivity = '$apiVersion/statistics/activity/daily/{userId}';
-  static const String weeklyActivity = '$apiVersion/statistics/activity/weekly/{userId}';
-  static const String monthlyActivity = '$apiVersion/statistics/activity/monthly/{userId}';
+  // Statistics endpoints (백엔드 구현: geofence, daily-activity, safety, summary)
+  static const String geofenceStatistics = '$apiVersion/statistics/geofence';
+  static const String dailyActivityList = '$apiVersion/statistics/daily-activity';
+  static const String dailyActivitySingle = '$apiVersion/statistics/daily-activity/single';
+  static const String safetyStatistics = '$apiVersion/statistics/safety';
+  static const String summaryStatistics = '$apiVersion/statistics/summary';
 
-  // Image Analysis endpoints
+  // Image Analysis endpoints (백엔드 구현: analyze, quick-analyze, vision-analyze, detect-danger)
   static const String analyzeImage = '$apiVersion/images/analyze';
-  static const String detectObjects = '$apiVersion/images/detect-objects';
-  static const String extractText = '$apiVersion/images/extract-text';
-  static const String analyzeScene = '$apiVersion/images/analyze-scene';
-  static const String analyzeSafety = '$apiVersion/images/analyze-safety';
+  static const String analysisResult = '$apiVersion/images/analysis/{id}';
+  static const String quickAnalyze = '$apiVersion/images/quick-analyze';
+  static const String visionAnalyze = '$apiVersion/images/vision-analyze';
+  static const String detectDanger = '$apiVersion/images/detect-danger';
 
-  // Admin endpoints
-  static const String adminUsers = '$apiVersion/admin/users';
-  static const String adminUserDetail = '$apiVersion/admin/users/{id}';
+  // Admin endpoints (백엔드 구현: statistics, sessions, auth-logs, settings, backup, cache)
   static const String adminStatistics = '$apiVersion/admin/statistics';
-  static const String adminSystemHealth = '$apiVersion/admin/system/health';
-  static const String adminSystemLogs = '$apiVersion/admin/system/logs';
-  static const String adminEmergencies = '$apiVersion/admin/emergencies';
-  static const String adminEmergencyDetail = '$apiVersion/admin/emergencies/{id}';
-  static const String adminResolveEmergency = '$apiVersion/admin/emergencies/{id}/resolve';
+  static const String adminSessions = '$apiVersion/admin/sessions';
+  static const String adminSessionDetail = '$apiVersion/admin/sessions/{userId}';
+  static const String adminAuthLogs = '$apiVersion/admin/auth-logs';
+  static const String adminSettings = '$apiVersion/admin/settings';
+  static const String adminBackup = '$apiVersion/admin/backup';
+  static const String adminCacheClear = '$apiVersion/admin/cache';
 
-  // User Behavior endpoints
-  static const String userBehavior = '$apiVersion/user-behavior/{userId}';
-  static const String behaviorPatterns = '$apiVersion/user-behavior/{userId}/patterns';
-  static const String behaviorAnomalies = '$apiVersion/user-behavior/{userId}/anomalies';
-  static const String behaviorPredictions = '$apiVersion/user-behavior/{userId}/predictions';
-  static const String behaviorReport = '$apiVersion/user-behavior/{userId}/report';
+  // User Behavior endpoints (백엔드 구현: POST /api/behavior/*)
+  static const String behaviorLog = '$apiVersion/behavior/log';
+  static const String behaviorBatch = '$apiVersion/behavior/batch';
+  static const String behaviorPageview = '$apiVersion/behavior/pageview';
+  static const String behaviorClick = '$apiVersion/behavior/click';
+  static const String behaviorError = '$apiVersion/behavior/error';
 
   // Health endpoints
   static const String health = '$apiVersion/health';
@@ -215,69 +212,28 @@ class ApiEndpoints {
   static String integratedDashboardPath(int userId) =>
       integratedDashboard.replaceAll('{userId}', userId.toString());
 
-  static String poseHistoryPath(int userId) =>
-      poseHistory.replaceAll('{userId}', userId.toString());
+  // Pose utility methods
+  static String fallStatusPath(int userId) =>
+      fallStatus.replaceAll('{userId}', userId.toString());
 
-  static String poseStatisticsPath(int userId) =>
-      poseStatistics.replaceAll('{userId}', userId.toString());
+  static String fallFeedbackPath(int eventId) =>
+      fallFeedback.replaceAll('{eventId}', eventId.toString());
 
+  // Geofence utility methods
   static String geofenceDetailPath(int id) =>
       geofenceDetail.replaceAll('{id}', id.toString());
 
-  static String userGeofencesPath(int userId) =>
-      userGeofences.replaceAll('{userId}', userId.toString());
+  static String geofenceByTypePath(String type) =>
+      geofenceByType.replaceAll('{type}', type);
 
-  static String geofenceViolationsPath(int userId) =>
-      geofenceViolations.replaceAll('{userId}', userId.toString());
+  static String toggleGeofencePath(int id) =>
+      toggleGeofence.replaceAll('{id}', id.toString());
 
-  static String currentGeofencePath(int userId) =>
-      currentGeofence.replaceAll('{userId}', userId.toString());
+  // Image Analysis utility methods
+  static String analysisResultPath(int id) =>
+      analysisResult.replaceAll('{id}', id.toString());
 
-  static String activateGeofencePath(int id) =>
-      activateGeofence.replaceAll('{id}', id.toString());
-
-  static String deactivateGeofencePath(int id) =>
-      deactivateGeofence.replaceAll('{id}', id.toString());
-
-  static String geofenceHistoryPath(int id) =>
-      geofenceHistory.replaceAll('{id}', id.toString());
-
-  static String userStatisticsPath(int userId) =>
-      userStatistics.replaceAll('{userId}', userId.toString());
-
-  static String emergencyStatisticsPath(int userId) =>
-      emergencyStatistics.replaceAll('{userId}', userId.toString());
-
-  static String dailyActivityPath(int userId) =>
-      dailyActivity.replaceAll('{userId}', userId.toString());
-
-  static String weeklyActivityPath(int userId) =>
-      weeklyActivity.replaceAll('{userId}', userId.toString());
-
-  static String monthlyActivityPath(int userId) =>
-      monthlyActivity.replaceAll('{userId}', userId.toString());
-
-  static String adminUserDetailPath(int id) =>
-      adminUserDetail.replaceAll('{id}', id.toString());
-
-  static String adminEmergencyDetailPath(int id) =>
-      adminEmergencyDetail.replaceAll('{id}', id.toString());
-
-  static String adminResolveEmergencyPath(int id) =>
-      adminResolveEmergency.replaceAll('{id}', id.toString());
-
-  static String userBehaviorPath(int userId) =>
-      userBehavior.replaceAll('{userId}', userId.toString());
-
-  static String behaviorPatternsPath(int userId) =>
-      behaviorPatterns.replaceAll('{userId}', userId.toString());
-
-  static String behaviorAnomaliesPath(int userId) =>
-      behaviorAnomalies.replaceAll('{userId}', userId.toString());
-
-  static String behaviorPredictionsPath(int userId) =>
-      behaviorPredictions.replaceAll('{userId}', userId.toString());
-
-  static String behaviorReportPath(int userId) =>
-      behaviorReport.replaceAll('{userId}', userId.toString());
+  // Admin utility methods
+  static String adminSessionDetailPath(int userId) =>
+      adminSessionDetail.replaceAll('{userId}', userId.toString());
 }
