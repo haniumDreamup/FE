@@ -9,10 +9,10 @@ class EmergencyService {
   EmergencyService({ApiClient? apiClient}) : _apiClient = apiClient ?? ApiClient();
 
   /// 긴급상황 신고
-  Future<void> handleEmergencyCall(EmergencyCallRequest request) async {
+  Future<void> handleEmergencyAlert(EmergencyCallRequest request) async {
     try {
       final response = await _apiClient.dio.post(
-        ApiEndpoints.emergencyCall,
+        ApiEndpoints.emergencyAlert,
         data: request.toJson(),
       );
       
@@ -44,41 +44,8 @@ class EmergencyService {
     }
   }
 
-  /// 안전 알림 전송
-  Future<void> sendSafetyCheck() async {
-    try {
-      final response = await _apiClient.dio.post(ApiEndpoints.safetyCheck);
-      
-      if (response.data['success'] != true) {
-        throw Exception(response.data['message'] ?? '안전 알림을 전송할 수 없습니다');
-      }
-    } on DioException catch (e) {
-      throw _handleDioException(e);
-    } catch (e) {
-      throw Exception('안전 알림 전송 중 오류가 발생했습니다: $e');
-    }
-  }
-
-  /// 위치 공유
-  Future<void> shareLocation(double latitude, double longitude) async {
-    try {
-      final response = await _apiClient.dio.post(
-        ApiEndpoints.shareLocation,
-        queryParameters: {
-          'latitude': latitude,
-          'longitude': longitude,
-        },
-      );
-      
-      if (response.data['success'] != true) {
-        throw Exception(response.data['message'] ?? '위치를 공유할 수 없습니다');
-      }
-    } on DioException catch (e) {
-      throw _handleDioException(e);
-    } catch (e) {
-      throw Exception('위치 공유 중 오류가 발생했습니다: $e');
-    }
-  }
+  // Safety check and location sharing functionality removed
+  // Use emergencyAlert with appropriate data instead
 
   /// 긴급 연락처 추가
   Future<EmergencyContactModel> addEmergencyContact(EmergencyContactModel contact) async {

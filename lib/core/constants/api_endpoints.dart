@@ -1,56 +1,68 @@
 class ApiEndpoints {
   // Base paths
   static const String apiVersion = '/api/v1';
-  static const String basePath = '$apiVersion/mobile';
-  
+  static const String basePath = '$apiVersion';
+
   // Auth endpoints
   static const String login = '$basePath/auth/login';
   static const String logout = '$basePath/auth/logout';
   static const String refresh = '$basePath/auth/refresh';
-  static const String checkAutoLogin = '$basePath/auth/check';
-  
-  // Home endpoints
-  static const String dashboard = '$basePath/home/dashboard';
-  static const String greeting = '$basePath/home/greeting';
-  
-  // Medication endpoints
-  static const String medicationsToday = '$basePath/medications/today';
-  static const String medications = '$basePath/medications';
-  static const String medicationDetail = '$basePath/medications/{id}';
-  static const String takeMedication = '$basePath/medications/{id}/take';
-  
-  // Schedule endpoints
-  static const String schedulesToday = '$basePath/schedules/today';
-  static const String schedules = '$basePath/schedules';
-  static const String scheduleDetail = '$basePath/schedules/{id}';
-  static const String completeSchedule = '$basePath/schedules/{id}/complete';
-  static const String weekSummary = '$basePath/schedules/week-summary';
-  
+
   // Emergency endpoints
-  static const String emergencyCall = '$basePath/emergency/call';
-  static const String emergencyContacts = '$basePath/emergency/contacts';
-  static const String safetyCheck = '$basePath/emergency/safety-check';
-  static const String shareLocation = '$basePath/emergency/share-location';
-  
-  // Notification endpoints (기존 유지)
-  static const String registerToken = '$basePath/notifications/register';
-  static const String notificationSettings = '$basePath/notifications/settings';
-  static const String notificationHistory = '$basePath/notifications/history';
-  
-  // User endpoints (기존 유지)
-  static const String userProfile = '$basePath/user/profile';
-  static const String updateProfile = '$basePath/user/profile';
+  static const String emergencyAlert = '$basePath/emergency/alert';
+  static const String fallDetection = '$basePath/emergency/fall-detection';
+  static const String emergencyStatus = '$basePath/emergency/status/{id}';
+  static const String emergencyHistory = '$basePath/emergency/history/{userId}';
+  static const String activeEmergencies = '$basePath/emergency/active';
+  static const String resolveEmergency = '$basePath/emergency/{id}/resolve';
+  static const String triggerSos = '$basePath/emergency/sos/trigger';
+  static const String cancelSos = '$basePath/emergency/sos/{emergencyId}/cancel';
+  static const String sosHistory = '$basePath/emergency/sos/history';
+  static const String quickSos = '$basePath/emergency/sos/quick';
+
+  // Emergency Contact endpoints
+  static const String emergencyContacts = '/api/emergency-contacts';
+
+  // Notification endpoints
+  static const String updateFcmToken = '/api/notifications/fcm-token';
+  static const String removeFcmToken = '/api/notifications/fcm-token/{deviceId}';
+  static const String notificationSettings = '/api/notifications/settings';
+  static const String emergencyNotification = '/api/notifications/emergency';
+  static const String validateToken = '/api/notifications/validate-token';
+
+  // User endpoints
+  static const String userMe = '$basePath/users/me';
+  static const String users = '$basePath/users';
+  static const String userDetail = '$basePath/users/{id}';
+  static const String deactivateUser = '$basePath/users/{id}/deactivate';
+  static const String activateUser = '$basePath/users/{id}/activate';
+  static const String updateUserRoles = '$basePath/users/{id}/roles';
   
   // Utility methods
-  static String medicationDetailPath(int id) => 
-      medicationDetail.replaceAll('{id}', id.toString());
-      
-  static String takeMedicationPath(int id) => 
-      takeMedication.replaceAll('{id}', id.toString());
-      
-  static String scheduleDetailPath(int id) => 
-      scheduleDetail.replaceAll('{id}', id.toString());
-      
-  static String completeSchedulePath(int id) => 
-      completeSchedule.replaceAll('{id}', id.toString());
+  static String userDetailPath(int id) =>
+      userDetail.replaceAll('{id}', id.toString());
+
+  static String deactivateUserPath(int id) =>
+      deactivateUser.replaceAll('{id}', id.toString());
+
+  static String activateUserPath(int id) =>
+      activateUser.replaceAll('{id}', id.toString());
+
+  static String updateUserRolesPath(int id) =>
+      updateUserRoles.replaceAll('{id}', id.toString());
+
+  static String emergencyStatusPath(int id) =>
+      emergencyStatus.replaceAll('{id}', id.toString());
+
+  static String emergencyHistoryPath(int userId) =>
+      emergencyHistory.replaceAll('{userId}', userId.toString());
+
+  static String resolveEmergencyPath(int id) =>
+      resolveEmergency.replaceAll('{id}', id.toString());
+
+  static String cancelSosPath(int emergencyId) =>
+      cancelSos.replaceAll('{emergencyId}', emergencyId.toString());
+
+  static String removeFcmTokenPath(String deviceId) =>
+      removeFcmToken.replaceAll('{deviceId}', deviceId);
 }
