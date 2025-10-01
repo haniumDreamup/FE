@@ -4,7 +4,8 @@ import '../../core/network/api_client.dart';
 import '../../core/constants/api_endpoints.dart';
 
 // TODO: 백엔드에 Medication API 구현 필요
-// 현재 백엔드에 MedicationController가 없어서 주석 처리됨
+// 현재 백엔드에 MedicationController가 없어서 모든 메서드가 UnimplementedError를 던집니다.
+// 백엔드 API 구현 후 주석을 해제하고 사용하세요.
 
 class MedicationService {
   final ApiClient _apiClient;
@@ -15,106 +16,26 @@ class MedicationService {
   Future<List<MedicationModel>> getTodayMedications() async {
     // TODO: 백엔드 API 구현 대기중
     throw UnimplementedError('Medication API not implemented yet');
-    /* try {
-      final response = await _apiClient.dio.get(ApiEndpoints.medicationsToday);
-      
-      if (response.data['success'] == true) {
-        final List<dynamic> data = response.data['data'] ?? [];
-        return data.map((json) => MedicationModel.fromJson(json)).toList();
-      } else {
-        throw Exception(response.data['message'] ?? '약물 목록을 불러올 수 없습니다');
-      }
-    } on DioException catch (e) {
-      throw _handleDioException(e);
-    } catch (e) {
-      throw Exception('약물 목록 조회 중 오류가 발생했습니다: $e');
-    }
   }
 
   /// 특정 날짜의 약물 목록 조회
   Future<List<MedicationModel>> getMedicationsByDate(DateTime date) async {
     throw UnimplementedError('Medication API not implemented yet');
-    /* try {
-      final dateString = '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
-      final response = await _apiClient.dio.get(
-        ApiEndpoints.medications,
-        queryParameters: {'date': dateString},
-      );
-      
-      if (response.data['success'] == true) {
-        final List<dynamic> data = response.data['data'] ?? [];
-        return data.map((json) => MedicationModel.fromJson(json)).toList();
-      } else {
-        throw Exception(response.data['message'] ?? '약물 목록을 불러올 수 없습니다');
-      }
-    } on DioException catch (e) {
-      throw _handleDioException(e);
-    } catch (e) {
-      throw Exception('약물 목록 조회 중 오류가 발생했습니다: $e');
-    }
   }
 
   /// 약물 상세 정보 조회
   Future<MedicationModel> getMedicationDetail(int medicationId) async {
     throw UnimplementedError('Medication API not implemented yet');
-    /* try {
-      final response = await _apiClient.dio.get(
-        ApiEndpoints.medicationDetailPath(medicationId)
-      );
-      
-      if (response.data['success'] == true) {
-        return MedicationModel.fromJson(response.data['data']);
-      } else {
-        throw Exception(response.data['message'] ?? '약물 정보를 불러올 수 없습니다');
-      }
-    } on DioException catch (e) {
-      throw _handleDioException(e);
-    } catch (e) {
-      throw Exception('약물 상세 조회 중 오류가 발생했습니다: $e');
-    }
   }
 
   /// 약물 복용 체크
   Future<MedicationModel> takeMedication(int medicationId, bool taken, {String? notes}) async {
     throw UnimplementedError('Medication API not implemented yet');
-    /* try {
-      final response = await _apiClient.dio.post(
-        ApiEndpoints.takeMedicationPath(medicationId),
-        data: {
-          'taken': taken,
-          'takenAt': taken ? DateTime.now().toIso8601String() : null,
-          'notes': notes,
-        },
-      );
-      
-      if (response.data['success'] == true) {
-        return MedicationModel.fromJson(response.data['data']);
-      } else {
-        throw Exception(response.data['message'] ?? '복용 체크를 할 수 없습니다');
-      }
-    } on DioException catch (e) {
-      throw _handleDioException(e);
-    } catch (e) {
-      throw Exception('복용 체크 중 오류가 발생했습니다: $e');
-    }
   }
 
   /// 약물 복용률 조회 (7일)
   Future<Map<String, dynamic>> getMedicationStats() async {
     throw UnimplementedError('Medication API not implemented yet');
-    /* try {
-      final response = await _apiClient.dio.get('${ApiEndpoints.medications}/stats');
-      
-      if (response.data['success'] == true) {
-        return response.data['data'];
-      } else {
-        throw Exception(response.data['message'] ?? '통계를 불러올 수 없습니다');
-      }
-    } on DioException catch (e) {
-      throw _handleDioException(e);
-    } catch (e) {
-      throw Exception('통계 조회 중 오류가 발생했습니다: $e');
-    } */
   }
 
   Exception _handleDioException(DioException e) {
