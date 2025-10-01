@@ -131,7 +131,7 @@ class GeofenceService {
   /// 타입별 지오펜스 조회 (GET /api/geofences/type/{type})
   Future<List<GeofenceModel>> getGeofencesByType(String type) async {
     try {
-      final response = await _apiClient.dio.get(ApiEndpoints.geofencesByTypePath(type));
+      final response = await _apiClient.dio.get(ApiEndpoints.geofenceByTypePath(type));
 
       if (response.data['success'] == true) {
         final List<dynamic> data = response.data['data'] ?? [];

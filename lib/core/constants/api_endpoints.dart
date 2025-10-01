@@ -12,6 +12,7 @@ class ApiEndpoints {
 
   // User endpoints
   static const String userMe = '$apiV1/users/me';
+  static const String updateUserMe = '$apiV1/users/me';  // PUT /me (프로필 수정)
   static const String users = '$apiV1/users';
   static const String userDetail = '$apiV1/users/{id}';
   static const String deactivateUser = '$apiV1/users/{id}/deactivate';
@@ -19,6 +20,7 @@ class ApiEndpoints {
   static const String updateUserRoles = '$apiV1/users/{id}/roles';
 
   // Emergency endpoints
+  static const String emergencies = '$apiV1/emergency';  // GET 전체 목록
   static const String emergencyAlert = '$apiV1/emergency/alert';
   static const String fallDetection = '$apiV1/emergency/fall-detection';
   static const String emergencyStatus = '$apiV1/emergency/status/{id}';
@@ -33,11 +35,19 @@ class ApiEndpoints {
   // Emergency Contact endpoints
   static const String emergencyContacts = '$apiVersion/emergency-contacts';
   static const String emergencyContactDetail = '$apiVersion/emergency-contacts/{id}';
+  static const String activeContacts = '$apiVersion/emergency-contacts/active';
+  static const String availableContacts = '$apiVersion/emergency-contacts/available';
+  static const String medicalContacts = '$apiVersion/emergency-contacts/medical';
+  static const String verifyContact = '$apiVersion/emergency-contacts/{id}/verify';
+  static const String toggleContactActive = '$apiVersion/emergency-contacts/{id}/toggle-active';
+  static const String updateContactPriorities = '$apiVersion/emergency-contacts/priorities';
+  static const String updateContactRecord = '$apiVersion/emergency-contacts/{id}/contact-record';
 
   // Notification endpoints
   static const String updateFcmToken = '$apiVersion/notifications/fcm-token';
   static const String removeFcmToken = '$apiVersion/notifications/fcm-token/{deviceId}';
-  static const String notificationSettings = '$apiVersion/notifications/settings';
+  static const String notificationSettings = '$apiVersion/notifications/settings';  // GET/PUT
+  static const String updateNotificationSettings = '$apiVersion/notifications/settings';  // PUT
   static const String emergencyNotification = '$apiVersion/notifications/emergency';
   static const String validateToken = '$apiVersion/notifications/validate-token';
 
@@ -118,7 +128,8 @@ class ApiEndpoints {
   static const String adminSessions = '$apiVersion/admin/sessions';
   static const String adminSessionDetail = '$apiVersion/admin/sessions/{userId}';
   static const String adminAuthLogs = '$apiVersion/admin/auth-logs';
-  static const String adminSettings = '$apiVersion/admin/settings';
+  static const String adminSettings = '$apiVersion/admin/settings';  // GET/PUT
+  static const String updateAdminSettings = '$apiVersion/admin/settings';  // PUT
   static const String adminBackup = '$apiVersion/admin/backup';
   static const String adminCacheClear = '$apiVersion/admin/cache';
 
@@ -129,9 +140,8 @@ class ApiEndpoints {
   static const String behaviorClick = '$apiVersion/behavior/click';
   static const String behaviorError = '$apiVersion/behavior/error';
 
-  // Health endpoints
+  // Health endpoints (백엔드 구현: /api/health만 존재)
   static const String health = '$apiVersion/health';
-  static const String healthCheck = '$apiVersion/health/check';
 
   // Test endpoints
   static const String test = '$apiVersion/test';
@@ -236,4 +246,14 @@ class ApiEndpoints {
   // Admin utility methods
   static String adminSessionDetailPath(int userId) =>
       adminSessionDetail.replaceAll('{userId}', userId.toString());
+
+  // Emergency Contact utility methods
+  static String verifyContactPath(int id, String verificationCode) =>
+      '${verifyContact.replaceAll('{id}', id.toString())}?verificationCode=$verificationCode';
+
+  static String toggleContactActivePath(int id) =>
+      toggleContactActive.replaceAll('{id}', id.toString());
+
+  static String updateContactRecordPath(int id) =>
+      updateContactRecord.replaceAll('{id}', id.toString());
 }

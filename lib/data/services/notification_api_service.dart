@@ -91,7 +91,7 @@ class NotificationApiService {
   Future<void> sendTestNotification({String? message}) async {
     try {
       final response = await _apiClient.dio.post(
-        ApiEndpoints.testNotification,
+        '${ApiEndpoints.apiVersion}/notifications/test',  // 백엔드 미구현 - 테스트용
         data: {
           if (message != null) 'message': message,
         },

@@ -1,16 +1,16 @@
 import 'package:dio/dio.dart';
-import '../models/emergency_model.dart';
 import '../../core/network/api_client.dart';
 import '../../core/constants/api_endpoints.dart';
+import '../models/emergency_model.dart';
 
-/// SOS 서비스 (백엔드 SosController와 동기화)
+/// SOS 서비스 (백엔드 EmergencyController와 동기화)
 class SosService {
   final ApiClient _apiClient;
 
   SosService({ApiClient? apiClient}) : _apiClient = apiClient ?? ApiClient();
 
-  /// SOS 신호 발동 (POST /api/sos/trigger)
-  Future<EmergencyModel> triggerSos({
+  /// SOS 신호 발동 (POST /api/v1/emergency/sos/trigger)
+  Future<Map<String, dynamic>> triggerSos({
     String? message,
     double? latitude,
     double? longitude,
@@ -29,7 +29,7 @@ class SosService {
       );
 
       if (response.data['success'] == true) {
-        return EmergencyModel.fromJson(response.data['data']);
+        return Map<String, dynamic>.from(response.data['data']);
       } else {
         throw Exception(response.data['message'] ?? 'SOS 신호를 발동할 수 없습니다');
       }
@@ -41,7 +41,7 @@ class SosService {
   }
 
   /// SOS 신호 취소 (PUT /api/sos/{emergencyId}/cancel)
-  Future<EmergencyModel> cancelSos(int emergencyId, {String? reason}) async {
+  Future<Map<String, dynamic>> cancelSos(int emergencyId, {String? reason}) async {
     try {
       final response = await _apiClient.dio.put(
         ApiEndpoints.cancelSosPath(emergencyId),
@@ -51,7 +51,7 @@ class SosService {
       );
 
       if (response.data['success'] == true) {
-        return EmergencyModel.fromJson(response.data['data']);
+        return Map<String, dynamic>.from(response.data['data']);
       } else {
         throw Exception(response.data['message'] ?? 'SOS 신호를 취소할 수 없습니다');
       }
@@ -63,7 +63,7 @@ class SosService {
   }
 
   /// SOS 신호 이력 조회 (GET /api/sos/history)
-  Future<List<EmergencyModel>> getSosHistory({int page = 0, int size = 20}) async {
+  Future<List<Map<String, dynamic>>> getSosHistory({int page = 0, int size = 20}) async {
     try {
       final response = await _apiClient.dio.get(
         ApiEndpoints.sosHistory,
@@ -77,9 +77,9 @@ class SosService {
         final data = response.data['data'];
         if (data is Map && data['content'] != null) {
           final List<dynamic> content = data['content'];
-          return content.map((json) => EmergencyModel.fromJson(json)).toList();
+          return content.map((json) => Map<String, dynamic>.from(json)).toList();
         } else if (data is List) {
-          return data.map((json) => EmergencyModel.fromJson(json)).toList();
+          return data.map((json) => Map<String, dynamic>.from(json)).toList();
         }
         return [];
       } else {
@@ -93,12 +93,12 @@ class SosService {
   }
 
   /// 빠른 SOS 신호 (POST /api/sos/quick)
-  Future<EmergencyModel> quickSos() async {
+  Future<Map<String, dynamic>> quickSos() async {
     try {
       final response = await _apiClient.dio.post(ApiEndpoints.quickSos);
 
       if (response.data['success'] == true) {
-        return EmergencyModel.fromJson(response.data['data']);
+        return Map<String, dynamic>.from(response.data['data']);
       } else {
         throw Exception(response.data['message'] ?? '빠른 SOS 신호를 발동할 수 없습니다');
       }
