@@ -109,9 +109,11 @@ class SyncService {
   
   /// 약물 정보 다운로드
   Future<void> _downloadMedications() async {
-    try {
+    // TODO: 백엔드에 Medication API 구현 필요
+    print('Medication sync skipped - API not implemented');
+    /* try {
       final response = await _apiClient.get(ApiEndpoints.medicationsToday);
-      
+
       if (response.statusCode == 200) {
         final medicationsData = response.data['data'] as List;
         final medications = medicationsData.map((data) {
@@ -123,26 +125,28 @@ class SyncService {
             description: data['description'],
             imageUrl: data['imageUrl'],
             taken: data['taken'] ?? false,
-            takenAt: data['takenAt'] != null 
-                ? DateTime.parse(data['takenAt']) 
+            takenAt: data['takenAt'] != null
+                ? DateTime.parse(data['takenAt'])
                 : null,
             note: data['note'],
             pendingSync: false,
           );
         }).toList();
-        
+
         await _offlineService.saveMedications(medications);
       }
     } catch (e) {
       print('Failed to download medications: $e');
-    }
+    } */
   }
   
   /// 일정 정보 다운로드
   Future<void> _downloadSchedules() async {
-    try {
+    // TODO: 백엔드에 Schedule API 확인 필요
+    print('Schedule sync skipped - API endpoint to be confirmed');
+    /* try {
       final response = await _apiClient.get(ApiEndpoints.schedulesToday);
-      
+
       if (response.statusCode == 200) {
         final schedulesData = response.data['data'] as List;
         await _offlineService.saveSchedules(
@@ -151,14 +155,14 @@ class SyncService {
       }
     } catch (e) {
       print('Failed to download schedules: $e');
-    }
+    } */
   }
-  
+
   /// 사용자 정보 다운로드
   Future<void> _downloadUserData() async {
     try {
-      final response = await _apiClient.get(ApiEndpoints.userProfile);
-      
+      final response = await _apiClient.get(ApiEndpoints.userMe);
+
       if (response.statusCode == 200) {
         await _offlineService.saveUserData(response.data['data']);
       }
@@ -179,13 +183,15 @@ class SyncService {
   
   /// 약물 복용 상태 업로드
   Future<void> _uploadMedicationStatus(CachedMedication medication) async {
-    int attempts = 0;
-    
+    // TODO: 백엔드에 Medication API 구현 필요
+    print('Medication upload skipped - API not implemented');
+    /* int attempts = 0;
+
     while (attempts < _maxRetryAttempts) {
       try {
         final endpoint = ApiEndpoints.takeMedication
             .replaceAll('{id}', medication.id.toString());
-            
+
         final response = await _apiClient.post(
           endpoint,
           data: {
@@ -194,7 +200,7 @@ class SyncService {
             'note': medication.note,
           },
         );
-        
+
         if (response.statusCode == 200) {
           // 동기화 성공 - 플래그 해제
           medication.pendingSync = false;
@@ -210,7 +216,7 @@ class SyncService {
           await Future.delayed(Duration(seconds: attempts * 2));
         }
       }
-    }
+    } */
   }
   
   /// 충돌 해결
