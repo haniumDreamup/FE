@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../core/config/theme_config.dart';
+import '../../core/config/toss_theme.dart';
 import '../providers/accessibility_provider.dart';
 import '../widgets/common/accessible_button.dart';
 
@@ -12,7 +12,7 @@ class HomeScreen extends StatelessWidget {
     final accessibility = context.watch<AccessibilityProvider>();
     
     return Scaffold(
-      backgroundColor: ThemeConfig.backgroundColor,
+      backgroundColor: TossTheme.backgroundColor,
       appBar: AppBar(
         title: const Text('BIF-AI 도우미'),
         centerTitle: true,
@@ -32,7 +32,7 @@ class HomeScreen extends StatelessWidget {
                       Icon(
                         Icons.waving_hand,
                         size: 48,
-                        color: ThemeConfig.primaryColor,
+                        color: TossTheme.primaryColor,
                       ),
                       const SizedBox(height: 12),
                       Text(
@@ -43,7 +43,7 @@ class HomeScreen extends StatelessWidget {
                       Text(
                         '오늘도 좋은 하루 보내세요',
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: ThemeConfig.lightTextColor,
+                          color: TossTheme.lightTextColor,
                         ),
                       ),
                     ],
@@ -64,7 +64,7 @@ class HomeScreen extends StatelessWidget {
                       icon: Icons.medication,
                       title: '약 관리',
                       subtitle: '오늘의 약',
-                      color: ThemeConfig.primaryColor,
+                      color: TossTheme.primaryColor,
                       onTap: () {
                         accessibility.speak('약 관리 화면으로 이동합니다');
                       },
@@ -74,7 +74,7 @@ class HomeScreen extends StatelessWidget {
                       icon: Icons.calendar_today,
                       title: '일정',
                       subtitle: '오늘 할 일',
-                      color: ThemeConfig.secondaryColor,
+                      color: TossTheme.secondaryColor,
                       onTap: () {
                         accessibility.speak('일정 화면으로 이동합니다');
                       },
@@ -84,7 +84,7 @@ class HomeScreen extends StatelessWidget {
                       icon: Icons.emergency,
                       title: 'SOS',
                       subtitle: '긴급 도움',
-                      color: ThemeConfig.errorColor,
+                      color: TossTheme.errorColor,
                       onTap: () {
                         accessibility.speakImportant('긴급 도움을 요청합니다');
                       },
@@ -94,7 +94,7 @@ class HomeScreen extends StatelessWidget {
                       icon: Icons.settings,
                       title: '설정',
                       subtitle: '앱 설정',
-                      color: ThemeConfig.lightTextColor,
+                      color: TossTheme.lightTextColor,
                       onTap: () {
                         accessibility.speak('설정 화면으로 이동합니다');
                       },
@@ -118,7 +118,7 @@ class HomeScreen extends StatelessWidget {
                     accessibility.voiceGuidanceEnabled 
                         ? Icons.volume_up 
                         : Icons.volume_off,
-                    color: ThemeConfig.primaryColor,
+                    color: TossTheme.primaryColor,
                   ),
                 ),
               ),
@@ -181,7 +181,7 @@ class HomeScreen extends StatelessWidget {
                 subtitle,
                 style: TextStyle(
                   fontSize: 14,
-                  color: ThemeConfig.lightTextColor,
+                  color: TossTheme.lightTextColor,
                 ),
               ),
             ],

@@ -3,7 +3,9 @@ import 'package:provider/provider.dart';
 import '../../../core/config/toss_theme.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/accessibility_provider.dart';
+import '../../routes/route_names.dart';
 import '../../widgets/common/accessible_button.dart';
+import '../../widgets/common/bottom_nav_bar.dart';
 
 class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({super.key});
@@ -15,6 +17,7 @@ class UserProfileScreen extends StatefulWidget {
 class _UserProfileScreenState extends State<UserProfileScreen> {
   bool _isEditing = false;
   final _formKey = GlobalKey<FormState>();
+  int _selectedIndex = 3; // 내정보 탭 (0: 홈, 1: 일정, 2: 알림, 3: 내정보)
 
   // Mock user data
   final TextEditingController _nameController = TextEditingController(text: '홍길동');
@@ -48,6 +51,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             color: Colors.black,
           ),
         ),
+        automaticallyImplyLeading: false, // 메인 탭이므로 뒤로가기 버튼 표시 안 함
         backgroundColor: Colors.white,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
@@ -79,7 +83,31 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: _isEditing ? _buildEditingActions() : null,
+      bottomNavigationBar: _isEditing
+          ? _buildEditingActions()
+          : BottomNavBar(
+              selectedIndex: _selectedIndex,
+              onItemSelected: (index) {
+                setState(() {
+                  _selectedIndex = index;
+                });
+                // 실제 화면 전환
+                switch (index) {
+                  case 0:
+                    AppNavigation.toHome(context);
+                    break;
+                  case 1:
+                    AppNavigation.toSchedule(context);
+                    break;
+                  case 2:
+                    AppNavigation.toNotifications(context);
+                    break;
+                  case 3:
+                    // 이미 프로필 화면이므로 아무것도 안 함
+                    break;
+                }
+              },
+            ),
     );
   }
 

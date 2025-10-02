@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../data/models/schedule_model.dart';
 import '../../data/services/schedule_service.dart';
+import '../../core/utils/error_handler.dart';
 
 /// 일정 관리 Provider
 /// 일정 조회, 추가, 수정, 삭제 및 상태 관리
@@ -49,7 +50,7 @@ class ScheduleProvider extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     } catch (e) {
-      _errorMessage = e.toString().replaceAll('Exception: ', '');
+      _errorMessage = ErrorHandler.getErrorMessage(e);
       _isLoading = false;
       notifyListeners();
     }

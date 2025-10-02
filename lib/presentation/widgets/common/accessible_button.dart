@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import '../../../core/config/theme_config.dart';
+import '../../core/config/toss_theme.dart';
 import '../../providers/accessibility_provider.dart';
 
 /// BIF 사용자를 위한 접근성이 강화된 버튼
@@ -121,10 +121,10 @@ class _AccessibleButtonState extends State<AccessibleButton>
     
     // 색상 결정
     Color bgColor = widget.backgroundColor ?? 
-        (widget.isImportant ? ThemeConfig.primaryColor : ThemeConfig.secondaryColor);
+        (widget.isImportant ? TossTheme.primaryColor : TossTheme.secondaryColor);
     
     Color fgColor = widget.textColor ?? 
-        (widget.isImportant ? Colors.white : ThemeConfig.textColor);
+        (widget.isImportant ? Colors.white : TossTheme.textColor);
     
     // 고대비 모드
     if (accessibility.highContrastEnabled) {
@@ -165,7 +165,7 @@ class _AccessibleButtonState extends State<AccessibleButton>
                   borderRadius: BorderRadius.circular(12),
                   border: widget.showBorder ? Border.all(
                     color: accessibility.highContrastEnabled ? 
-                        Colors.black : ThemeConfig.borderColor,
+                        Colors.black : TossTheme.borderColor,
                     width: 2,
                   ) : null,
                   boxShadow: [
@@ -271,7 +271,7 @@ class AccessibleFloatingButton extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: ThemeConfig.primaryColor,
+        backgroundColor: TossTheme.primaryColor,
         tooltip: helpText ?? label,
       );
     }
@@ -279,7 +279,7 @@ class AccessibleFloatingButton extends StatelessWidget {
     return FloatingActionButton(
       onPressed: handleTap,
       child: Icon(icon, size: 32),
-      backgroundColor: ThemeConfig.primaryColor,
+      backgroundColor: TossTheme.primaryColor,
       tooltip: helpText ?? label,
     );
   }

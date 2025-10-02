@@ -8,7 +8,7 @@ import 'package:flutter/services.dart';
 class TossTheme {
   // Primary color for easier access
   static const Color primaryColor = Color(0xFF0064FF);
-  
+
   // 토스 컬러 시스템
   static const Color tossBlue = Color(0xFF0064FF);
   static const Color tossBlack = Color(0xFF1A1A1A);
@@ -23,13 +23,25 @@ class TossTheme {
   static const Color tossGray100 = Color(0xFFF2F4F6);
   static const Color tossGray50 = Color(0xFFF9FAFB);
   static const Color tossWhite = Color(0xFFFFFFFF);
-  
+
   // 시맨틱 컬러
   static const Color tossRed = Color(0xFFF04452);
   static const Color tossGreen = Color(0xFF00C896);
   static const Color tossYellow = Color(0xFFFFB800);
   static const Color tossPurple = Color(0xFF8B5CF6);
   static const Color tossOrange = Color(0xFFFF7300);
+
+  // ThemeConfig 호환을 위한 별칭 (마이그레이션용)
+  static const Color secondaryColor = tossOrange;
+  static const Color successColor = tossGreen;
+  static const Color warningColor = tossYellow;
+  static const Color errorColor = tossRed;
+  static const Color infoColor = Color(0xFF36B0C9);
+  static const Color backgroundColor = tossGray50;
+  static const Color textColor = tossGray900;
+  static const Color lightTextColor = tossGray600;
+  static const Color disabledColor = tossGray300;
+  static const Color borderColor = tossGray200;
   
   // 토스 스타일 그림자
   static List<BoxShadow> tossShadowSmall = [
@@ -346,7 +358,181 @@ class TossTheme {
     // Scaffold Background
     scaffoldBackgroundColor: tossGray50,
   );
-  
+
+  // 토스 스타일 다크 테마
+  static ThemeData get darkTheme => ThemeData(
+    useMaterial3: true,
+    fontFamily: 'Pretendard',
+    brightness: Brightness.dark,
+
+    // 다크모드 컬러 스킴
+    colorScheme: const ColorScheme.dark(
+      primary: tossBlue,
+      onPrimary: tossWhite,
+      secondary: tossGray400,
+      onSecondary: tossBlack,
+      surface: tossGray900,
+      onSurface: tossGray100,
+      error: tossRed,
+      onError: tossWhite,
+    ),
+
+    // 앱바 테마
+    appBarTheme: AppBarTheme(
+      elevation: 0,
+      scrolledUnderElevation: 0,
+      systemOverlayStyle: SystemUiOverlayStyle.light,
+      backgroundColor: tossGray900,
+      foregroundColor: tossGray100,
+      centerTitle: false,
+      titleTextStyle: const TextStyle(
+        color: tossGray100,
+        fontSize: 20,
+        fontWeight: FontWeight.w700,
+        letterSpacing: -0.5,
+      ),
+      iconTheme: const IconThemeData(
+        color: tossGray100,
+        size: 24,
+      ),
+    ),
+
+    // 카드 테마
+    cardTheme: CardThemeData(
+      elevation: 0,
+      color: tossGray800,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+    ),
+
+    // 버튼 테마
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        elevation: 0,
+        backgroundColor: tossBlue,
+        foregroundColor: tossWhite,
+        minimumSize: const Size(double.infinity, 56),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        textStyle: const TextStyle(
+          fontSize: 17,
+          fontWeight: FontWeight.w600,
+          letterSpacing: -0.3,
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+      ),
+    ),
+
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        foregroundColor: tossBlue,
+        textStyle: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+          letterSpacing: -0.3,
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      ),
+    ),
+
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: OutlinedButton.styleFrom(
+        foregroundColor: tossGray300,
+        side: const BorderSide(color: tossGray700, width: 1.5),
+        minimumSize: const Size(double.infinity, 56),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        textStyle: const TextStyle(
+          fontSize: 17,
+          fontWeight: FontWeight.w600,
+          letterSpacing: -0.3,
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+      ),
+    ),
+
+    // Input Decoration Theme
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: tossGray800,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide.none,
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide.none,
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: const BorderSide(color: tossBlue, width: 2),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: const BorderSide(color: tossRed, width: 1.5),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: const BorderSide(color: tossRed, width: 2),
+      ),
+      labelStyle: const TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.w500,
+        color: tossGray400,
+      ),
+      hintStyle: const TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w400,
+        color: tossGray600,
+      ),
+      errorStyle: const TextStyle(
+        fontSize: 13,
+        fontWeight: FontWeight.w500,
+        color: tossRed,
+      ),
+    ),
+
+    // 바텀시트 테마
+    bottomSheetTheme: const BottomSheetThemeData(
+      backgroundColor: tossGray900,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      dragHandleColor: tossGray600,
+    ),
+
+    // 스낵바 테마
+    snackBarTheme: SnackBarThemeData(
+      backgroundColor: tossGray700,
+      contentTextStyle: const TextStyle(
+        color: tossWhite,
+        fontSize: 15,
+        fontWeight: FontWeight.w500,
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      behavior: SnackBarBehavior.floating,
+      elevation: 0,
+    ),
+
+    // Divider 테마
+    dividerTheme: const DividerThemeData(
+      color: tossGray800,
+      thickness: 1,
+      space: 1,
+    ),
+
+    // Scaffold Background
+    scaffoldBackgroundColor: tossBlack,
+  );
+
   // 토스 스타일 애니메이션 커브
   static const Curve tossAnimationCurve = Curves.easeInOutCubic;
   static const Duration tossAnimationDuration = Duration(milliseconds: 300);

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import '../../core/services/token_refresh_service.dart';
 import '../../data/repositories/auth_repository.dart';
-import '../../domain/entities/user.dart';
+import '../../data/models/user_model.dart';
 
 class AuthProvider extends ChangeNotifier {
   final AuthRepository _authRepository;
   final TokenRefreshService _tokenService = TokenRefreshService();
-  
-  User? _currentUser;
+
+  UserModel? _currentUser;
   bool _isAuthenticated = false;
   bool _isLoading = false;
   String? _errorMessage;
@@ -15,7 +15,7 @@ class AuthProvider extends ChangeNotifier {
   AuthProvider({AuthRepository? authRepository})
       : _authRepository = authRepository ?? AuthRepository();
   
-  User? get currentUser => _currentUser;
+  UserModel? get currentUser => _currentUser;
   bool get isAuthenticated => _isAuthenticated;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;

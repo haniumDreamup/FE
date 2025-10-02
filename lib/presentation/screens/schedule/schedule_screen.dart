@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../core/config/theme_config.dart';
+import '../../core/config/toss_theme.dart';
 import '../../../data/models/schedule_model.dart';
 import '../../providers/schedule_provider.dart';
+import '../../routes/route_names.dart';
 import '../../widgets/common/bottom_nav_bar.dart';
 import 'add_schedule_screen.dart';
 
@@ -14,7 +15,7 @@ class ScheduleScreen extends StatefulWidget {
 }
 
 class _ScheduleScreenState extends State<ScheduleScreen> {
-  int _selectedIndex = 2;
+  int _selectedIndex = 1; // 일정 탭 (0: 홈, 1: 일정, 2: 알림, 3: 내정보)
 
   @override
   void initState() {
@@ -28,24 +29,17 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ThemeConfig.backgroundColor,
+      backgroundColor: TossTheme.backgroundColor,
       appBar: AppBar(
         title: const Text('일정'),
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
-            onPressed: () async {
-              final result = await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const AddScheduleScreen(),
-                ),
-              );
-
-              if (result == true && mounted) {
-                context.read<ScheduleProvider>().loadTodaySchedules();
-              }
+            onPressed: () {
+              AppNavigation.toScheduleAdd(context);
+              // GoRouter는 자동으로 뒤로가기 처리하므로 별도 리프레시 로직 필요
+              // 화면 재진입 시 initState에서 자동으로 로드됨
             },
           ),
         ],
@@ -126,7 +120,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                       const Text(
                         '오늘',
                         style: TextStyle(
-                          color: ThemeConfig.primaryColor,
+                          color: TossTheme.primaryColor,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -144,7 +138,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                             _getWeekdayName(date.weekday),
                             style: TextStyle(
                               fontSize: 12,
-                              color: isToday ? ThemeConfig.primaryColor : Colors.grey,
+                              color: isToday ? TossTheme.primaryColor : Colors.grey,
                             ),
                           ),
                           const SizedBox(height: 4),
@@ -152,7 +146,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                             width: 40,
                             height: 40,
                             decoration: BoxDecoration(
-                              color: isToday ? ThemeConfig.primaryColor : Colors.transparent,
+                              color: isToday ? TossTheme.primaryColor : Colors.transparent,
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Center(
@@ -237,6 +231,21 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
           setState(() {
             _selectedIndex = index;
           });
+          // 실제 화면 전환
+          switch (index) {
+            case 0:
+              AppNavigation.toHome(context);
+              break;
+            case 1:
+              // 이미 일정 화면이므로 아무것도 안 함
+              break;
+            case 2:
+              AppNavigation.toNotifications(context);
+              break;
+            case 3:
+              AppNavigation.toProfile(context);
+              break;
+          }
         },
       ),
     );
@@ -315,8 +324,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                       _confirmDelete(schedule);
                     },
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: ThemeConfig.errorColor,
-                      side: const BorderSide(color: ThemeConfig.errorColor),
+                      foregroundColor: TossTheme.errorColor,
+                      side: const BorderSide(color: TossTheme.errorColor),
                     ),
                     child: const Text('삭제'),
                   ),
@@ -324,18 +333,17 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () async {
+                    onPressed: () {
                       Navigator.pop(context);
-                      final result = await Navigator.push(
+                      // TODO: GoRouter로 일정 ID를 전달하는 방식으로 개선 필요
+                      // 현재는 AddScheduleScreen이 editSchedule 파라미터를 받도록 되어 있어
+                      // GoRouter의 extra 파라미터 사용 필요
+                      Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => AddScheduleScreen(editSchedule: schedule),
                         ),
                       );
-
-                      if (result == true && mounted) {
-                        context.read<ScheduleProvider>().loadTodaySchedules();
-                      }
                     },
                     child: const Text('수정'),
                   ),
@@ -374,12 +382,12 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(success ? '일정이 삭제되었습니다' : '삭제에 실패했습니다'),
-                    backgroundColor: success ? ThemeConfig.successColor : ThemeConfig.errorColor,
+                    backgroundColor: success ? TossTheme.successColor : TossTheme.errorColor,
                   ),
                 );
               }
             },
-            style: TextButton.styleFrom(foregroundColor: ThemeConfig.errorColor),
+            style: TextButton.styleFrom(foregroundColor: TossTheme.errorColor),
             child: const Text('삭제'),
           ),
         ],
@@ -483,14 +491,14 @@ class _ScheduleItem extends StatelessWidget {
                                 vertical: 2,
                               ),
                               decoration: BoxDecoration(
-                                color: ThemeConfig.errorColor.withOpacity(0.1),
+                                color: TossTheme.errorColor.withOpacity(0.1),
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               child: const Text(
                                 '중요',
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color: ThemeConfig.errorColor,
+                                  color: TossTheme.errorColor,
                                 ),
                               ),
                             ),
@@ -501,14 +509,14 @@ class _ScheduleItem extends StatelessWidget {
                                 vertical: 2,
                               ),
                               decoration: BoxDecoration(
-                                color: ThemeConfig.successColor.withOpacity(0.1),
+                                color: TossTheme.successColor.withOpacity(0.1),
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               child: const Text(
                                 '완료',
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color: ThemeConfig.successColor,
+                                  color: TossTheme.successColor,
                                 ),
                               ),
                             ),
@@ -538,7 +546,7 @@ class _ScheduleItem extends StatelessWidget {
                 IconButton(
                   icon: Icon(
                     isCompleted ? Icons.check_circle : Icons.circle_outlined,
-                    color: isCompleted ? ThemeConfig.successColor : Colors.grey,
+                    color: isCompleted ? TossTheme.successColor : Colors.grey,
                   ),
                   onPressed: onComplete,
                 ),
@@ -559,13 +567,13 @@ class _ScheduleItem extends StatelessWidget {
       case ScheduleType.exercise:
         return const Color(0xFF4CAF50);
       case ScheduleType.appointment:
-        return ThemeConfig.primaryColor;
+        return TossTheme.primaryColor;
       case ScheduleType.therapy:
         return const Color(0xFF9C27B0);
       case ScheduleType.hygiene:
         return const Color(0xFF00BCD4);
       case ScheduleType.safetyCheck:
-        return ThemeConfig.errorColor;
+        return TossTheme.errorColor;
       case ScheduleType.socialActivity:
         return const Color(0xFFFF5722);
       case ScheduleType.personalCare:

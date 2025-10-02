@@ -108,11 +108,19 @@ class NotificationApiService {
   }
 
   /// 긴급 알림 전송 (POST /api/notifications/emergency)
-  Future<void> sendEmergencyAlert(Map<String, dynamic> emergencyData) async {
+  Future<void> sendEmergencyAlert({
+    required String message,
+    double? latitude,
+    double? longitude,
+  }) async {
     try {
       final response = await _apiClient.dio.post(
         ApiEndpoints.emergencyNotification,
-        data: emergencyData,
+        queryParameters: {
+          'message': message,
+          if (latitude != null) 'latitude': latitude,
+          if (longitude != null) 'longitude': longitude,
+        },
       );
 
       if (response.data['success'] != true) {
@@ -130,11 +138,11 @@ class NotificationApiService {
     try {
       final response = await _apiClient.dio.post(
         ApiEndpoints.validateToken,
-        data: {'fcmToken': fcmToken},
+        queryParameters: {'token': fcmToken},
       );
 
       if (response.data['success'] == true) {
-        return response.data['data']['isValid'] ?? false;
+        return response.data['data'] ?? false;
       }
       return false;
     } on DioException catch (e) {

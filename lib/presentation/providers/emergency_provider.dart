@@ -163,4 +163,71 @@ class EmergencyProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  /// SOS 이력 조회
+  Future<List<SOSHistory>> getSOSHistory() async {
+    try {
+      return await _emergencyService.getSOSHistory();
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+      rethrow;
+    }
+  }
+
+  /// 활성 긴급상황 조회
+  Future<List<EmergencyResponse>> getActiveEmergencies() async {
+    try {
+      return await _emergencyService.getActiveEmergencies();
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+      rethrow;
+    }
+  }
+
+  /// SOS 발동
+  Future<SOSResponse> triggerSOS(SOSRequest request) async {
+    try {
+      return await _emergencyService.triggerSOS(request);
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+      rethrow;
+    }
+  }
+
+  /// 빠른 SOS 발동
+  Future<SOSResponse> quickSOS() async {
+    try {
+      return await _emergencyService.quickSOS();
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+      rethrow;
+    }
+  }
+
+  /// SOS 취소
+  Future<void> cancelSOS(int emergencyId, {String? reason}) async {
+    try {
+      await _emergencyService.cancelSOS(emergencyId, reason: reason);
+      notifyListeners();
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+      rethrow;
+    }
+  }
+
+  /// 낙상 감지 신고
+  Future<EmergencyResponse> reportFallDetection(FallDetectionRequest request) async {
+    try {
+      return await _emergencyService.reportFallDetection(request);
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+      rethrow;
+    }
+  }
 }

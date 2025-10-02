@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../../core/config/theme_config.dart';
+import '../../core/config/toss_theme.dart';
+import '../../routes/route_names.dart';
 import '../../widgets/common/bottom_nav_bar.dart';
 import '../../widgets/home/quick_action_card.dart';
 import '../../widgets/home/today_summary_card.dart';
+import '../../widgets/emergency/sos_floating_button.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,15 +20,13 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ThemeConfig.backgroundColor,
+      backgroundColor: TossTheme.backgroundColor,
       appBar: AppBar(
         title: const Text('BIF-AI'),
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications_outlined),
-            onPressed: () {
-              // TODO: Show notifications
-            },
+            onPressed: () => AppNavigation.toNotifications(context),
           ),
         ],
       ),
@@ -42,8 +42,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      ThemeConfig.primaryColor,
-                      ThemeConfig.primaryColor.withOpacity(0.8),
+                      TossTheme.primaryColor,
+                      TossTheme.primaryColor.withOpacity(0.8),
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -84,10 +84,9 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const SizedBox(height: 12),
               const TodaySummaryCard(
-                medicationsToTake: 3,
                 schedulesToday: 2,
-                nextEventTitle: '아침 약 먹기',
-                nextEventTime: '08:00',
+                nextEventTitle: '오전 운동',
+                nextEventTime: '10:00',
               ),
               const SizedBox(height: 24),
               
@@ -109,30 +108,28 @@ class _HomeScreenState extends State<HomeScreen> {
                 childAspectRatio: 1.5,
                 children: [
                   QuickActionCard(
-                    title: '약 복용',
-                    icon: Icons.medication,
-                    color: ThemeConfig.successColor,
-                    onTap: () => context.push('/medications'),
-                  ),
-                  QuickActionCard(
                     title: '일정 확인',
                     icon: Icons.calendar_today,
-                    color: ThemeConfig.primaryColor,
-                    onTap: () => context.push('/schedule'),
+                    color: TossTheme.primaryColor,
+                    onTap: () => AppNavigation.toSchedule(context),
                   ),
                   QuickActionCard(
                     title: '긴급 연락',
                     icon: Icons.emergency,
-                    color: ThemeConfig.errorColor,
-                    onTap: () => context.push('/emergency'),
+                    color: TossTheme.errorColor,
+                    onTap: () => AppNavigation.toEmergency(context),
                   ),
                   QuickActionCard(
                     title: '보호자 연락',
                     icon: Icons.phone,
-                    color: ThemeConfig.warningColor,
-                    onTap: () {
-                      // TODO: Call guardian
-                    },
+                    color: TossTheme.warningColor,
+                    onTap: () => AppNavigation.toGuardians(context),
+                  ),
+                  QuickActionCard(
+                    title: '사진 도우미',
+                    icon: Icons.camera_alt,
+                    color: TossTheme.infoColor,
+                    onTap: () => AppNavigation.toAiVision(context),
                   ),
                 ],
               ),
@@ -140,6 +137,8 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
+      floatingActionButton: const SOSFloatingButton(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       bottomNavigationBar: BottomNavBar(
         selectedIndex: _selectedIndex,
         onItemSelected: (index) {
@@ -148,16 +147,16 @@ class _HomeScreenState extends State<HomeScreen> {
           });
           switch (index) {
             case 0:
-              context.go('/home');
+              AppNavigation.toHome(context);
               break;
             case 1:
-              context.go('/medications');
+              AppNavigation.toSchedule(context);
               break;
             case 2:
-              context.go('/schedule');
+              AppNavigation.toNotifications(context);
               break;
             case 3:
-              // TODO: Profile screen
+              AppNavigation.toProfile(context);
               break;
           }
         },

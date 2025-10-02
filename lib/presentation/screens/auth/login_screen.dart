@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import '../../../core/config/theme_config.dart';
+import '../../core/config/toss_theme.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/utils/error_handler.dart';
 import '../../providers/auth_provider.dart';
@@ -81,13 +81,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     width: 100,
                     height: 100,
                     decoration: BoxDecoration(
-                      color: ThemeConfig.primaryColor.withOpacity(0.1),
+                      color: TossTheme.primaryColor.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(25),
                     ),
                     child: const Icon(
                       Icons.favorite,
                       size: 50,
-                      color: ThemeConfig.primaryColor,
+                      color: TossTheme.primaryColor,
                     ),
                   ),
                 ),
@@ -175,7 +175,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: ElevatedButton(
                     onPressed: _isLoading ? null : _login,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: ThemeConfig.primaryColor,
+                      backgroundColor: TossTheme.primaryColor,
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),

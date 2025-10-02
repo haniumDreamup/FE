@@ -8,21 +8,234 @@ class EmergencyService {
 
   EmergencyService({ApiClient? apiClient}) : _apiClient = apiClient ?? ApiClient();
 
-  /// 긴급상황 신고
-  Future<void> handleEmergencyAlert(EmergencyCallRequest request) async {
+  /// 긴급상황 신고 (POST /api/v1/emergency/alert)
+  Future<EmergencyResponse> handleEmergencyAlert(EmergencyCallRequest request) async {
     try {
       final response = await _apiClient.dio.post(
         ApiEndpoints.emergencyAlert,
         data: request.toJson(),
       );
-      
-      if (response.data['success'] != true) {
+
+      if (response.data['success'] == true) {
+        return EmergencyResponse.fromJson(response.data['data']);
+      } else {
         throw Exception(response.data['message'] ?? '긴급 신고를 처리할 수 없습니다');
       }
     } on DioException catch (e) {
       throw _handleDioException(e);
     } catch (e) {
       throw Exception('긴급 신고 처리 중 오류가 발생했습니다: $e');
+    }
+  }
+
+  /// 낙상 감지 신고 (POST /api/v1/emergency/fall-detection)
+  Future<EmergencyResponse> reportFallDetection(FallDetectionRequest request) async {
+    try {
+      final response = await _apiClient.dio.post(
+        '${ApiEndpoints.apiVersion}/emergency/fall-detection',
+        data: request.toJson(),
+      );
+
+      if (response.data['success'] == true) {
+        return EmergencyResponse.fromJson(response.data['data']);
+      } else {
+        throw Exception(response.data['message'] ?? '낙상 감지를 처리할 수 없습니다');
+      }
+    } on DioException catch (e) {
+      throw _handleDioException(e);
+    } catch (e) {
+      throw Exception('낙상 감지 처리 중 오류가 발생했습니다: $e');
+    }
+  }
+
+  /// 긴급상황 상태 조회 (GET /api/v1/emergency/status/{id})
+  Future<EmergencyResponse> getEmergencyStatus(int emergencyId) async {
+    try {
+      final response = await _apiClient.dio.get(
+        '${ApiEndpoints.apiVersion}/emergency/status/$emergencyId',
+      );
+
+      if (response.data['success'] == true) {
+        return EmergencyResponse.fromJson(response.data['data']);
+      } else {
+        throw Exception(response.data['message'] ?? '긴급상황 정보를 불러올 수 없습니다');
+      }
+    } on DioException catch (e) {
+      throw _handleDioException(e);
+    } catch (e) {
+      throw Exception('긴급상황 상태 조회 중 오류가 발생했습니다: $e');
+    }
+  }
+
+  /// 전체 긴급상황 목록 조회 (GET /api/v1/emergency)
+  Future<List<EmergencyResponse>> getAllEmergencies() async {
+    try {
+      final response = await _apiClient.dio.get(
+        '${ApiEndpoints.apiVersion}/emergency',
+      );
+
+      if (response.data['success'] == true) {
+        final List<dynamic> data = response.data['data'] ?? [];
+        return data.map((json) => EmergencyResponse.fromJson(json)).toList();
+      } else {
+        throw Exception(response.data['message'] ?? '긴급상황 목록을 불러올 수 없습니다');
+      }
+    } on DioException catch (e) {
+      throw _handleDioException(e);
+    } catch (e) {
+      throw Exception('긴급상황 목록 조회 중 오류가 발생했습니다: $e');
+    }
+  }
+
+  /// 사용자 긴급상황 이력 조회 (GET /api/v1/emergency/history/{userId})
+  Future<List<EmergencyResponse>> getEmergencyHistory({int? userId}) async {
+    try {
+      final url = userId != null
+          ? '${ApiEndpoints.apiVersion}/emergency/history/$userId'
+          : '${ApiEndpoints.apiVersion}/emergency/history';
+
+      final response = await _apiClient.dio.get(url);
+
+      if (response.data['success'] == true) {
+        final List<dynamic> data = response.data['data'] ?? [];
+        return data.map((json) => EmergencyResponse.fromJson(json)).toList();
+      } else {
+        throw Exception(response.data['message'] ?? '긴급상황 이력을 불러올 수 없습니다');
+      }
+    } on DioException catch (e) {
+      throw _handleDioException(e);
+    } catch (e) {
+      throw Exception('긴급상황 이력 조회 중 오류가 발생했습니다: $e');
+    }
+  }
+
+  /// 활성 긴급상황 목록 (GET /api/v1/emergency/active)
+  Future<List<EmergencyResponse>> getActiveEmergencies() async {
+    try {
+      final response = await _apiClient.dio.get(
+        '${ApiEndpoints.apiVersion}/emergency/active',
+      );
+
+      if (response.data['success'] == true) {
+        final List<dynamic> data = response.data['data'] ?? [];
+        return data.map((json) => EmergencyResponse.fromJson(json)).toList();
+      } else {
+        throw Exception(response.data['message'] ?? '활성 긴급상황 목록을 불러올 수 없습니다');
+      }
+    } on DioException catch (e) {
+      throw _handleDioException(e);
+    } catch (e) {
+      throw Exception('활성 긴급상황 조회 중 오류가 발생했습니다: $e');
+    }
+  }
+
+  /// 긴급상황 해결 (PUT /api/v1/emergency/{id}/resolve)
+  Future<EmergencyResponse> resolveEmergency(
+    int emergencyId, {
+    required String resolvedBy,
+    String? notes,
+  }) async {
+    try {
+      final response = await _apiClient.dio.put(
+        '${ApiEndpoints.apiVersion}/emergency/$emergencyId/resolve',
+        queryParameters: {
+          'resolvedBy': resolvedBy,
+          if (notes != null) 'notes': notes,
+        },
+      );
+
+      if (response.data['success'] == true) {
+        return EmergencyResponse.fromJson(response.data['data']);
+      } else {
+        throw Exception(response.data['message'] ?? '긴급상황을 해결할 수 없습니다');
+      }
+    } on DioException catch (e) {
+      throw _handleDioException(e);
+    } catch (e) {
+      throw Exception('긴급상황 해결 처리 중 오류가 발생했습니다: $e');
+    }
+  }
+
+  /// SOS 긴급 발동 (POST /api/v1/emergency/sos/trigger)
+  Future<SOSResponse> triggerSOS(SOSRequest request) async {
+    try {
+      final response = await _apiClient.dio.post(
+        '${ApiEndpoints.apiVersion}/emergency/sos/trigger',
+        data: request.toJson(),
+      );
+
+      if (response.data['success'] == true) {
+        return SOSResponse.fromJson(response.data['data']);
+      } else {
+        throw Exception(response.data['message'] ?? 'SOS를 발동할 수 없습니다');
+      }
+    } on DioException catch (e) {
+      throw _handleDioException(e);
+    } catch (e) {
+      throw Exception('SOS 발동 중 오류가 발생했습니다: $e');
+    }
+  }
+
+  /// SOS 빠른 발동 (POST /api/v1/emergency/sos/quick)
+  Future<SOSResponse> quickSOS({required double latitude, required double longitude}) async {
+    try {
+      final response = await _apiClient.dio.post(
+        '${ApiEndpoints.apiVersion}/emergency/sos/quick',
+        queryParameters: {
+          'latitude': latitude,
+          'longitude': longitude,
+        },
+      );
+
+      if (response.data['success'] == true) {
+        return SOSResponse.fromJson(response.data['data']);
+      } else {
+        throw Exception(response.data['message'] ?? 'SOS를 발동할 수 없습니다');
+      }
+    } on DioException catch (e) {
+      throw _handleDioException(e);
+    } catch (e) {
+      throw Exception('SOS 발동 중 오류가 발생했습니다: $e');
+    }
+  }
+
+  /// SOS 취소 (PUT /api/v1/emergency/sos/{emergencyId}/cancel)
+  Future<void> cancelSOS(int emergencyId, {String? reason}) async {
+    try {
+      final response = await _apiClient.dio.put(
+        '${ApiEndpoints.apiVersion}/emergency/sos/$emergencyId/cancel',
+        data: {
+          if (reason != null) 'reason': reason,
+        },
+      );
+
+      if (response.data['success'] != true) {
+        throw Exception(response.data['message'] ?? 'SOS를 취소할 수 없습니다');
+      }
+    } on DioException catch (e) {
+      throw _handleDioException(e);
+    } catch (e) {
+      throw Exception('SOS 취소 중 오류가 발생했습니다: $e');
+    }
+  }
+
+  /// SOS 이력 조회 (GET /api/v1/emergency/sos/history)
+  Future<List<SOSHistory>> getSOSHistory() async {
+    try {
+      final response = await _apiClient.dio.get(
+        '${ApiEndpoints.apiVersion}/emergency/sos/history',
+      );
+
+      if (response.data['success'] == true) {
+        final List<dynamic> data = response.data['data'] ?? [];
+        return data.map((json) => SOSHistory.fromJson(json)).toList();
+      } else {
+        throw Exception(response.data['message'] ?? 'SOS 이력을 불러올 수 없습니다');
+      }
+    } on DioException catch (e) {
+      throw _handleDioException(e);
+    } catch (e) {
+      throw Exception('SOS 이력 조회 중 오류가 발생했습니다: $e');
     }
   }
 

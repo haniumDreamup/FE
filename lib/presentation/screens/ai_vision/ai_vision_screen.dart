@@ -38,7 +38,7 @@ class _AiVisionScreenState extends State<AiVisionScreen>
       backgroundColor: TossColors.grey50,
       appBar: AppBar(
         title: const Text(
-          'AI 도우미',
+          '사진 도우미',
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -113,7 +113,7 @@ class _AiVisionScreenState extends State<AiVisionScreen>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'AI 도우미가 도와드려요',
+                      '사진 도우미가 도와드려요',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -122,7 +122,7 @@ class _AiVisionScreenState extends State<AiVisionScreen>
                     ),
                     SizedBox(height: 4),
                     Text(
-                      '사진을 찍어서 문자를 읽거나\n약물을 식별할 수 있어요',
+                      '사진을 찍어서 글자를 읽거나\n물건 이름을 알 수 있어요',
                       style: TextStyle(
                         fontSize: 14,
                         color: TossColors.grey600,
@@ -198,32 +198,32 @@ class _AiVisionScreenState extends State<AiVisionScreen>
           childAspectRatio: 1.2,
           children: [
             _buildFeatureCard(
-              title: '문자 읽기',
-              subtitle: '사진 속 글자를\n음성으로 읽어드려요',
+              title: '글자 읽기',
+              subtitle: '사진 속 글자를\n소리로 읽어드려요',
               icon: Icons.text_fields,
               color: TossColors.blue500,
               onTap: () => _startTextRecognition(),
             ),
             _buildFeatureCard(
-              title: '약물 식별',
-              subtitle: '약의 이름과 복용법을\n알려드려요',
-              icon: Icons.medication,
-              color: TossColors.green500,
-              onTap: () => _startMedicationRecognition(),
-            ),
-            _buildFeatureCard(
-              title: '사물 인식',
-              subtitle: '주변 사물을\n설명해드려요',
+              title: '물건 이름',
+              subtitle: '물건 이름을\n알려드려요',
               icon: Icons.camera_alt,
               color: TossColors.orange500,
               onTap: () => _startObjectRecognition(),
             ),
             _buildFeatureCard(
-              title: '색깔 구분',
+              title: '색깔 찾기',
               subtitle: '물건의 색깔을\n알려드려요',
               icon: Icons.palette,
               color: TossColors.purple500,
               onTap: () => _startColorRecognition(),
+            ),
+            _buildFeatureCard(
+              title: '운동 도움',
+              subtitle: '올바른 자세를\n알려드려요',
+              icon: Icons.accessibility_new,
+              color: TossColors.green500,
+              onTap: () => _startPoseRecognition(),
             ),
           ],
         ),
@@ -413,7 +413,7 @@ class _AiVisionScreenState extends State<AiVisionScreen>
 
   Future<void> _startTextRecognition() async {
     final accessibility = context.read<AccessibilityProvider>();
-    await accessibility.speak('문자 읽기 기능을 시작합니다');
+    await accessibility.speak('글자 읽기를 시작해요');
 
     setState(() {
       _isProcessing = true;
@@ -426,7 +426,7 @@ class _AiVisionScreenState extends State<AiVisionScreen>
 
     setState(() {
       _isProcessing = false;
-      _lastResult = '분석 결과: "혈압약 하루 2회 복용하세요. 아침 저녁 식후 30분"';
+      _lastResult = '읽은 글자: "하루 2번 아침 저녁으로 드세요"';
     });
 
     _animationController.stop();
@@ -437,39 +437,7 @@ class _AiVisionScreenState extends State<AiVisionScreen>
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('문자 읽기가 완료되었습니다'),
-          backgroundColor: TossColors.green500,
-        ),
-      );
-    }
-  }
-
-  Future<void> _startMedicationRecognition() async {
-    final accessibility = context.read<AccessibilityProvider>();
-    await accessibility.speak('약물 식별 기능을 시작합니다');
-
-    setState(() {
-      _isProcessing = true;
-    });
-
-    _animationController.repeat();
-
-    await Future.delayed(const Duration(seconds: 4));
-
-    setState(() {
-      _isProcessing = false;
-      _lastResult = '식별된 약물: 아스피린 100mg, 하루 1회 복용, 혈관 질환 예방용';
-    });
-
-    _animationController.stop();
-    _animationController.reset();
-
-    await accessibility.speak(_lastResult!);
-
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('약물 식별이 완료되었습니다'),
+          content: Text('글자 읽기가 끝났어요'),
           backgroundColor: TossColors.green500,
         ),
       );
@@ -478,7 +446,7 @@ class _AiVisionScreenState extends State<AiVisionScreen>
 
   Future<void> _startObjectRecognition() async {
     final accessibility = context.read<AccessibilityProvider>();
-    await accessibility.speak('사물 인식 기능을 시작합니다');
+    await accessibility.speak('물건 이름을 찾고 있어요');
 
     setState(() {
       _isProcessing = true;
@@ -490,7 +458,7 @@ class _AiVisionScreenState extends State<AiVisionScreen>
 
     setState(() {
       _isProcessing = false;
-      _lastResult = '인식된 사물: 파란색 물컵, 테이블 위에 놓여있음';
+      _lastResult = '찾은 물건: 파란색 물컵';
     });
 
     _animationController.stop();
@@ -501,7 +469,7 @@ class _AiVisionScreenState extends State<AiVisionScreen>
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('사물 인식이 완료되었습니다'),
+          content: Text('물건 이름을 찾았어요'),
           backgroundColor: TossColors.green500,
         ),
       );
@@ -510,7 +478,7 @@ class _AiVisionScreenState extends State<AiVisionScreen>
 
   Future<void> _startColorRecognition() async {
     final accessibility = context.read<AccessibilityProvider>();
-    await accessibility.speak('색깔 구분 기능을 시작합니다');
+    await accessibility.speak('색깔을 찾고 있어요');
 
     setState(() {
       _isProcessing = true;
@@ -522,7 +490,7 @@ class _AiVisionScreenState extends State<AiVisionScreen>
 
     setState(() {
       _isProcessing = false;
-      _lastResult = '색깔 분석: 주된 색상은 파란색이며, 밝은 하늘색에 가깝습니다';
+      _lastResult = '찾은 색깔: 밝은 파란색';
     });
 
     _animationController.stop();
@@ -533,7 +501,39 @@ class _AiVisionScreenState extends State<AiVisionScreen>
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('색깔 구분이 완료되었습니다'),
+          content: Text('색깔을 찾았어요'),
+          backgroundColor: TossColors.green500,
+        ),
+      );
+    }
+  }
+
+  Future<void> _startPoseRecognition() async {
+    final accessibility = context.read<AccessibilityProvider>();
+    await accessibility.speak('자세를 확인하고 있어요');
+
+    setState(() {
+      _isProcessing = true;
+    });
+
+    _animationController.repeat();
+
+    await Future.delayed(const Duration(seconds: 3));
+
+    setState(() {
+      _isProcessing = false;
+      _lastResult = '자세 확인: 등이 조금 구부러졌어요. 허리를 펴보세요';
+    });
+
+    _animationController.stop();
+    _animationController.reset();
+
+    await accessibility.speak(_lastResult!);
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('자세 확인이 끝났어요'),
           backgroundColor: TossColors.green500,
         ),
       );
@@ -549,26 +549,26 @@ class _AiVisionScreenState extends State<AiVisionScreen>
           children: [
             Icon(Icons.help_outline, color: TossColors.blue500),
             SizedBox(width: 12),
-            Text('AI 도우미 사용법', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text('사진 도우미 사용법', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           ],
         ),
         content: const Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('📖 문자 읽기', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
-            Text('• 문서나 약품 설명서의 글자를 읽어드려요', style: TextStyle(fontSize: 13)),
+            Text('📖 글자 읽기', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+            Text('• 사진 속 글자를 소리로 읽어드려요', style: TextStyle(fontSize: 13)),
             SizedBox(height: 12),
-            Text('💊 약물 식별', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
-            Text('• 약의 모양과 색상으로 약품명을 알려드려요', style: TextStyle(fontSize: 13)),
+            Text('📷 물건 이름', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+            Text('• 물건이 무엇인지 알려드려요', style: TextStyle(fontSize: 13)),
             SizedBox(height: 12),
-            Text('📷 사물 인식', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
-            Text('• 주변 사물이 무엇인지 설명해드려요', style: TextStyle(fontSize: 13)),
+            Text('🎨 색깔 찾기', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+            Text('• 물건의 색깔을 찾아드려요', style: TextStyle(fontSize: 13)),
             SizedBox(height: 12),
-            Text('🎨 색깔 구분', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
-            Text('• 물건의 색깔을 자세히 알려드려요', style: TextStyle(fontSize: 13)),
+            Text('🏃 운동 도움', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+            Text('• 올바른 자세를 알려드려요', style: TextStyle(fontSize: 13)),
             SizedBox(height: 16),
-            Text('💡 팁: 모든 결과는 음성으로도 들을 수 있어요!',
+            Text('💡 팁: 모든 결과는 소리로도 들을 수 있어요!',
                  style: TextStyle(fontSize: 12, color: TossColors.blue600)),
           ],
         ),

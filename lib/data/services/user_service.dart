@@ -27,11 +27,11 @@ class UserService {
   }
 
   /// 현재 사용자 정보 수정
-  Future<UserModel> updateCurrentUser(Map<String, dynamic> updateData) async {
+  Future<UserModel> updateCurrentUser(UserUpdateRequest request) async {
     try {
       final response = await _apiClient.dio.put(
         ApiEndpoints.userMe,
-        data: updateData,
+        data: request.toJson(),
       );
 
       if (response.data['success'] == true) {

@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
-import '../../../core/config/theme_config.dart';
+import '../../core/config/toss_theme.dart';
 
 class TodaySummaryCard extends StatelessWidget {
-  final int medicationsToTake;
   final int schedulesToday;
   final String nextEventTitle;
   final String nextEventTime;
 
   const TodaySummaryCard({
     super.key,
-    required this.medicationsToTake,
     required this.schedulesToday,
     required this.nextEventTitle,
     required this.nextEventTime,
@@ -32,39 +30,24 @@ class TodaySummaryCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: _SummaryItem(
-                  icon: Icons.medication,
-                  count: medicationsToTake,
-                  label: '약 복용',
-                  color: ThemeConfig.successColor,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _SummaryItem(
-                  icon: Icons.event,
-                  count: schedulesToday,
-                  label: '일정',
-                  color: ThemeConfig.primaryColor,
-                ),
-              ),
-            ],
+          _SummaryItem(
+            icon: Icons.event,
+            count: schedulesToday,
+            label: '오늘의 일정',
+            color: TossTheme.primaryColor,
           ),
           const SizedBox(height: 16),
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: ThemeConfig.warningColor.withOpacity(0.1),
+              color: TossTheme.warningColor.withOpacity(0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
               children: [
                 Icon(
                   Icons.access_time,
-                  color: ThemeConfig.warningColor,
+                  color: TossTheme.warningColor,
                 ),
                 const SizedBox(width: 12),
                 Expanded(

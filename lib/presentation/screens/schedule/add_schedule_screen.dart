@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../core/config/theme_config.dart';
+import '../../core/config/toss_theme.dart';
 import '../../../data/models/schedule_model.dart';
 import '../../providers/schedule_provider.dart';
 
@@ -84,7 +84,7 @@ class _AddScheduleScreenState extends State<AddScheduleScreen> {
     final isEdit = widget.editSchedule != null;
 
     return Scaffold(
-      backgroundColor: ThemeConfig.backgroundColor,
+      backgroundColor: TossTheme.backgroundColor,
       appBar: AppBar(
         title: Text(isEdit ? '일정 수정' : '새 일정 추가'),
         actions: [
@@ -148,7 +148,7 @@ class _AddScheduleScreenState extends State<AddScheduleScreen> {
                         height: 32,
                         decoration: BoxDecoration(
                           color: isActive
-                              ? ThemeConfig.primaryColor
+                              ? TossTheme.primaryColor
                               : Colors.grey.shade300,
                           shape: BoxShape.circle,
                         ),
@@ -169,7 +169,7 @@ class _AddScheduleScreenState extends State<AddScheduleScreen> {
                         _getStepName(index),
                         style: TextStyle(
                           fontSize: 12,
-                          color: isActive ? ThemeConfig.primaryColor : Colors.grey,
+                          color: isActive ? TossTheme.primaryColor : Colors.grey,
                           fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
                         ),
                       ),
@@ -181,7 +181,7 @@ class _AddScheduleScreenState extends State<AddScheduleScreen> {
                     height: 2,
                     width: 24,
                     color: index < _currentStep
-                        ? ThemeConfig.primaryColor
+                        ? TossTheme.primaryColor
                         : Colors.grey.shade300,
                   ),
               ],
@@ -343,10 +343,10 @@ class _AddScheduleScreenState extends State<AddScheduleScreen> {
                   });
                 }
               },
-              selectedColor: ThemeConfig.primaryColor.withOpacity(0.2),
+              selectedColor: TossTheme.primaryColor.withOpacity(0.2),
               backgroundColor: Colors.white,
               labelStyle: TextStyle(
-                color: isSelected ? ThemeConfig.primaryColor : Colors.black,
+                color: isSelected ? TossTheme.primaryColor : Colors.black,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                 fontSize: 16,
               ),
@@ -383,10 +383,10 @@ class _AddScheduleScreenState extends State<AddScheduleScreen> {
                     }
                   });
                 },
-                selectedColor: ThemeConfig.primaryColor.withOpacity(0.2),
+                selectedColor: TossTheme.primaryColor.withOpacity(0.2),
                 backgroundColor: Colors.white,
                 labelStyle: TextStyle(
-                  color: isSelected ? ThemeConfig.primaryColor : Colors.black,
+                  color: isSelected ? TossTheme.primaryColor : Colors.black,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                   fontSize: 16,
                 ),
@@ -416,7 +416,7 @@ class _AddScheduleScreenState extends State<AddScheduleScreen> {
             ),
             child: Row(
               children: [
-                const Icon(Icons.calendar_today, color: ThemeConfig.primaryColor),
+                const Icon(Icons.calendar_today, color: TossTheme.primaryColor),
                 const SizedBox(width: 12),
                 Text(
                   '${_selectedDate.year}년 ${_selectedDate.month}월 ${_selectedDate.day}일',
@@ -448,7 +448,7 @@ class _AddScheduleScreenState extends State<AddScheduleScreen> {
             ),
             child: Row(
               children: [
-                const Icon(Icons.access_time, color: ThemeConfig.primaryColor),
+                const Icon(Icons.access_time, color: TossTheme.primaryColor),
                 const SizedBox(width: 12),
                 Text(
                   '${_selectedTime.hour.toString().padLeft(2, '0')}:${_selectedTime.minute.toString().padLeft(2, '0')}',
@@ -542,7 +542,7 @@ class _AddScheduleScreenState extends State<AddScheduleScreen> {
                 onChanged: (value) {
                   setState(() => _requiresConfirmation = value);
                 },
-                activeColor: ThemeConfig.primaryColor,
+                activeColor: TossTheme.primaryColor,
               ),
             ],
           ),
@@ -582,10 +582,10 @@ class _AddScheduleScreenState extends State<AddScheduleScreen> {
           setState(() => _reminderMinutes = minutes);
         }
       },
-      selectedColor: ThemeConfig.primaryColor.withOpacity(0.2),
+      selectedColor: TossTheme.primaryColor.withOpacity(0.2),
       backgroundColor: Colors.white,
       labelStyle: TextStyle(
-        color: isSelected ? ThemeConfig.primaryColor : Colors.black,
+        color: isSelected ? TossTheme.primaryColor : Colors.black,
         fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
         fontSize: 16,
       ),
@@ -615,7 +615,7 @@ class _AddScheduleScreenState extends State<AddScheduleScreen> {
                   onPressed: () => setState(() => _currentStep--),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    side: BorderSide(color: ThemeConfig.primaryColor),
+                    side: BorderSide(color: TossTheme.primaryColor),
                   ),
                   child: const Text(
                     '이전',
@@ -629,7 +629,7 @@ class _AddScheduleScreenState extends State<AddScheduleScreen> {
               child: ElevatedButton(
                 onPressed: _currentStep < 2 ? _nextStep : () => _saveSchedule(isEdit),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: ThemeConfig.primaryColor,
+                  backgroundColor: TossTheme.primaryColor,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
                 child: Text(
@@ -655,7 +655,7 @@ class _AddScheduleScreenState extends State<AddScheduleScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('주간 반복은 요일을 선택해주세요'),
-            backgroundColor: ThemeConfig.errorColor,
+            backgroundColor: TossTheme.errorColor,
           ),
         );
         return;
@@ -731,14 +731,14 @@ class _AddScheduleScreenState extends State<AddScheduleScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(isEdit ? '일정이 수정되었습니다' : '일정이 추가되었습니다'),
-            backgroundColor: ThemeConfig.successColor,
+            backgroundColor: TossTheme.successColor,
           ),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(provider.errorMessage ?? '일정 저장에 실패했습니다'),
-            backgroundColor: ThemeConfig.errorColor,
+            backgroundColor: TossTheme.errorColor,
           ),
         );
       }
@@ -758,13 +758,13 @@ class _AddScheduleScreenState extends State<AddScheduleScreen> {
       case ScheduleType.exercise:
         return const Color(0xFF4CAF50);
       case ScheduleType.appointment:
-        return ThemeConfig.primaryColor;
+        return TossTheme.primaryColor;
       case ScheduleType.therapy:
         return const Color(0xFF9C27B0);
       case ScheduleType.hygiene:
         return const Color(0xFF00BCD4);
       case ScheduleType.safetyCheck:
-        return ThemeConfig.errorColor;
+        return TossTheme.errorColor;
       case ScheduleType.socialActivity:
         return const Color(0xFFFF5722);
       case ScheduleType.personalCare:

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../../core/config/toss_theme.dart';
+import '../../routes/route_names.dart';
 import '../../widgets/common/accessible_button.dart';
+import '../../widgets/common/bottom_nav_bar.dart';
 
 class NotificationListScreen extends StatefulWidget {
   const NotificationListScreen({super.key});
@@ -13,6 +15,7 @@ class _NotificationListScreenState extends State<NotificationListScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   bool _isLoading = false;
+  int _selectedIndex = 2; // 알림 탭 (0: 홈, 1: 일정, 2: 알림, 3: 내정보)
 
   // Mock data for demonstration
   final List<Map<String, dynamic>> _medicationNotifications = [
@@ -99,6 +102,7 @@ class _NotificationListScreenState extends State<NotificationListScreen>
             color: Colors.black,
           ),
         ),
+        automaticallyImplyLeading: false, // 메인 탭이므로 뒤로가기 버튼 표시 안 함
         backgroundColor: Colors.white,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
@@ -139,6 +143,29 @@ class _NotificationListScreenState extends State<NotificationListScreen>
           _buildNotificationList(_scheduleNotifications),
           _buildNotificationList(_systemNotifications),
         ],
+      ),
+      bottomNavigationBar: BottomNavBar(
+        selectedIndex: _selectedIndex,
+        onItemSelected: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+          // 실제 화면 전환
+          switch (index) {
+            case 0:
+              AppNavigation.toHome(context);
+              break;
+            case 1:
+              AppNavigation.toSchedule(context);
+              break;
+            case 2:
+              // 이미 알림 화면이므로 아무것도 안 함
+              break;
+            case 3:
+              AppNavigation.toProfile(context);
+              break;
+          }
+        },
       ),
     );
   }

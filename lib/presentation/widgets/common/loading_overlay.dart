@@ -44,17 +44,15 @@ class LoadingOverlay extends StatelessWidget {
                     const CircularProgressIndicator(
                       strokeWidth: 3,
                     ),
-                    if (message != null) ...[
-                      const SizedBox(height: 16),
-                      Text(
-                        message!,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        textAlign: TextAlign.center,
+                    const SizedBox(height: 16),
+                    Text(
+                      message ?? '잠시만 기다려주세요...',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
                       ),
-                    ],
+                      textAlign: TextAlign.center,
+                    ),
                   ],
                 ),
               ),
@@ -86,18 +84,16 @@ class LoadingDialog {
                 const CircularProgressIndicator(
                   strokeWidth: 3,
                 ),
-                if (message != null) ...[
-                  const SizedBox(height: 16),
-                  Text(
-                    message,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      decoration: TextDecoration.none,
-                      color: Colors.black,
-                    ),
+                const SizedBox(height: 16),
+                Text(
+                  message ?? '잠시만 기다려주세요...',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    decoration: TextDecoration.none,
+                    color: Colors.black,
                   ),
-                ],
+                ),
               ],
             ),
           ),

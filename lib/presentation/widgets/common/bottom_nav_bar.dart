@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../core/config/theme_config.dart';
+import '../../core/config/toss_theme.dart';
 
 class BottomNavBar extends StatelessWidget {
   final int selectedIndex;
@@ -24,14 +24,14 @@ class BottomNavBar extends StatelessWidget {
           label: '홈',
         ),
         NavigationDestination(
-          icon: Icon(Icons.medication_outlined, size: 28),
-          selectedIcon: Icon(Icons.medication, size: 28),
-          label: '약',
-        ),
-        NavigationDestination(
           icon: Icon(Icons.calendar_today_outlined, size: 28),
           selectedIcon: Icon(Icons.calendar_today, size: 28),
           label: '일정',
+        ),
+        NavigationDestination(
+          icon: Icon(Icons.notifications_outlined, size: 28),
+          selectedIcon: Icon(Icons.notifications, size: 28),
+          label: '알림',
         ),
         NavigationDestination(
           icon: Icon(Icons.person_outline, size: 28),

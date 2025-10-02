@@ -352,8 +352,21 @@ class _EmergencyScreenState extends State<EmergencyScreen> {
         ),
         title: Row(
           children: [
-            Text(type.emoji, style: TextStyle(fontSize: 24.sp)),
-            SizedBox(width: 8.w),
+            Container(
+              width: 40.w,
+              height: 40.w,
+              decoration: BoxDecoration(
+                color: TossColors.red50,
+                shape: BoxShape.circle,
+              ),
+              child: Center(
+                child: Text(
+                  type.emoji,
+                  style: TextStyle(fontSize: 24.sp),
+                ),
+              ),
+            ),
+            SizedBox(width: 12.w),
             Expanded(
               child: Text(
                 type.displayName,
@@ -368,47 +381,122 @@ class _EmergencyScreenState extends State<EmergencyScreen> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              '이 상황으로 도움을 요청하시겠습니까?',
-              style: TossTextStyle.body1.copyWith(
-                color: TossColors.grey700,
+            // 경고 메시지
+            Container(
+              padding: EdgeInsets.all(12.w),
+              decoration: BoxDecoration(
+                color: TossColors.red50,
+                borderRadius: BorderRadius.circular(8.r),
+                border: Border.all(color: TossColors.red200),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.warning_amber_rounded,
+                    color: TossColors.red600,
+                    size: 20.w,
+                  ),
+                  SizedBox(width: 8.w),
+                  Expanded(
+                    child: Text(
+                      '정말로 도움을 요청하시겠습니까?',
+                      style: TossTextStyle.body1.copyWith(
+                        color: TossColors.red800,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
             SizedBox(height: 16.h),
             Text(
-              '• 등록된 보호자에게 알림이 전송됩니다\n• 현재 위치가 공유됩니다\n• 필요시 응급 기관에 연락됩니다',
+              '다음 작업이 실행됩니다:',
+              style: TossTextStyle.body1.copyWith(
+                color: TossColors.grey700,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            SizedBox(height: 8.h),
+            _buildDialogItem('등록된 보호자에게 알림 전송', Icons.notifications_active),
+            _buildDialogItem('현재 위치 공유', Icons.location_on),
+            _buildDialogItem('필요시 응급 기관 연락', Icons.phone),
+            SizedBox(height: 12.h),
+            Text(
+              '실수로 누르신 경우 취소 버튼을 눌러주세요.',
               style: TossTextStyle.body2.copyWith(
-                color: TossColors.grey600,
+                color: TossColors.grey500,
               ),
             ),
           ],
         ),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(
-              '취소',
-              style: TossTextStyle.body1.copyWith(
-                color: TossColors.grey600,
+          // 취소 버튼 강조
+          Expanded(
+            child: OutlinedButton(
+              onPressed: () => Navigator.pop(context),
+              style: OutlinedButton.styleFrom(
+                side: BorderSide(color: TossColors.grey300, width: 1.5),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+                padding: EdgeInsets.symmetric(vertical: 14.h),
+              ),
+              child: Text(
+                '취소',
+                style: TossTextStyle.body1.copyWith(
+                  color: TossColors.grey700,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              _handleEmergencyCall(type);
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: TossColors.red500,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.r),
+          SizedBox(width: 12.w),
+          Expanded(
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+                _handleEmergencyCall(type);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: TossColors.red500,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+                padding: EdgeInsets.symmetric(vertical: 14.h),
+                elevation: 0,
+              ),
+              child: Text(
+                '도움 요청',
+                style: TossTextStyle.body1.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
+          ),
+        ],
+        actionsPadding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 20.h),
+      ),
+    );
+  }
+
+  Widget _buildDialogItem(String text, IconData icon) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 6.h),
+      child: Row(
+        children: [
+          Icon(
+            icon,
+            size: 18.w,
+            color: TossColors.grey600,
+          ),
+          SizedBox(width: 8.w),
+          Expanded(
             child: Text(
-              '도움 요청',
-              style: TossTextStyle.body1.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
+              text,
+              style: TossTextStyle.body2.copyWith(
+                color: TossColors.grey700,
               ),
             ),
           ),

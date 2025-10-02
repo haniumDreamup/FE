@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import '../../../core/config/theme_config.dart';
+import '../../core/config/toss_theme.dart';
 import '../../providers/auth_provider.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -38,7 +38,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ThemeConfig.primaryColor,
+      backgroundColor: TossTheme.primaryColor,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -53,7 +53,7 @@ class _SplashScreenState extends State<SplashScreen> {
               child: const Icon(
                 Icons.favorite,
                 size: 60,
-                color: ThemeConfig.primaryColor,
+                color: TossTheme.primaryColor,
               ),
             ),
             const SizedBox(height: 24),

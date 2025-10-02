@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/timezone.dart' as tz;
 import '../../firebase_options.dart';
@@ -15,9 +16,16 @@ class NotificationService {
 
   FirebaseMessaging? _firebaseMessaging;
   final FlutterLocalNotificationsPlugin _localNotifications = FlutterLocalNotificationsPlugin();
-  
+  GoRouter? _router;
+
   String? _fcmToken;
   String? get fcmToken => _fcmToken;
+
+  /// GoRouter 설정 (main.dart에서 호출)
+  void setRouter(GoRouter router) {
+    _router = router;
+    Logger.debug('GoRouter가 NotificationService에 주입되었습니다');
+  }
 
   Future<void> initialize() async {
     try {
@@ -346,25 +354,58 @@ class NotificationService {
     // Handle notification tap
   }
   
-  // Navigation methods (will be implemented with Navigator service)
+  // Navigation methods - 딥링크 처리
   void _navigateToMedications(Map<String, dynamic> data) {
-    // TODO: Navigate to medications page
-    Logger.debug('약물 페이지로 이동');
+    if (_router == null) {
+      Logger.error('Router is null', Exception('Router가 초기화되지 않았습니다'));
+      return;
+    }
+
+    // 약물 관리 화면이 없으므로 일정 화면으로 이동
+    Logger.debug('약물 알림 - 일정 페이지로 이동');
+    _router!.go('/schedule');
   }
-  
+
   void _navigateToSchedule(Map<String, dynamic> data) {
-    // TODO: Navigate to schedule page
-    Logger.debug('일정 페이지로 이동');
+    if (_router == null) {
+      Logger.error('Router is null', Exception('Router가 초기화되지 않았습니다'));
+      return;
+    }
+
+    final scheduleId = data['scheduleId'];
+    Logger.debug('일정 페이지로 이동 - scheduleId: $scheduleId');
+
+    // scheduleId가 있으면 상세 화면으로, 없으면 목록 화면으로
+    _router!.go('/schedule');
   }
-  
+
   void _navigateToEmergency(Map<String, dynamic> data) {
-    // TODO: Navigate to emergency page
-    Logger.debug('긴급 페이지로 이동');
+    if (_router == null) {
+      Logger.error('Router is null', Exception('Router가 초기화되지 않았습니다'));
+      return;
+    }
+
+    final emergencyId = data['emergencyId'];
+    final isActive = data['isActive'] ?? true;
+
+    Logger.debug('긴급 페이지로 이동 - emergencyId: $emergencyId, isActive: $isActive');
+
+    // 활성 긴급상황이면 active 화면으로, 아니면 history 화면으로
+    if (isActive) {
+      _router!.go('/emergency/active');
+    } else {
+      _router!.go('/emergency/history');
+    }
   }
-  
+
   void _navigateToSummary(Map<String, dynamic> data) {
-    // TODO: Navigate to summary page
-    Logger.debug('요약 페이지로 이동');
+    if (_router == null) {
+      Logger.error('Router is null', Exception('Router가 초기화되지 않았습니다'));
+      return;
+    }
+
+    Logger.debug('요약(통계) 페이지로 이동');
+    _router!.go('/statistics');
   }
   
   // Schedule local notifications

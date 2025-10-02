@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import '../../core/constants/api_endpoints.dart';
 import '../../core/network/api_client.dart';
-import '../../domain/entities/user.dart';
 import '../models/user_model.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -11,7 +10,7 @@ class AuthRepository {
   final ApiClient _apiClient;
   final FlutterSecureStorage _storage;
   final DeviceInfoPlugin _deviceInfo;
-  
+
   AuthRepository({
     ApiClient? apiClient,
     FlutterSecureStorage? storage,
@@ -19,9 +18,9 @@ class AuthRepository {
   }) : _apiClient = apiClient ?? ApiClient(),
        _storage = storage ?? const FlutterSecureStorage(),
        _deviceInfo = deviceInfo ?? DeviceInfoPlugin();
-  
+
   /// 회원가입 (POST /api/v1/auth/register)
-  Future<User> register({
+  Future<UserModel> register({
     required String username,
     required String email,
     required String password,
@@ -71,7 +70,7 @@ class AuthRepository {
     }
   }
 
-  Future<User> login(String email, String password) async {
+  Future<UserModel> login(String email, String password) async {
     try {
       // Get device info
       String deviceId = await _getDeviceId();
@@ -133,7 +132,7 @@ class AuthRepository {
     }
   }
   
-  Future<User?> checkAuthStatus() async {
+  Future<UserModel?> checkAuthStatus() async {
     try {
       final token = await _storage.read(key: 'access_token');
       
@@ -158,7 +157,7 @@ class AuthRepository {
     }
   }
   
-  Future<User?> _refreshToken() async {
+  Future<UserModel?> _refreshToken() async {
     try {
       final refreshToken = await _storage.read(key: 'refresh_token');
       final deviceId = await _getDeviceId();

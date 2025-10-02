@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../core/config/theme_config.dart';
+import '../../core/config/toss_theme.dart';
 import '../../../core/services/offline_service.dart';
 
 class NetworkStatusBanner extends StatefulWidget {
@@ -96,8 +96,8 @@ class _NetworkStatusBannerState extends State<NetworkStatusBanner>
                     vertical: 12,
                   ),
                   color: _isOnline 
-                      ? ThemeConfig.successColor 
-                      : ThemeConfig.warningColor,
+                      ? TossTheme.successColor 
+                      : TossTheme.warningColor,
                   child: Row(
                     children: [
                       Icon(
