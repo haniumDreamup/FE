@@ -4,6 +4,7 @@ import '../../../core/config/theme_config.dart';
 import '../../../data/models/schedule_model.dart';
 import '../../providers/schedule_provider.dart';
 import '../../widgets/common/bottom_nav_bar.dart';
+import 'add_schedule_screen.dart';
 
 class ScheduleScreen extends StatefulWidget {
   const ScheduleScreen({super.key});
@@ -34,9 +35,17 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
-            onPressed: () {
-              // TODO: Navigate to add schedule screen
-              _showAddScheduleDialog();
+            onPressed: () async {
+              final result = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AddScheduleScreen(),
+                ),
+              );
+
+              if (result == true && mounted) {
+                context.read<ScheduleProvider>().loadTodaySchedules();
+              }
             },
           ),
         ],
@@ -233,17 +242,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     );
   }
 
-  void _showAddScheduleDialog() {
-    // TODO: Implement add schedule dialog
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('일정 추가 기능은 준비 중입니다'),
-      ),
-    );
-  }
-
   void _showScheduleDetail(ScheduleResponse schedule) {
-    // TODO: Navigate to schedule detail screen
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -325,12 +324,18 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () {
-                      // TODO: Edit schedule
+                    onPressed: () async {
                       Navigator.pop(context);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('일정 수정 기능은 준비 중입니다')),
+                      final result = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AddScheduleScreen(editSchedule: schedule),
+                        ),
                       );
+
+                      if (result == true && mounted) {
+                        context.read<ScheduleProvider>().loadTodaySchedules();
+                      }
                     },
                     child: const Text('수정'),
                   ),
