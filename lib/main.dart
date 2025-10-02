@@ -11,6 +11,7 @@ import 'core/services/tts_service.dart';
 import 'presentation/routes/app_router.dart';
 import 'presentation/providers/auth_provider.dart';
 import 'presentation/providers/accessibility_provider.dart';
+import 'presentation/providers/schedule_provider.dart';
 import 'presentation/widgets/common/network_status_banner.dart';
 
 void main() async {
@@ -51,6 +52,7 @@ class BifAiApp extends StatelessWidget {
           providers: [
             ChangeNotifierProvider(create: (_) => AuthProvider()),
             ChangeNotifierProvider(create: (_) => AccessibilityProvider()),
+            ChangeNotifierProvider(create: (_) => ScheduleProvider()),
           ],
           child: NetworkStatusBanner(
             child: MaterialApp.router(

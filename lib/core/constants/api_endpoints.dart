@@ -140,6 +140,20 @@ class ApiEndpoints {
   static const String behaviorClick = '$apiVersion/behavior/click';
   static const String behaviorError = '$apiVersion/behavior/error';
 
+  // Schedule endpoints (일정 관리)
+  static const String schedules = '$apiV1/schedules';
+  static const String scheduleDetail = '$apiV1/schedules/{id}';
+  static const String schedulesToday = '$apiV1/schedules/today';
+  static const String schedulesUpcoming = '$apiV1/schedules/upcoming';
+  static const String schedulesDate = '$apiV1/schedules/date';
+  static const String schedulesRange = '$apiV1/schedules/range';
+  static const String scheduleComplete = '$apiV1/schedules/{id}/complete';
+  static const String scheduleUncomplete = '$apiV1/schedules/{id}/uncomplete';
+  static const String scheduleActivate = '$apiV1/schedules/{id}/activate';
+  static const String scheduleDeactivate = '$apiV1/schedules/{id}/deactivate';
+  static const String scheduleSkipNext = '$apiV1/schedules/{id}/skip-next';
+  static const String scheduleOccurrences = '$apiV1/schedules/{id}/occurrences';
+
   // Health endpoints (백엔드 구현: /api/health만 존재)
   static const String health = '$apiVersion/health';
 
@@ -256,4 +270,26 @@ class ApiEndpoints {
 
   static String updateContactRecordPath(int id) =>
       updateContactRecord.replaceAll('{id}', id.toString());
+
+  // Schedule utility methods
+  static String scheduleDetailPath(int id) =>
+      scheduleDetail.replaceAll('{id}', id.toString());
+
+  static String scheduleCompletePath(int id) =>
+      scheduleComplete.replaceAll('{id}', id.toString());
+
+  static String scheduleUncompletePath(int id) =>
+      scheduleUncomplete.replaceAll('{id}', id.toString());
+
+  static String scheduleActivatePath(int id) =>
+      scheduleActivate.replaceAll('{id}', id.toString());
+
+  static String scheduleDeactivatePath(int id) =>
+      scheduleDeactivate.replaceAll('{id}', id.toString());
+
+  static String scheduleSkipNextPath(int id) =>
+      scheduleSkipNext.replaceAll('{id}', id.toString());
+
+  static String scheduleOccurrencesPath(int id) =>
+      scheduleOccurrences.replaceAll('{id}', id.toString());
 }
