@@ -82,6 +82,84 @@ class AuthProvider extends ChangeNotifier {
       return false;
     }
   }
+
+  /// Google 소셜 로그인
+  Future<bool> loginWithGoogle() async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      _currentUser = await _authRepository.loginWithGoogle();
+      _isAuthenticated = true;
+
+      // 토큰 자동 갱신 시작
+      await _tokenService.startTokenRefreshTimer();
+
+      _isLoading = false;
+      notifyListeners();
+
+      return true;
+    } catch (e) {
+      _errorMessage = e.toString().replaceAll('Exception: ', '');
+      _isLoading = false;
+      _isAuthenticated = false;
+      notifyListeners();
+      return false;
+    }
+  }
+
+  /// Kakao 소셜 로그인
+  Future<bool> loginWithKakao() async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      _currentUser = await _authRepository.loginWithKakao();
+      _isAuthenticated = true;
+
+      // 토큰 자동 갱신 시작
+      await _tokenService.startTokenRefreshTimer();
+
+      _isLoading = false;
+      notifyListeners();
+
+      return true;
+    } catch (e) {
+      _errorMessage = e.toString().replaceAll('Exception: ', '');
+      _isLoading = false;
+      _isAuthenticated = false;
+      notifyListeners();
+      return false;
+    }
+  }
+
+  /// Naver 소셜 로그인
+  Future<bool> loginWithNaver() async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      _currentUser = await _authRepository.loginWithNaver();
+      _isAuthenticated = true;
+
+      // 토큰 자동 갱신 시작
+      await _tokenService.startTokenRefreshTimer();
+
+      _isLoading = false;
+      notifyListeners();
+
+      return true;
+    } catch (e) {
+      _errorMessage = e.toString().replaceAll('Exception: ', '');
+      _isLoading = false;
+      _isAuthenticated = false;
+      notifyListeners();
+      return false;
+    }
+  }
   
   Future<void> logout() async {
     _isLoading = true;

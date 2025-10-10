@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import '../../core/constants/api_endpoints.dart';
 import '../../core/network/api_client.dart';
 import '../models/user_model.dart';
+import '../services/oauth_service.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'dart:io';
@@ -10,6 +11,7 @@ class AuthRepository {
   final ApiClient _apiClient;
   final FlutterSecureStorage _storage;
   final DeviceInfoPlugin _deviceInfo;
+  late final OAuthService _oauthService;
 
   AuthRepository({
     ApiClient? apiClient,
@@ -17,7 +19,9 @@ class AuthRepository {
     DeviceInfoPlugin? deviceInfo,
   }) : _apiClient = apiClient ?? ApiClient(),
        _storage = storage ?? const FlutterSecureStorage(),
-       _deviceInfo = deviceInfo ?? DeviceInfoPlugin();
+       _deviceInfo = deviceInfo ?? DeviceInfoPlugin() {
+    _oauthService = OAuthService(_apiClient);
+  }
 
   /// 회원가입 (POST /api/v1/auth/register)
   Future<UserModel> register({
@@ -114,7 +118,7 @@ class AuthRepository {
   Future<void> logout() async {
     try {
       String? deviceId = await _getDeviceId();
-      
+
       await _apiClient.post(
         ApiEndpoints.logout,
         options: Options(
@@ -126,9 +130,69 @@ class AuthRepository {
     } catch (e) {
       // Ignore logout errors
     } finally {
+      // Sign out from OAuth providers
+      await _oauthService.signOut();
+
       // Clear local storage
       await _storage.deleteAll();
       _apiClient.clearAuthToken();
+    }
+  }
+
+  /// Google 소셜 로그인
+  Future<UserModel> loginWithGoogle() async {
+    try {
+      final result = await _oauthService.signInWithGoogle();
+
+      // Save tokens
+      await _storage.write(key: 'access_token', value: result['accessToken']);
+      await _storage.write(key: 'refresh_token', value: result['refreshToken']);
+
+      // Update API client token
+      _apiClient.updateAuthToken(result['accessToken']);
+
+      // Return user
+      return UserModel.fromJson(result['user']);
+    } catch (e) {
+      throw Exception('Google 로그인 실패: ${e.toString()}');
+    }
+  }
+
+  /// Kakao 소셜 로그인
+  Future<UserModel> loginWithKakao() async {
+    try {
+      final result = await _oauthService.signInWithKakao();
+
+      // Save tokens
+      await _storage.write(key: 'access_token', value: result['accessToken']);
+      await _storage.write(key: 'refresh_token', value: result['refreshToken']);
+
+      // Update API client token
+      _apiClient.updateAuthToken(result['accessToken']);
+
+      // Return user
+      return UserModel.fromJson(result['user']);
+    } catch (e) {
+      throw Exception('Kakao 로그인 실패: ${e.toString()}');
+    }
+  }
+
+  /// Naver 소셜 로그인
+  Future<UserModel> loginWithNaver() async {
+    try {
+      final result = await _oauthService.signInWithNaver();
+
+      // Save tokens
+      await _storage.write(key: 'access_token', value: result['accessToken']);
+      await _storage.write(key: 'refresh_token', value: result['refreshToken']);
+
+      // Update API client token
+      _apiClient.updateAuthToken(result['accessToken']);
+
+      // Return user
+      return UserModel.fromJson(result['user']);
+    } catch (e) {
+      throw Exception('Naver 로그인 실패: ${e.toString()}');
     }
   }
   

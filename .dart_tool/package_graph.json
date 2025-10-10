@@ -24,9 +24,11 @@
         "flutter_secure_storage",
         "flutter_svg",
         "flutter_tts",
+        "flutter_web_auth_2",
         "freezed_annotation",
         "geolocator",
         "go_router",
+        "google_sign_in",
         "hive",
         "hive_flutter",
         "http",
@@ -34,6 +36,7 @@
         "intl",
         "json_annotation",
         "jwt_decoder",
+        "kakao_flutter_sdk",
         "logger",
         "lottie",
         "multicast_dns",
@@ -201,6 +204,17 @@
         "http_parser",
         "meta",
         "web"
+      ]
+    },
+    {
+      "name": "flutter_web_auth_2",
+      "version": "3.1.2",
+      "dependencies": [
+        "flutter",
+        "flutter_web_auth_2_platform_interface",
+        "flutter_web_plugins",
+        "url_launcher",
+        "window_to_front"
       ]
     },
     {
@@ -1063,6 +1077,25 @@
       ]
     },
     {
+      "name": "window_to_front",
+      "version": "0.0.3",
+      "dependencies": [
+        "flutter"
+      ]
+    },
+    {
+      "name": "flutter_web_plugins",
+      "version": "0.0.0",
+      "dependencies": [
+        "characters",
+        "collection",
+        "flutter",
+        "material_color_utilities",
+        "meta",
+        "vector_math"
+      ]
+    },
+    {
       "name": "ffi",
       "version": "2.1.4",
       "dependencies": []
@@ -1081,18 +1114,6 @@
         "flutter",
         "meta",
         "plugin_platform_interface"
-      ]
-    },
-    {
-      "name": "flutter_web_plugins",
-      "version": "0.0.0",
-      "dependencies": [
-        "characters",
-        "collection",
-        "flutter",
-        "material_color_utilities",
-        "meta",
-        "vector_math"
       ]
     },
     {
@@ -2003,6 +2024,242 @@
     {
       "name": "synchronized",
       "version": "3.4.0",
+      "dependencies": []
+    },
+    {
+      "name": "flutter_web_auth_2_platform_interface",
+      "version": "3.1.0",
+      "dependencies": [
+        "flutter",
+        "plugin_platform_interface"
+      ]
+    },
+    {
+      "name": "kakao_flutter_sdk",
+      "version": "1.9.7+3",
+      "dependencies": [
+        "flutter",
+        "kakao_flutter_sdk_auth",
+        "kakao_flutter_sdk_common",
+        "kakao_flutter_sdk_friend",
+        "kakao_flutter_sdk_navi",
+        "kakao_flutter_sdk_share",
+        "kakao_flutter_sdk_talk",
+        "kakao_flutter_sdk_template",
+        "kakao_flutter_sdk_user"
+      ]
+    },
+    {
+      "name": "kakao_flutter_sdk_user",
+      "version": "1.9.7+3",
+      "dependencies": [
+        "dio",
+        "flutter",
+        "flutter_web_plugins",
+        "json_annotation",
+        "kakao_flutter_sdk_auth"
+      ]
+    },
+    {
+      "name": "kakao_flutter_sdk_template",
+      "version": "1.9.7+3",
+      "dependencies": [
+        "flutter",
+        "json_annotation",
+        "kakao_flutter_sdk_common"
+      ]
+    },
+    {
+      "name": "kakao_flutter_sdk_talk",
+      "version": "1.9.7+3",
+      "dependencies": [
+        "dio",
+        "flutter",
+        "json_annotation",
+        "kakao_flutter_sdk_auth",
+        "kakao_flutter_sdk_template",
+        "kakao_flutter_sdk_user"
+      ]
+    },
+    {
+      "name": "kakao_flutter_sdk_share",
+      "version": "1.9.7+3",
+      "dependencies": [
+        "dio",
+        "flutter",
+        "json_annotation",
+        "kakao_flutter_sdk_template",
+        "platform"
+      ]
+    },
+    {
+      "name": "kakao_flutter_sdk_navi",
+      "version": "1.9.7+3",
+      "dependencies": [
+        "dio",
+        "flutter",
+        "json_annotation",
+        "kakao_flutter_sdk_common",
+        "platform"
+      ]
+    },
+    {
+      "name": "kakao_flutter_sdk_friend",
+      "version": "1.9.7+3",
+      "dependencies": [
+        "dio",
+        "flutter",
+        "json_annotation",
+        "kakao_flutter_sdk_user",
+        "webview_flutter",
+        "webview_flutter_wkwebview"
+      ]
+    },
+    {
+      "name": "kakao_flutter_sdk_common",
+      "version": "1.9.7+3",
+      "dependencies": [
+        "crypto",
+        "dio",
+        "encrypt",
+        "flutter",
+        "flutter_web_plugins",
+        "json_annotation",
+        "platform",
+        "shared_preferences",
+        "web"
+      ]
+    },
+    {
+      "name": "kakao_flutter_sdk_auth",
+      "version": "1.9.7+3",
+      "dependencies": [
+        "crypto",
+        "dio",
+        "flutter",
+        "json_annotation",
+        "kakao_flutter_sdk_common",
+        "platform",
+        "shared_preferences"
+      ]
+    },
+    {
+      "name": "encrypt",
+      "version": "5.0.3",
+      "dependencies": [
+        "args",
+        "asn1lib",
+        "clock",
+        "collection",
+        "crypto",
+        "pointycastle"
+      ]
+    },
+    {
+      "name": "google_sign_in",
+      "version": "6.3.0",
+      "dependencies": [
+        "flutter",
+        "google_sign_in_android",
+        "google_sign_in_ios",
+        "google_sign_in_platform_interface",
+        "google_sign_in_web"
+      ]
+    },
+    {
+      "name": "google_sign_in_web",
+      "version": "0.12.4+4",
+      "dependencies": [
+        "flutter",
+        "flutter_web_plugins",
+        "google_identity_services_web",
+        "google_sign_in_platform_interface",
+        "http",
+        "web"
+      ]
+    },
+    {
+      "name": "google_sign_in_platform_interface",
+      "version": "2.5.0",
+      "dependencies": [
+        "flutter",
+        "plugin_platform_interface"
+      ]
+    },
+    {
+      "name": "google_sign_in_ios",
+      "version": "5.9.0",
+      "dependencies": [
+        "flutter",
+        "google_sign_in_platform_interface"
+      ]
+    },
+    {
+      "name": "google_sign_in_android",
+      "version": "6.2.1",
+      "dependencies": [
+        "flutter",
+        "google_sign_in_platform_interface"
+      ]
+    },
+    {
+      "name": "webview_flutter",
+      "version": "4.13.0",
+      "dependencies": [
+        "flutter",
+        "webview_flutter_android",
+        "webview_flutter_platform_interface",
+        "webview_flutter_wkwebview"
+      ]
+    },
+    {
+      "name": "webview_flutter_platform_interface",
+      "version": "2.14.0",
+      "dependencies": [
+        "flutter",
+        "meta",
+        "plugin_platform_interface"
+      ]
+    },
+    {
+      "name": "webview_flutter_wkwebview",
+      "version": "3.23.0",
+      "dependencies": [
+        "flutter",
+        "meta",
+        "path",
+        "webview_flutter_platform_interface"
+      ]
+    },
+    {
+      "name": "pointycastle",
+      "version": "3.9.1",
+      "dependencies": [
+        "collection",
+        "convert",
+        "js"
+      ]
+    },
+    {
+      "name": "google_identity_services_web",
+      "version": "0.3.3+1",
+      "dependencies": [
+        "meta",
+        "web"
+      ]
+    },
+    {
+      "name": "webview_flutter_android",
+      "version": "4.10.1",
+      "dependencies": [
+        "flutter",
+        "meta",
+        "webview_flutter_platform_interface"
+      ]
+    },
+    {
+      "name": "asn1lib",
+      "version": "1.6.5",
       "dependencies": []
     }
   ],

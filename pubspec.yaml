@@ -81,6 +81,11 @@ dependencies:
   jwt_decoder: ^2.0.1
   timezone: ^0.10.1
 
+  # Social Login
+  google_sign_in: ^6.2.1
+  kakao_flutter_sdk: ^1.9.5
+  flutter_web_auth_2: ^3.1.2
+
   # Wearable Camera Streaming
   http: ^1.2.0
 

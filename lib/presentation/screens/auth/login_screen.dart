@@ -47,14 +47,64 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() {
         _isLoading = false;
       });
-      
+
       if (success) {
         ErrorHandler.showSuccessSnackBar(context, '로그인 성공! 환영합니다 👋');
         context.go('/home');
       } else {
         ErrorHandler.showErrorSnackBar(
-          context, 
+          context,
           authProvider.errorMessage ?? '로그인에 실패했어요',
+        );
+      }
+    }
+  }
+
+  Future<void> _loginWithGoogle() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final success = await authProvider.loginWithGoogle();
+
+    if (mounted) {
+      setState(() {
+        _isLoading = false;
+      });
+
+      if (success) {
+        ErrorHandler.showSuccessSnackBar(context, 'Google 로그인 성공! 환영합니다 👋');
+        context.go('/home');
+      } else {
+        ErrorHandler.showErrorSnackBar(
+          context,
+          authProvider.errorMessage ?? 'Google 로그인에 실패했어요',
+        );
+      }
+    }
+  }
+
+  Future<void> _loginWithKakao() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final success = await authProvider.loginWithKakao();
+
+    if (mounted) {
+      setState(() {
+        _isLoading = false;
+      });
+
+      if (success) {
+        ErrorHandler.showSuccessSnackBar(context, 'Kakao 로그인 성공! 환영합니다 👋');
+        context.go('/home');
+      } else {
+        ErrorHandler.showErrorSnackBar(
+          context,
+          authProvider.errorMessage ?? 'Kakao 로그인에 실패했어요',
         );
       }
     }
@@ -246,9 +296,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(
                   height: 56,
                   child: OutlinedButton.icon(
-                    onPressed: () {
-                      ErrorHandler.showInfoSnackBar(context, '구글 로그인 준비 중입니다');
-                    },
+                    onPressed: _isLoading ? null : _loginWithGoogle,
                     style: OutlinedButton.styleFrom(
                       side: BorderSide(color: Colors.grey[300]!),
                       shape: RoundedRectangleBorder(
@@ -271,9 +319,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(
                   height: 56,
                   child: OutlinedButton.icon(
-                    onPressed: () {
-                      ErrorHandler.showInfoSnackBar(context, '카카오 로그인 준비 중입니다');
-                    },
+                    onPressed: _isLoading ? null : _loginWithKakao,
                     style: OutlinedButton.styleFrom(
                       backgroundColor: const Color(0xFFFEE500),
                       side: const BorderSide(color: Color(0xFFFEE500)),
