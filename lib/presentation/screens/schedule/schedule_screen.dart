@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/config/toss_theme.dart';
 import '../../../data/models/schedule_model.dart';
 import '../../providers/schedule_provider.dart';
 import '../../routes/route_names.dart';
 import '../../widgets/common/bottom_nav_bar.dart';
-import 'add_schedule_screen.dart';
 
 class ScheduleScreen extends StatefulWidget {
   const ScheduleScreen({super.key});
