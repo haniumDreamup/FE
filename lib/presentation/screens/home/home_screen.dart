@@ -114,6 +114,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     onTap: () => AppNavigation.toSchedule(context),
                   ),
                   QuickActionCard(
+                    title: '약 복용',
+                    icon: Icons.medication,
+                    color: TossTheme.tossGreen,
+                    onTap: () => AppNavigation.toMedication(context),
+                  ),
+                  QuickActionCard(
                     title: '긴급 연락',
                     icon: Icons.emergency,
                     color: TossTheme.errorColor,
@@ -134,7 +140,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   QuickActionCard(
                     title: '실시간 카메라',
                     icon: Icons.videocam,
-                    color: TossTheme.tossGreen,
+                    color: TossTheme.tossPurple,
                     onTap: () => AppNavigation.toWearableCamera(context),
                   ),
                 ],

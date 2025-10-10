@@ -24,6 +24,7 @@
         "flutter_secure_storage",
         "flutter_svg",
         "flutter_tts",
+        "freezed_annotation",
         "geolocator",
         "go_router",
         "hive",
@@ -31,6 +32,7 @@
         "http",
         "image_picker",
         "intl",
+        "json_annotation",
         "jwt_decoder",
         "logger",
         "lottie",
@@ -182,6 +184,13 @@
         "test_api",
         "vector_math",
         "vm_service"
+      ]
+    },
+    {
+      "name": "json_annotation",
+      "version": "4.9.0",
+      "dependencies": [
+        "meta"
       ]
     },
     {
@@ -613,13 +622,6 @@
       "name": "meta",
       "version": "1.16.0",
       "dependencies": []
-    },
-    {
-      "name": "json_annotation",
-      "version": "4.9.0",
-      "dependencies": [
-        "meta"
-      ]
     },
     {
       "name": "collection",

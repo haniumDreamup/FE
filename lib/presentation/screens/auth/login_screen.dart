@@ -202,11 +202,102 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
+
+                // Register Button
+                SizedBox(
+                  height: 56,
+                  child: OutlinedButton(
+                    onPressed: () => context.push('/register'),
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(color: TossTheme.primaryColor, width: 2),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: const Text(
+                      '회원가입',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: TossTheme.primaryColor,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+
+                // Divider
+                Row(
+                  children: [
+                    Expanded(child: Divider(color: Colors.grey[300])),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Text(
+                        '또는',
+                        style: TextStyle(color: Colors.grey[600]),
+                      ),
+                    ),
+                    Expanded(child: Divider(color: Colors.grey[300])),
+                  ],
+                ),
+                const SizedBox(height: 24),
+
+                // Social Login Buttons
+                SizedBox(
+                  height: 56,
+                  child: OutlinedButton.icon(
+                    onPressed: () {
+                      ErrorHandler.showInfoSnackBar(context, '구글 로그인 준비 중입니다');
+                    },
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(color: Colors.grey[300]!),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    icon: const Icon(Icons.g_mobiledata, size: 32, color: Colors.red),
+                    label: const Text(
+                      'Google로 시작하기',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+
+                SizedBox(
+                  height: 56,
+                  child: OutlinedButton.icon(
+                    onPressed: () {
+                      ErrorHandler.showInfoSnackBar(context, '카카오 로그인 준비 중입니다');
+                    },
+                    style: OutlinedButton.styleFrom(
+                      backgroundColor: const Color(0xFFFEE500),
+                      side: const BorderSide(color: Color(0xFFFEE500)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    icon: const Icon(Icons.chat_bubble, size: 24, color: Colors.black87),
+                    label: const Text(
+                      '카카오로 시작하기',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+
                 // Help Text
                 Center(
                   child: TextButton(
                     onPressed: () {
-                      // TODO: Show help dialog
                       showDialog(
                         context: context,
                         builder: (context) => AlertDialog(

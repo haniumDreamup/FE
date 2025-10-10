@@ -3,8 +3,10 @@ import 'package:go_router/go_router.dart';
 import '../providers/auth_provider.dart';
 import '../screens/auth/login_screen.dart';
 import '../screens/auth/splash_screen.dart';
+import '../screens/auth/register_screen.dart';
 import '../screens/home/home_screen.dart';
 import '../screens/schedule/schedule_screen.dart';
+import '../screens/medication/medication_list_screen.dart';
 import '../screens/schedule/add_schedule_screen.dart';
 import '../screens/emergency/emergency_screen.dart';
 import '../screens/emergency/emergency_contact_screen.dart';
@@ -66,6 +68,11 @@ class AppRouter {
         name: 'login',
         builder: (context, state) => const LoginScreen(),
       ),
+      GoRoute(
+        path: '/register',
+        name: 'register',
+        builder: (context, state) => const RegisterScreen(),
+      ),
 
       // ============ 메인 화면 ============
       GoRoute(
@@ -87,6 +94,13 @@ class AppRouter {
             builder: (context, state) => const AddScheduleScreen(),
           ),
         ],
+      ),
+
+      // ============ 약물 관리 ============
+      GoRoute(
+        path: '/medication',
+        name: 'medication',
+        builder: (context, state) => const MedicationListScreen(),
       ),
 
       // ============ 긴급 상황 ============

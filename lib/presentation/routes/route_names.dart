@@ -5,6 +5,7 @@ class RouteNames {
   // 인증
   static const String splash = '/splash';
   static const String login = '/login';
+  static const String register = '/register';
 
   // 메인
   static const String home = '/home';
@@ -12,6 +13,9 @@ class RouteNames {
   // 일정
   static const String schedule = '/schedule';
   static const String scheduleAdd = '/schedule/add';
+
+  // 약물
+  static const String medication = '/medication';
 
   // 긴급
   static const String emergency = '/emergency';
@@ -44,6 +48,7 @@ extension AppNavigation on Object {
   // 인증
   static void toSplash(context) => context.go(RouteNames.splash);
   static void toLogin(context) => context.go(RouteNames.login);
+  static void toRegister(context) => context.push(RouteNames.register);
 
   // 메인
   static void toHome(context) => context.go(RouteNames.home);
@@ -51,6 +56,9 @@ extension AppNavigation on Object {
   // 일정
   static void toSchedule(context) => context.go(RouteNames.schedule);
   static void toScheduleAdd(context) => context.push(RouteNames.scheduleAdd);
+
+  // 약물
+  static void toMedication(context) => context.push(RouteNames.medication);
 
   // 긴급
   static void toEmergency(context) => context.go(RouteNames.emergency);
