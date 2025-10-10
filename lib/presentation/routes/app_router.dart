@@ -11,7 +11,13 @@ import '../screens/schedule/schedule_screen.dart';
 import '../screens/medication/medication_list_screen.dart';
 import '../screens/medication/add_medication_screen.dart';
 import '../screens/schedule/add_schedule_screen.dart';
+import '../screens/schedule/schedule_detail_screen.dart';
+import '../screens/medication/medication_detail_screen.dart';
 import '../screens/profile/edit_profile_screen.dart';
+import '../screens/emergency/add_emergency_contact_screen.dart';
+import '../screens/guardian/add_guardian_screen.dart';
+import '../screens/geofence/add_geofence_screen.dart';
+import '../screens/settings/main_settings_screen.dart';
 import '../screens/emergency/emergency_screen.dart';
 import '../screens/emergency/emergency_contact_screen.dart';
 import '../screens/emergency/emergency_history_screen.dart';
@@ -26,6 +32,14 @@ import '../screens/camera/wearable_camera_screen.dart';
 import '../screens/network/network_discovery_screen.dart';
 import '../screens/settings/accessibility_settings_screen.dart';
 import '../screens/settings/theme_settings_screen.dart';
+import '../screens/settings/notification_settings_screen.dart';
+import '../screens/settings/account_settings_screen.dart';
+import '../screens/schedule/schedule_edit_screen.dart';
+import '../screens/medication/medication_edit_screen.dart';
+import '../screens/medication/medication_history_screen.dart';
+import '../screens/emergency/edit_emergency_contact_screen.dart';
+import '../screens/guardian/guardian_detail_screen.dart';
+import '../screens/geofence/geofence_detail_screen.dart';
 
 class AppRouter {
   /// GoRouter 인스턴스 생성
@@ -101,11 +115,28 @@ class AppRouter {
         name: 'schedule',
         builder: (context, state) => const ScheduleScreen(),
         routes: [
-          // 중첩 라우트: /schedule/add
           GoRoute(
             path: 'add',
             name: 'schedule-add',
             builder: (context, state) => const AddScheduleScreen(),
+          ),
+          GoRoute(
+            path: ':id',
+            name: 'schedule-detail',
+            builder: (context, state) {
+              final id = state.pathParameters['id']!;
+              return ScheduleDetailScreen(scheduleId: id);
+            },
+            routes: [
+              GoRoute(
+                path: 'edit',
+                name: 'schedule-edit',
+                builder: (context, state) {
+                  final id = state.pathParameters['id']!;
+                  return ScheduleEditScreen(scheduleId: id);
+                },
+              ),
+            ],
           ),
         ],
       ),
@@ -121,6 +152,32 @@ class AppRouter {
             name: 'medication-add',
             builder: (context, state) => const AddMedicationScreen(),
           ),
+          GoRoute(
+            path: ':id',
+            name: 'medication-detail',
+            builder: (context, state) {
+              final id = state.pathParameters['id']!;
+              return MedicationDetailScreen(medicationId: id);
+            },
+            routes: [
+              GoRoute(
+                path: 'edit',
+                name: 'medication-edit',
+                builder: (context, state) {
+                  final id = state.pathParameters['id']!;
+                  return MedicationEditScreen(medicationId: id);
+                },
+              ),
+              GoRoute(
+                path: 'history',
+                name: 'medication-history',
+                builder: (context, state) {
+                  final id = state.pathParameters['id']!;
+                  return MedicationHistoryScreen(medicationId: id);
+                },
+              ),
+            ],
+          ),
         ],
       ),
 
@@ -130,19 +187,31 @@ class AppRouter {
         name: 'emergency',
         builder: (context, state) => const EmergencyScreen(),
         routes: [
-          // 중첩 라우트: /emergency/contacts
           GoRoute(
             path: 'contacts',
             name: 'emergency-contacts',
             builder: (context, state) => const EmergencyContactScreen(),
+            routes: [
+              GoRoute(
+                path: 'add',
+                name: 'emergency-contact-add',
+                builder: (context, state) => const AddEmergencyContactScreen(),
+              ),
+              GoRoute(
+                path: ':id/edit',
+                name: 'emergency-contact-edit',
+                builder: (context, state) {
+                  final id = state.pathParameters['id']!;
+                  return EditEmergencyContactScreen(contactId: id);
+                },
+              ),
+            ],
           ),
-          // 중첩 라우트: /emergency/history
           GoRoute(
             path: 'history',
             name: 'emergency-history',
             builder: (context, state) => const EmergencyHistoryScreen(),
           ),
-          // 중첩 라우트: /emergency/active
           GoRoute(
             path: 'active',
             name: 'emergency-active',
@@ -168,6 +237,21 @@ class AppRouter {
         path: '/guardians',
         name: 'guardians',
         builder: (context, state) => const GuardianListScreen(),
+        routes: [
+          GoRoute(
+            path: 'add',
+            name: 'guardian-add',
+            builder: (context, state) => const AddGuardianScreen(),
+          ),
+          GoRoute(
+            path: ':id',
+            name: 'guardian-detail',
+            builder: (context, state) {
+              final id = state.pathParameters['id']!;
+              return GuardianDetailScreen(guardianId: id);
+            },
+          ),
+        ],
       ),
 
       // ============ 위치 및 알림 ============
@@ -175,6 +259,21 @@ class AppRouter {
         path: '/geofence',
         name: 'geofence',
         builder: (context, state) => const GeofenceListScreen(),
+        routes: [
+          GoRoute(
+            path: 'add',
+            name: 'geofence-add',
+            builder: (context, state) => const AddGeofenceScreen(),
+          ),
+          GoRoute(
+            path: ':id',
+            name: 'geofence-detail',
+            builder: (context, state) {
+              final id = state.pathParameters['id']!;
+              return GeofenceDetailScreen(geofenceId: id);
+            },
+          ),
+        ],
       ),
       GoRoute(
         path: '/notifications',
@@ -203,6 +302,7 @@ class AppRouter {
       GoRoute(
         path: '/settings',
         name: 'settings',
+        builder: (context, state) => const MainSettingsScreen(),
         routes: [
           GoRoute(
             path: 'accessibility',
@@ -218,6 +318,16 @@ class AppRouter {
             path: 'network',
             name: 'settings-network',
             builder: (context, state) => const NetworkDiscoveryScreen(),
+          ),
+          GoRoute(
+            path: 'notifications',
+            name: 'settings-notifications',
+            builder: (context, state) => const NotificationSettingsScreen(),
+          ),
+          GoRoute(
+            path: 'account',
+            name: 'settings-account',
+            builder: (context, state) => const AccountSettingsScreen(),
           ),
         ],
       ),
