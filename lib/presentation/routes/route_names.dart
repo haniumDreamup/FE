@@ -1,6 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-
 /// 라우트 이름 상수
 ///
 /// 네비게이션 시 문자열 대신 상수를 사용하여 타입 안전성 확보
@@ -31,6 +28,7 @@ class RouteNames {
   // 통계 및 AI
   static const String statistics = '/statistics';
   static const String aiVision = '/ai-vision';
+  static const String wearableCamera = '/wearable-camera';
 
   // 설정
   static const String settingsAccessibility = '/settings/accessibility';
@@ -69,6 +67,7 @@ extension AppNavigation on Object {
   // 통계 및 AI
   static void toStatistics(context) => context.push(RouteNames.statistics);
   static void toAiVision(context) => context.push(RouteNames.aiVision);
+  static void toWearableCamera(context) => context.push(RouteNames.wearableCamera);
 
   // 설정
   static void toAccessibilitySettings(context) => context.push(RouteNames.settingsAccessibility);

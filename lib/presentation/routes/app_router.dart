@@ -16,6 +16,7 @@ import '../screens/geofence/geofence_list_screen.dart';
 import '../screens/notifications/notification_list_screen.dart';
 import '../screens/statistics/statistics_dashboard_screen.dart';
 import '../screens/ai_vision/ai_vision_screen.dart';
+import '../screens/camera/wearable_camera_screen.dart';
 import '../screens/network/network_discovery_screen.dart';
 import '../screens/settings/accessibility_settings_screen.dart';
 import '../screens/settings/theme_settings_screen.dart';
@@ -149,6 +150,11 @@ class AppRouter {
         path: '/ai-vision',
         name: 'ai-vision',
         builder: (context, state) => const AiVisionScreen(),
+      ),
+      GoRoute(
+        path: '/wearable-camera',
+        name: 'wearable-camera',
+        builder: (context, state) => const WearableCameraScreen(),
       ),
 
       // ============ 설정 ============

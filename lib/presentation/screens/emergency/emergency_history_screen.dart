@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../../../data/models/emergency_model.dart';
 import '../../providers/emergency_provider.dart';
 import '../../widgets/common/loading_overlay.dart';
-import '../../core/config/toss_theme.dart';
+import '../../../core/config/toss_theme.dart';
 import '../../../core/utils/error_handler.dart';
 
 /// 긴급 상황 이력 화면

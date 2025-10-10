@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../core/config/toss_theme.dart';
+import '../../../core/config/toss_theme.dart';
 import '../../../data/models/schedule_model.dart';
 import '../../providers/schedule_provider.dart';
 

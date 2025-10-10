@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../utils/logger.dart';
 
 /// 음성 안내 서비스 (Text-to-Speech)
 /// BIF 사용자를 위한 간단하고 명확한 음성 안내 제공
@@ -55,16 +56,16 @@ class TtsService {
       
       _flutterTts.setErrorHandler((msg) {
         _isSpeaking = false;
-        print('TTS 에러: $msg');
+        Logger.error('TTS 에러: $msg');
       });
       
       // 저장된 설정 불러오기
       await _loadSettings();
       
       _isInitialized = true;
-      print('음성 안내 서비스 초기화 완료');
+      Logger.info('음성 안내 서비스 초기화 완료');
     } catch (e) {
-      print('음성 안내 서비스 초기화 실패: $e');
+      Logger.error('음성 안내 서비스 초기화 실패', e);
     }
   }
   
@@ -92,7 +93,7 @@ class TtsService {
       
       await _flutterTts.speak(simplifiedText);
     } catch (e) {
-      print('음성 출력 실패: $e');
+      Logger.error('음성 출력 실패', e);
     }
   }
   
@@ -211,7 +212,7 @@ class TtsService {
           .map<String>((voice) => voice['name'] as String)
           .toList();
     } catch (e) {
-      print('음성 목록 가져오기 실패: $e');
+      Logger.error('음성 목록 가져오기 실패', e);
       return [];
     }
   }
@@ -224,7 +225,7 @@ class TtsService {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('tts_voice', voiceName);
     } catch (e) {
-      print('음성 설정 실패: $e');
+      Logger.error('음성 설정 실패', e);
     }
   }
   

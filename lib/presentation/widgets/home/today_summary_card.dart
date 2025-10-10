@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../core/config/toss_theme.dart';
+import '../../../core/config/toss_theme.dart';
 
 class TodaySummaryCard extends StatelessWidget {
   final int schedulesToday;

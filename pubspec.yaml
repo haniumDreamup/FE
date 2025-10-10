@@ -81,6 +81,9 @@ dependencies:
   jwt_decoder: ^2.0.1
   timezone: ^0.10.1
 
+  # Wearable Camera Streaming
+  http: ^1.2.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import '../../data/models/emergency_model.dart';
 import '../../data/services/emergency_service.dart';
 
@@ -200,7 +201,15 @@ class EmergencyProvider extends ChangeNotifier {
   /// 빠른 SOS 발동
   Future<SOSResponse> quickSOS() async {
     try {
-      return await _emergencyService.quickSOS();
+      // 현재 위치 가져오기
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      return await _emergencyService.quickSOS(
+        latitude: position.latitude,
+        longitude: position.longitude,
+      );
     } catch (e) {
       _error = e.toString();
       notifyListeners();

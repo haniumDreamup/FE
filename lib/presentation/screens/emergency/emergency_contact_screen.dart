@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../core/config/toss_theme.dart';
+import '../../../core/config/toss_theme.dart';
 import '../../../data/models/emergency_model.dart';
 import '../../providers/emergency_contact_provider.dart';
 

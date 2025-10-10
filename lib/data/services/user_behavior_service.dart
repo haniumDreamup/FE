@@ -1,6 +1,6 @@
-import 'package:dio/dio.dart';
 import '../../core/network/api_client.dart';
 import '../../core/constants/api_endpoints.dart';
+import '../../core/utils/logger.dart';
 import '../models/behavior_log_model.dart';
 
 /// 사용자 행동 로깅 서비스
@@ -42,7 +42,7 @@ class UserBehaviorService {
       // 비동기 로깅이므로 응답을 기다리지 않음
     } catch (e) {
       // 로깅 실패는 무시 (사용자 경험에 영향 없음)
-      print('행동 로그 전송 실패: $e');
+      Logger.debug('행동 로그 전송 실패: $e');
     }
   }
 
@@ -54,7 +54,7 @@ class UserBehaviorService {
         data: logs.map((e) => e.toJson()).toList(),
       );
     } catch (e) {
-      print('배치 로그 전송 실패: $e');
+      Logger.debug('배치 로그 전송 실패: $e');
     }
   }
 
@@ -80,7 +80,7 @@ class UserBehaviorService {
         data: request.toJson(),
       );
     } catch (e) {
-      print('페이지뷰 로그 전송 실패: $e');
+      Logger.debug('페이지뷰 로그 전송 실패: $e');
     }
   }
 
@@ -106,7 +106,7 @@ class UserBehaviorService {
         data: request.toJson(),
       );
     } catch (e) {
-      print('클릭 로그 전송 실패: $e');
+      Logger.debug('클릭 로그 전송 실패: $e');
     }
   }
 
@@ -132,7 +132,7 @@ class UserBehaviorService {
         data: request.toJson(),
       );
     } catch (e) {
-      print('에러 로그 전송 실패: $e');
+      Logger.debug('에러 로그 전송 실패: $e');
     }
   }
 

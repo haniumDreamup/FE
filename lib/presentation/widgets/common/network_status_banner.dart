@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../core/config/toss_theme.dart';
+import '../../../core/config/toss_theme.dart';
 import '../../../core/services/offline_service.dart';
 
 class NetworkStatusBanner extends StatefulWidget {

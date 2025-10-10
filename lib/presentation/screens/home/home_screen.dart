@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../core/config/toss_theme.dart';
+import '../../../core/config/toss_theme.dart';
 import '../../routes/route_names.dart';
 import '../../widgets/common/bottom_nav_bar.dart';
 import '../../widgets/home/quick_action_card.dart';
@@ -105,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisCount: 2,
                 mainAxisSpacing: 12,
                 crossAxisSpacing: 12,
-                childAspectRatio: 1.5,
+                childAspectRatio: 1.3,
                 children: [
                   QuickActionCard(
                     title: '일정 확인',
@@ -130,6 +130,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     icon: Icons.camera_alt,
                     color: TossTheme.infoColor,
                     onTap: () => AppNavigation.toAiVision(context),
+                  ),
+                  QuickActionCard(
+                    title: '실시간 카메라',
+                    icon: Icons.videocam,
+                    color: TossTheme.tossGreen,
+                    onTap: () => AppNavigation.toWearableCamera(context),
                   ),
                 ],
               ),

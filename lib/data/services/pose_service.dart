@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import '../../core/network/api_client.dart';
+import '../../core/utils/logger.dart';import '../../core/network/api_client.dart';
 import '../../core/constants/api_endpoints.dart';
 import '../models/pose_model.dart';
 
@@ -101,7 +101,7 @@ class PoseService {
         yield response;
       } catch (e) {
         // 스트림 중단하지 않고 에러만 로깅
-        print('Pose 스트리밍 중 오류: $e');
+        Logger.debug('Pose 스트리밍 중 오류: $e');
       }
     }
   }

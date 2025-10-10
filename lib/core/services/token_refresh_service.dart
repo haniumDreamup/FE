@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import '../utils/logger.dart';import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import '../network/api_client.dart';
 import '../constants/api_endpoints.dart';
@@ -58,7 +58,7 @@ class TokenRefreshService {
         await _refreshToken();
       }
     } catch (e) {
-      print('Error scheduling token refresh: $e');
+      Logger.debug('Error scheduling token refresh: $e');
       // 토큰 파싱 실패 시 즉시 갱신 시도
       await _refreshToken();
     }
@@ -104,7 +104,7 @@ class TokenRefreshService {
         return true;
       }
     } catch (e) {
-      print('Token refresh failed: $e');
+      Logger.debug('Token refresh failed: $e');
     }
     
     _isRefreshing = false;

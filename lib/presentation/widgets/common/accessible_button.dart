@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import '../../core/config/toss_theme.dart';
+import '../../../core/config/toss_theme.dart';
 import '../../providers/accessibility_provider.dart';
 
 /// BIF 사용자를 위한 접근성이 강화된 버튼
@@ -11,7 +11,7 @@ import '../../providers/accessibility_provider.dart';
 /// - 명확한 시각적 피드백
 class AccessibleButton extends StatefulWidget {
   final String label;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final IconData? icon;
   final Color? backgroundColor;
   final Color? textColor;
@@ -20,11 +20,11 @@ class AccessibleButton extends StatefulWidget {
   final bool isImportant;
   final bool showBorder;
   final String? helpText;
-  
+
   const AccessibleButton({
     Key? key,
     required this.label,
-    required this.onPressed,
+    this.onPressed,
     this.icon,
     this.backgroundColor,
     this.textColor,
@@ -89,18 +89,20 @@ class _AccessibleButtonState extends State<AccessibleButton>
   }
   
   void _handleTap() async {
+    if (widget.onPressed == null) return;
+
     final accessibility = context.read<AccessibilityProvider>();
-    
+
     // 음성 피드백
     await accessibility.speakButtonFeedback(widget.label);
-    
+
     // 진동 피드백
     if (accessibility.vibrationEnabled) {
       HapticFeedback.mediumImpact();
     }
-    
+
     // 버튼 액션 실행
-    widget.onPressed();
+    widget.onPressed!();
   }
   
   void _handleLongPress() async {
@@ -147,11 +149,11 @@ class _AccessibleButtonState extends State<AccessibleButton>
       label: widget.label,
       hint: widget.helpText,
       child: GestureDetector(
-        onTapDown: _handleTapDown,
-        onTapUp: _handleTapUp,
-        onTapCancel: _handleTapCancel,
-        onTap: _handleTap,
-        onLongPress: _handleLongPress,
+        onTapDown: widget.onPressed != null ? _handleTapDown : null,
+        onTapUp: widget.onPressed != null ? _handleTapUp : null,
+        onTapCancel: widget.onPressed != null ? _handleTapCancel : null,
+        onTap: widget.onPressed != null ? _handleTap : null,
+        onLongPress: widget.helpText != null ? _handleLongPress : null,
         child: AnimatedBuilder(
           animation: _scaleAnimation,
           builder: (context, child) {

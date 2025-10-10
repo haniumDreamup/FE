@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'package:dio/dio.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import '../utils/logger.dart';
 import '../network/api_client.dart';
 import '../constants/api_endpoints.dart';
 import 'offline_service.dart';
@@ -77,7 +77,7 @@ class SyncService {
       
       _syncStatusController.add(SyncStatus.completed);
     } catch (e) {
-      print('Sync failed: $e');
+      Logger.debug('Sync failed: $e');
       _syncStatusController.add(SyncStatus.failed);
     } finally {
       _isSyncing = false;
@@ -109,7 +109,7 @@ class SyncService {
         await _offlineService.saveUserData(response.data['data']);
       }
     } catch (e) {
-      print('Failed to download user data: $e');
+      Logger.debug('Failed to download user data: $e');
     }
   }
   
