@@ -98,12 +98,7 @@ class _GuardianListScreenState extends State<GuardianListScreen> {
           ),
           const SizedBox(height: 16),
           FloatingActionButton(
-            onPressed: () {
-              // 보호자 추가 화면으로 이동 (구현 예정)
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('보호자 추가 기능 구현 예정')),
-              );
-            },
+            onPressed: () => context.push('/guardians/add'),
             backgroundColor: TossColors.blue500,
             heroTag: 'add',
             child: const Icon(Icons.add, size: 28),
@@ -215,12 +210,7 @@ class _GuardianListScreenState extends State<GuardianListScreen> {
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
-          onTap: () {
-            // 보호자 상세 화면으로 이동 (구현 예정)
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('${guardian.name} 상세 정보 (구현 예정)')),
-            );
-          },
+          onTap: () => context.push('/guardians/${guardian.id}'),
           child: Padding(
             padding: const EdgeInsets.all(20),
             child: Column(

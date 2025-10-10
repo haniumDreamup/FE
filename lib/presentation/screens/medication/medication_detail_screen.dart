@@ -20,9 +20,7 @@ class MedicationDetailScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.edit),
-            onPressed: () {
-              ErrorHandler.showInfoSnackBar(context, '약 정보 수정 기능 준비 중입니다');
-            },
+            onPressed: () => context.push('/medication/$medicationId/edit'),
           ),
           IconButton(
             icon: const Icon(Icons.delete),
@@ -152,9 +150,7 @@ class MedicationDetailScreen extends StatelessWidget {
               width: double.infinity,
               height: 56,
               child: OutlinedButton.icon(
-                onPressed: () {
-                  ErrorHandler.showInfoSnackBar(context, '복용 기록 기능 준비 중입니다');
-                },
+                onPressed: () => context.push('/medication/$medicationId/history'),
                 style: OutlinedButton.styleFrom(
                   side: BorderSide(color: Colors.grey[300]!),
                   shape: RoundedRectangleBorder(

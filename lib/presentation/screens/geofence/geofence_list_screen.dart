@@ -457,49 +457,11 @@ class _GeofenceListScreenState extends State<GeofenceListScreen> {
   }
 
   void _showGeofenceDetails(Map<String, dynamic> geofence) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('${geofence['name']} 상세 정보'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('주소: ${geofence['address']}'),
-            const SizedBox(height: 8),
-            Text('반경: ${geofence['radius']}m'),
-            const SizedBox(height: 8),
-            Text('상태: ${geofence['isActive'] ? '활성' : '비활성'}'),
-            const SizedBox(height: 8),
-            Text('진입 횟수: ${geofence['enterCount']}회'),
-            const SizedBox(height: 8),
-            Text('이탈 횟수: ${geofence['exitCount']}회'),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('확인'),
-          ),
-        ],
-      ),
-    );
+    context.push('/geofence/${geofence['id']}');
   }
 
   void _showAddGeofenceDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('새 위치 추가'),
-        content: Text('위치 추가 기능을 구현 예정입니다.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('확인'),
-          ),
-        ],
-      ),
-    );
+    context.push('/geofence/add');
   }
 
   void _showEditGeofenceDialog(Map<String, dynamic> geofence) {

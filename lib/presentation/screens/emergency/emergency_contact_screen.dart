@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/config/toss_theme.dart';
 import '../../../data/models/emergency_model.dart';
 import '../../providers/emergency_contact_provider.dart';
@@ -30,6 +31,13 @@ class _EmergencyContactScreenState extends State<EmergencyContactScreen> {
         title: const Text('긴급 연락처'),
         backgroundColor: TossTheme.errorColor,
         foregroundColor: Colors.white,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () => context.push('/emergency/contacts/add'),
+            tooltip: '연락처 추가',
+          ),
+        ],
       ),
       body: Consumer<EmergencyContactProvider>(
         builder: (context, provider, child) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/config/toss_theme.dart';
 import '../../../core/utils/error_handler.dart';
 
@@ -19,9 +20,7 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
-            onPressed: () {
-              ErrorHandler.showInfoSnackBar(context, '약 추가 기능 준비 중입니다');
-            },
+            onPressed: () => context.push('/medication/add'),
           ),
         ],
       ),
@@ -53,9 +52,7 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
             ),
             const SizedBox(height: 32),
             ElevatedButton.icon(
-              onPressed: () {
-                ErrorHandler.showInfoSnackBar(context, '약 추가 기능 준비 중입니다');
-              },
+              onPressed: () => context.push('/medication/add'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: TossTheme.primaryColor,
                 foregroundColor: Colors.white,

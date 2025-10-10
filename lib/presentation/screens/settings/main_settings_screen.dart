@@ -91,9 +91,7 @@ class MainSettingsScreen extends StatelessWidget {
             icon: Icons.notifications,
             title: '알림',
             subtitle: '알림 설정',
-            onTap: () {
-              ErrorHandler.showInfoSnackBar(context, '알림 설정 기능 준비 중입니다');
-            },
+            onTap: () => context.push('/settings/notifications'),
           ),
           _buildSettingItem(
             context,

@@ -335,15 +335,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                   child: ElevatedButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      // TODO: GoRouter로 일정 ID를 전달하는 방식으로 개선 필요
-                      // 현재는 AddScheduleScreen이 editSchedule 파라미터를 받도록 되어 있어
-                      // GoRouter의 extra 파라미터 사용 필요
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => AddScheduleScreen(editSchedule: schedule),
-                        ),
-                      );
+                      context.push('/schedule/${schedule.id}/edit');
                     },
                     child: const Text('수정'),
                   ),
