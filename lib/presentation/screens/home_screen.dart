@@ -67,6 +67,7 @@ class HomeScreen extends StatelessWidget {
                       color: TossTheme.primaryColor,
                       onTap: () {
                         accessibility.speak('약 관리 화면으로 이동합니다');
+                        context.push('/medication');
                       },
                     ),
                     _buildFeatureCard(
@@ -77,6 +78,7 @@ class HomeScreen extends StatelessWidget {
                       color: TossTheme.secondaryColor,
                       onTap: () {
                         accessibility.speak('일정 화면으로 이동합니다');
+                        context.push('/schedule');
                       },
                     ),
                     _buildFeatureCard(
@@ -87,6 +89,7 @@ class HomeScreen extends StatelessWidget {
                       color: TossTheme.errorColor,
                       onTap: () {
                         accessibility.speakImportant('긴급 도움을 요청합니다');
+                        context.push('/emergency');
                       },
                     ),
                     _buildFeatureCard(
@@ -97,6 +100,7 @@ class HomeScreen extends StatelessWidget {
                       color: TossTheme.lightTextColor,
                       onTap: () {
                         accessibility.speak('설정 화면으로 이동합니다');
+                        context.push('/settings');
                       },
                     ),
                   ],
