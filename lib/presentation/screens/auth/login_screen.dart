@@ -294,31 +294,47 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 24),
 
-                // Help Text
-                Center(
-                  child: TextButton(
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: const Text('도움이 필요하신가요?'),
-                          content: const Text(
-                            '로그인에 문제가 있다면 보호자나 도우미에게 연락해주세요.',
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: const Text('확인'),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                    child: const Text(
-                      '로그인이 어려우신가요?',
-                      style: TextStyle(fontSize: 16),
+                // Forgot Password & Help
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextButton(
+                      onPressed: () => context.push('/forgot-password'),
+                      child: const Text(
+                        '비밀번호 찾기',
+                        style: TextStyle(fontSize: 16),
+                      ),
                     ),
-                  ),
+                    Container(
+                      width: 1,
+                      height: 16,
+                      color: Colors.grey[300],
+                      margin: const EdgeInsets.symmetric(horizontal: 8),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('도움이 필요하신가요?'),
+                            content: const Text(
+                              '로그인에 문제가 있다면 보호자나 도우미에게 연락해주세요.',
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: const Text('확인'),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        '도움말',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
