@@ -38,9 +38,18 @@ class NotificationService {
         return;
       }
       
-      // Initialize Firebase (google-services plugin이 이미 자동으로 초기화함)
-      // Android에서는 google-services 플러그인이 앱 시작 시 자동으로 Firebase를 초기화
-      // 따라서 여기서는 FirebaseMessaging.instance만 가져옴
+      // Initialize Firebase
+      // google-services 플러그인이 자동 초기화하지 않는 경우 수동 초기화
+      if (Firebase.apps.isEmpty) {
+        await Firebase.initializeApp(
+          options: DefaultFirebaseOptions.currentPlatform,
+        );
+        Logger.debug('Firebase 초기화 완료');
+      } else {
+        Logger.debug('Firebase 이미 초기화됨');
+      }
+
+      // Initialize FirebaseMessaging instance
       _firebaseMessaging = FirebaseMessaging.instance;
 
       // Request notification permissions
