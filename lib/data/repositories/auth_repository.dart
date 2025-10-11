@@ -32,10 +32,6 @@ class AuthRepository {
     String? phoneNumber,
   }) async {
     try {
-      // Get device info
-      String deviceId = await _getDeviceId();
-      String deviceType = Platform.isIOS ? 'ios' : 'android';
-
       final response = await _apiClient.post(
         ApiEndpoints.register,
         data: {
@@ -45,8 +41,6 @@ class AuthRepository {
           'confirmPassword': password,  // 백엔드 요구사항
           'fullName': name,  // 백엔드에서 fullName으로 받음
           if (phoneNumber != null) 'phoneNumber': phoneNumber,
-          'deviceId': deviceId,
-          'deviceType': deviceType,
           'agreeToTerms': true,  // 백엔드 요구사항
           'agreeToPrivacyPolicy': true,  // 백엔드 요구사항
         },
@@ -93,17 +87,11 @@ class AuthRepository {
 
   Future<UserModel> login(String email, String password) async {
     try {
-      // Get device info
-      String deviceId = await _getDeviceId();
-      String deviceType = Platform.isIOS ? 'ios' : 'android';
-
       final response = await _apiClient.post(
         ApiEndpoints.login,
         data: {
           'usernameOrEmail': email,
           'password': password,
-          'deviceId': deviceId,
-          'deviceType': deviceType,
         },
       );
 
