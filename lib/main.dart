@@ -3,6 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:timezone/data/latest.dart' as tz;
+import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'core/config/toss_theme.dart';
 import 'core/services/offline_service.dart';
 import 'core/services/notification_service.dart';
@@ -27,6 +28,9 @@ void main() async {
 
   // Load environment variables
   await dotenv.load(fileName: ".env");
+
+  // Initialize Kakao SDK
+  KakaoSdk.init(nativeAppKey: 'YOUR_KAKAO_NATIVE_APP_KEY');
 
   // Initialize timezone
   tz.initializeTimeZones();
