@@ -38,14 +38,9 @@ class NotificationService {
         return;
       }
       
-      // Initialize Firebase (중복 초기화 방지)
-      if (Firebase.apps.isEmpty) {
-        await Firebase.initializeApp(
-          options: DefaultFirebaseOptions.currentPlatform,
-        );
-      }
-
-      // Initialize FirebaseMessaging instance
+      // Initialize Firebase (google-services plugin이 이미 자동으로 초기화함)
+      // Android에서는 google-services 플러그인이 앱 시작 시 자동으로 Firebase를 초기화
+      // 따라서 여기서는 FirebaseMessaging.instance만 가져옴
       _firebaseMessaging = FirebaseMessaging.instance;
 
       // Request notification permissions
@@ -526,12 +521,7 @@ class NotificationService {
 // Background message handler (must be top-level function)
 @pragma('vm:entry-point')
 Future<void> _handleBackgroundMessage(RemoteMessage message) async {
-  // Firebase가 이미 초기화되어 있는지 확인
-  if (Firebase.apps.isEmpty) {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-  }
+  // Firebase는 google-services 플러그인에 의해 이미 초기화됨
   Logger.debug('백그라운드 메시지 수신: ${message.messageId}');
 
   // Handle background message
