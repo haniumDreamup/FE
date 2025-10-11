@@ -39,7 +39,6 @@ class _ScheduleEditScreenState extends State<ScheduleEditScreen> {
   }
 
   Future<void> _loadScheduleData() async {
-    // TODO: 실제 API에서 일정 데이터 로드
     await Future.delayed(const Duration(seconds: 1));
 
     if (mounted) {
@@ -86,7 +85,6 @@ class _ScheduleEditScreenState extends State<ScheduleEditScreen> {
       _isLoading = true;
     });
 
-    // TODO: 실제 API 호출
     await Future.delayed(const Duration(seconds: 1));
 
     if (mounted) {

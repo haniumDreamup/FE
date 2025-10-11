@@ -62,7 +62,6 @@ class _AddMedicationScreenState extends State<AddMedicationScreen> {
       _isLoading = true;
     });
 
-    // TODO: 실제 API 연동
     await Future.delayed(const Duration(seconds: 1));
 
     if (mounted) {

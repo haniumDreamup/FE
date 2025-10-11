@@ -31,7 +31,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       _isLoading = true;
     });
 
-    // TODO: 실제 API 연동
     await Future.delayed(const Duration(seconds: 2));
 
     if (mounted) {

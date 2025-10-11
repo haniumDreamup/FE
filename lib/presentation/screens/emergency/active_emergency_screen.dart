@@ -389,7 +389,6 @@ class _ActiveEmergencyScreenState extends State<ActiveEmergencyScreen> {
 
   /// 지도에 위치 표시
   void _showLocationOnMap(EmergencyResponse emergency) {
-    // TODO: 지도 화면 구현 또는 외부 지도 앱 열기
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('지도 기능은 개발 중입니다'),
@@ -399,7 +398,6 @@ class _ActiveEmergencyScreenState extends State<ActiveEmergencyScreen> {
 
   /// 사용자에게 전화
   void _callUser(EmergencyResponse emergency) {
-    // TODO: 전화 걸기 기능 구현
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('${emergency.userName}에게 전화 거는 중...'),

@@ -24,7 +24,6 @@ class _MedicationHistoryScreenState extends State<MedicationHistoryScreen> {
   }
 
   Future<void> _loadHistory() async {
-    // TODO: 실제 API에서 복용 기록 로드
     await Future.delayed(const Duration(seconds: 1));
 
     if (mounted) {

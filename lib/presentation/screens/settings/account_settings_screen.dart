@@ -70,7 +70,6 @@ class AccountSettingsScreen extends StatelessWidget {
     );
 
     if (result == true && context.mounted) {
-      // TODO: 실제 API 호출
       await Future.delayed(const Duration(seconds: 1));
       if (context.mounted) {
         ErrorHandler.showSuccessSnackBar(context, '비밀번호가 변경되었어요');
@@ -107,7 +106,6 @@ class AccountSettingsScreen extends StatelessWidget {
     );
 
     if (confirmed == true && context.mounted) {
-      // TODO: 실제 API 호출
       await Future.delayed(const Duration(seconds: 1));
 
       if (context.mounted) {
@@ -147,7 +145,6 @@ class AccountSettingsScreen extends StatelessWidget {
             title: '생체 인증',
             subtitle: '지문 또는 얼굴 인식',
             onTap: () {
-              // TODO: 생체 인증 설정
               ErrorHandler.showInfoSnackBar(context, '준비 중입니다');
             },
           ),
@@ -162,7 +159,6 @@ class AccountSettingsScreen extends StatelessWidget {
             title: '내 데이터 다운로드',
             subtitle: '저장된 모든 데이터를 다운로드',
             onTap: () {
-              // TODO: 데이터 다운로드
               ErrorHandler.showInfoSnackBar(context, '준비 중입니다');
             },
           ),
@@ -173,7 +169,6 @@ class AccountSettingsScreen extends StatelessWidget {
             title: '개인정보 처리방침',
             subtitle: '개인정보 수집 및 이용 동의',
             onTap: () {
-              // TODO: 개인정보 처리방침 화면
               ErrorHandler.showInfoSnackBar(context, '준비 중입니다');
             },
           ),

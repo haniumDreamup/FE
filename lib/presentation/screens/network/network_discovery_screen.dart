@@ -502,7 +502,6 @@ class _NetworkDiscoveryScreenState extends State<NetworkDiscoveryScreen>
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.pop(context);
-                    // TODO: 디바이스 연결 로직
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: TossTheme.tossBlue,

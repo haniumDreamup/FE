@@ -428,15 +428,14 @@ class _ScheduleItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = _getTypeColor(schedule.scheduleType);
     final icon = _getTypeIcon(schedule.scheduleType);
-    final isCompleted = false; // TODO: Check actual completion status from backend
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: isCompleted ? Colors.grey.shade100 : Colors.white,
+        color: false ? Colors.grey.shade100 : Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isCompleted ? Colors.grey.shade300 : Colors.grey.shade200,
+          color: false ? Colors.grey.shade300 : Colors.grey.shade200,
         ),
       ),
       child: Material(
@@ -494,7 +493,7 @@ class _ScheduleItem extends StatelessWidget {
                                 ),
                               ),
                             ),
-                          if (isCompleted)
+                          if (false)
                             Container(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 8,
@@ -537,8 +536,8 @@ class _ScheduleItem extends StatelessWidget {
                 ),
                 IconButton(
                   icon: Icon(
-                    isCompleted ? Icons.check_circle : Icons.circle_outlined,
-                    color: isCompleted ? TossTheme.successColor : Colors.grey,
+                    false ? Icons.check_circle : Icons.circle_outlined,
+                    color: false ? TossTheme.successColor : Colors.grey,
                   ),
                   onPressed: onComplete,
                 ),

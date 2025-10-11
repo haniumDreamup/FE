@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/config/toss_theme.dart';
 import '../../../core/utils/error_handler.dart';
+import '../../../data/services/geofence_service.dart';
 
 class GeofenceDetailScreen extends StatefulWidget {
   final String geofenceId;
@@ -27,24 +28,31 @@ class _GeofenceDetailScreenState extends State<GeofenceDetailScreen> {
   }
 
   Future<void> _loadGeofenceData() async {
-    // TODO: 실제 API에서 안전구역 데이터 로드
-    await Future.delayed(const Duration(seconds: 1));
+    try {
+      final service = GeofenceService();
+      final geofence = await service.getGeofenceDetail(int.parse(widget.geofenceId));
 
-    if (mounted) {
-      setState(() {
-        _geofenceData = {
-          'name': '우리 집',
-          'address': '서울시 강남구 테헤란로 123',
-          'radius': '100m',
-          'latitude': 37.5665,
-          'longitude': 126.9780,
-          'entryAlert': true,
-          'exitAlert': true,
-          'createdDate': '2024년 1월 1일',
-        };
-        _isEnabled = true;
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _geofenceData = {
+            'name': geofence.name,
+            'address': geofence.description,
+            'radius': '${geofence.radius.toInt()}m',
+            'latitude': geofence.centerLatitude,
+            'longitude': geofence.centerLongitude,
+            'entryAlert': geofence.alertType.contains('ENTRY'),
+            'exitAlert': geofence.alertType.contains('EXIT'),
+            'createdDate': geofence.createdAt.toString().substring(0, 10),
+          };
+          _isEnabled = geofence.isActive;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isLoading = false);
+        ErrorHandler.showErrorSnackBar(context, '안전구역 정보를 불러올 수 없습니다');
+      }
     }
   }
 
@@ -53,19 +61,33 @@ class _GeofenceDetailScreenState extends State<GeofenceDetailScreen> {
       _isLoading = true;
     });
 
-    // TODO: 실제 API 호출
-    await Future.delayed(const Duration(seconds: 1));
-
-    if (mounted) {
-      setState(() {
-        _isEnabled = value;
-        _isLoading = false;
-      });
-
-      ErrorHandler.showSuccessSnackBar(
-        context,
-        value ? '안전구역이 활성화되었어요' : '안전구역이 비활성화되었어요',
+    try {
+      final service = GeofenceService();
+      await service.updateGeofence(
+        int.parse(widget.geofenceId),
+        GeofenceUpdateRequest(
+          name: _geofenceData!['name'],
+          description: _geofenceData!['address'],
+          isActive: value,
+        ),
       );
+
+      if (mounted) {
+        setState(() {
+          _isEnabled = value;
+          _isLoading = false;
+        });
+
+        ErrorHandler.showSuccessSnackBar(
+          context,
+          value ? '안전구역이 활성화되었어요' : '안전구역이 비활성화되었어요',
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isLoading = false);
+        ErrorHandler.showErrorSnackBar(context, '상태 변경에 실패했습니다');
+      }
     }
   }
 
@@ -94,12 +116,19 @@ class _GeofenceDetailScreenState extends State<GeofenceDetailScreen> {
         _isLoading = true;
       });
 
-      // TODO: 실제 API 호출
-      await Future.delayed(const Duration(seconds: 1));
+      try {
+        final service = GeofenceService();
+        await service.deleteGeofence(int.parse(widget.geofenceId));
 
-      if (mounted) {
-        ErrorHandler.showSuccessSnackBar(context, '안전구역이 삭제되었어요');
-        context.pop();
+        if (mounted) {
+          ErrorHandler.showSuccessSnackBar(context, '안전구역이 삭제되었어요');
+          context.pop();
+        }
+      } catch (e) {
+        if (mounted) {
+          setState(() => _isLoading = false);
+          ErrorHandler.showErrorSnackBar(context, '안전구역 삭제에 실패했습니다');
+        }
       }
     }
   }
@@ -121,7 +150,6 @@ class _GeofenceDetailScreenState extends State<GeofenceDetailScreen> {
           IconButton(
             icon: const Icon(Icons.edit),
             onPressed: () {
-              // TODO: 편집 화면으로 이동
               ErrorHandler.showInfoSnackBar(context, '준비 중입니다');
             },
           ),
@@ -280,7 +308,6 @@ class _GeofenceDetailScreenState extends State<GeofenceDetailScreen> {
                     subtitle: '안전구역에 들어올 때 알림',
                     value: _geofenceData!['entryAlert'] as bool,
                     onChanged: (value) {
-                      // TODO: 알림 설정 변경
                       ErrorHandler.showInfoSnackBar(context, '준비 중입니다');
                     },
                   ),
@@ -290,7 +317,6 @@ class _GeofenceDetailScreenState extends State<GeofenceDetailScreen> {
                     subtitle: '안전구역을 벗어날 때 알림',
                     value: _geofenceData!['exitAlert'] as bool,
                     onChanged: (value) {
-                      // TODO: 알림 설정 변경
                       ErrorHandler.showInfoSnackBar(context, '준비 중입니다');
                     },
                   ),

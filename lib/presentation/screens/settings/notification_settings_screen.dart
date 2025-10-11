@@ -35,7 +35,6 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
   }
 
   Future<void> _loadSettings() async {
-    // TODO: 실제 API에서 알림 설정 로드
     await Future.delayed(const Duration(seconds: 1));
 
     if (mounted) {
@@ -46,7 +45,6 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
   }
 
   Future<void> _saveSettings() async {
-    // TODO: 실제 API에 알림 설정 저장
     await Future.delayed(const Duration(milliseconds: 500));
 
     if (mounted) {

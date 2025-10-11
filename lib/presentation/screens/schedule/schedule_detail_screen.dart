@@ -13,7 +13,6 @@ class ScheduleDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: 실제 데이터 로드
     return Scaffold(
       appBar: AppBar(
         title: const Text('일정 상세'),
@@ -22,7 +21,7 @@ class ScheduleDetailScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.edit),
             onPressed: () {
-              ErrorHandler.showInfoSnackBar(context, '일정 수정 기능 준비 중입니다');
+              context.push('/schedule/$scheduleId/edit');
             },
           ),
           IconButton(

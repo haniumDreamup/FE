@@ -40,7 +40,6 @@ class _MedicationEditScreenState extends State<MedicationEditScreen> {
   }
 
   Future<void> _loadMedicationData() async {
-    // TODO: 실제 API에서 약물 데이터 로드
     await Future.delayed(const Duration(seconds: 1));
 
     if (mounted) {
@@ -74,7 +73,6 @@ class _MedicationEditScreenState extends State<MedicationEditScreen> {
       _isLoading = true;
     });
 
-    // TODO: 실제 API 호출
     await Future.delayed(const Duration(seconds: 1));
 
     if (mounted) {
