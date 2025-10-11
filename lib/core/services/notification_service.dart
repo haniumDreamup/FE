@@ -38,10 +38,12 @@ class NotificationService {
         return;
       }
       
-      // Initialize Firebase
-      await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
-      );
+      // Initialize Firebase (중복 초기화 방지)
+      if (Firebase.apps.isEmpty) {
+        await Firebase.initializeApp(
+          options: DefaultFirebaseOptions.currentPlatform,
+        );
+      }
       
       // Request notification permissions
       await _requestPermissions();
@@ -521,11 +523,14 @@ class NotificationService {
 // Background message handler (must be top-level function)
 @pragma('vm:entry-point')
 Future<void> _handleBackgroundMessage(RemoteMessage message) async {
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  // Firebase가 이미 초기화되어 있는지 확인
+  if (Firebase.apps.isEmpty) {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }
   Logger.debug('백그라운드 메시지 수신: ${message.messageId}');
-  
+
   // Handle background message
   // Note: Can't update UI directly here
 }
