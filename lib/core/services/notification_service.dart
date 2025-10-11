@@ -44,7 +44,10 @@ class NotificationService {
           options: DefaultFirebaseOptions.currentPlatform,
         );
       }
-      
+
+      // Initialize FirebaseMessaging instance
+      _firebaseMessaging = FirebaseMessaging.instance;
+
       // Request notification permissions
       await _requestPermissions();
       
