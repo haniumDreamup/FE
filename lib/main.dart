@@ -30,7 +30,10 @@ void main() async {
   await dotenv.load(fileName: ".env");
 
   // Initialize Kakao SDK
-  KakaoSdk.init(nativeAppKey: 'YOUR_KAKAO_NATIVE_APP_KEY');
+  final kakaoAppKey = dotenv.env['KAKAO_NATIVE_APP_KEY'] ?? '';
+  if (kakaoAppKey.isNotEmpty) {
+    KakaoSdk.init(nativeAppKey: kakaoAppKey);
+  }
 
   // Initialize timezone
   tz.initializeTimeZones();
