@@ -476,18 +476,6 @@
       "languageVersion": "3.4"
     },
     {
-      "name": "flutter_web_auth_2",
-      "rootUri": "file:///Users/ihojun/.pub-cache/hosted/pub.dev/flutter_web_auth_2-3.1.2",
-      "packageUri": "lib/",
-      "languageVersion": "2.15"
-    },
-    {
-      "name": "flutter_web_auth_2_platform_interface",
-      "rootUri": "file:///Users/ihojun/.pub-cache/hosted/pub.dev/flutter_web_auth_2_platform_interface-3.1.0",
-      "packageUri": "lib/",
-      "languageVersion": "2.15"
-    },
-    {
       "name": "flutter_web_plugins",
       "rootUri": "file:///opt/homebrew/Caskroom/flutter/3.32.6/flutter/packages/flutter_web_plugins",
       "packageUri": "lib/",
@@ -1362,12 +1350,6 @@
       "rootUri": "file:///Users/ihojun/.pub-cache/hosted/pub.dev/win32_registry-1.1.5",
       "packageUri": "lib/",
       "languageVersion": "3.4"
-    },
-    {
-      "name": "window_to_front",
-      "rootUri": "file:///Users/ihojun/.pub-cache/hosted/pub.dev/window_to_front-0.0.3",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
     },
     {
       "name": "xdg_directories",

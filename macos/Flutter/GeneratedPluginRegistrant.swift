@@ -15,7 +15,6 @@ import flutter_local_notifications
 import flutter_nsd
 import flutter_secure_storage_macos
 import flutter_tts
-import flutter_web_auth_2
 import geolocator_apple
 import google_sign_in_ios
 import network_info_plus
@@ -24,7 +23,6 @@ import shared_preferences_foundation
 import sqflite_darwin
 import url_launcher_macos
 import webview_flutter_wkwebview
-import window_to_front
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   SwiftBonsoirPlugin.register(with: registry.registrar(forPlugin: "SwiftBonsoirPlugin"))
@@ -37,7 +35,6 @@ func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   SwiftFlutterNsdPlugin.register(with: registry.registrar(forPlugin: "SwiftFlutterNsdPlugin"))
   FlutterSecureStoragePlugin.register(with: registry.registrar(forPlugin: "FlutterSecureStoragePlugin"))
   FlutterTtsPlugin.register(with: registry.registrar(forPlugin: "FlutterTtsPlugin"))
-  FlutterWebAuth2Plugin.register(with: registry.registrar(forPlugin: "FlutterWebAuth2Plugin"))
   GeolocatorPlugin.register(with: registry.registrar(forPlugin: "GeolocatorPlugin"))
   FLTGoogleSignInPlugin.register(with: registry.registrar(forPlugin: "FLTGoogleSignInPlugin"))
   NetworkInfoPlusPlugin.register(with: registry.registrar(forPlugin: "NetworkInfoPlusPlugin"))
@@ -46,5 +43,4 @@ func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   SqflitePlugin.register(with: registry.registrar(forPlugin: "SqflitePlugin"))
   UrlLauncherPlugin.register(with: registry.registrar(forPlugin: "UrlLauncherPlugin"))
   WebViewFlutterPlugin.register(with: registry.registrar(forPlugin: "WebViewFlutterPlugin"))
-  WindowToFrontPlugin.register(with: registry.registrar(forPlugin: "WindowToFrontPlugin"))
 }

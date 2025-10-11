@@ -1,6 +1,5 @@
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
-import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import '../../core/network/api_client.dart';
 import '../../core/constants/api_endpoints.dart';
 import 'package:logger/logger.dart';
@@ -107,46 +106,9 @@ class OAuthService {
     }
   }
 
-  /// Naver Sign In (using web auth)
+  /// Naver Sign In (not implemented - requires flutter_web_auth_2)
   Future<Map<String, dynamic>> signInWithNaver() async {
-    try {
-      // Get Naver OAuth URL from backend
-      final urls = await getOAuth2LoginUrls();
-      final naverUrl = urls['naver'];
-
-      if (naverUrl == null) {
-        throw Exception('Naver OAuth URL not available');
-      }
-
-      // Open web auth
-      final result = await FlutterWebAuth2.authenticate(
-        url: naverUrl,
-        callbackUrlScheme: 'bifai',
-      );
-
-      // Extract token from callback URL
-      final uri = Uri.parse(result);
-      final code = uri.queryParameters['code'];
-
-      if (code == null) {
-        throw Exception('Failed to get Naver authorization code');
-      }
-
-      // Exchange code for token via backend
-      final response = await _apiClient.post(
-        '/oauth2/callback/naver',
-        data: {'code': code},
-      );
-
-      return {
-        'accessToken': response.data['accessToken'],
-        'refreshToken': response.data['refreshToken'],
-        'user': response.data['user'],
-      };
-    } catch (e) {
-      _logger.e('Naver Sign In failed', error: e);
-      rethrow;
-    }
+    throw UnimplementedError('Naver login not implemented yet');
   }
 
   /// Sign out from all providers

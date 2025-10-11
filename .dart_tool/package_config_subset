@@ -302,14 +302,6 @@ flutter_tts
 3.4
 file:///Users/ihojun/.pub-cache/hosted/pub.dev/flutter_tts-4.2.3/
 file:///Users/ihojun/.pub-cache/hosted/pub.dev/flutter_tts-4.2.3/lib/
-flutter_web_auth_2
-2.15
-file:///Users/ihojun/.pub-cache/hosted/pub.dev/flutter_web_auth_2-3.1.2/
-file:///Users/ihojun/.pub-cache/hosted/pub.dev/flutter_web_auth_2-3.1.2/lib/
-flutter_web_auth_2_platform_interface
-2.15
-file:///Users/ihojun/.pub-cache/hosted/pub.dev/flutter_web_auth_2_platform_interface-3.1.0/
-file:///Users/ihojun/.pub-cache/hosted/pub.dev/flutter_web_auth_2_platform_interface-3.1.0/lib/
 freezed
 3.0
 file:///Users/ihojun/.pub-cache/hosted/pub.dev/freezed-2.5.7/
@@ -886,10 +878,6 @@ win32_registry
 3.4
 file:///Users/ihojun/.pub-cache/hosted/pub.dev/win32_registry-1.1.5/
 file:///Users/ihojun/.pub-cache/hosted/pub.dev/win32_registry-1.1.5/lib/
-window_to_front
-2.12
-file:///Users/ihojun/.pub-cache/hosted/pub.dev/window_to_front-0.0.3/
-file:///Users/ihojun/.pub-cache/hosted/pub.dev/window_to_front-0.0.3/lib/
 xdg_directories
 3.3
 file:///Users/ihojun/.pub-cache/hosted/pub.dev/xdg_directories-1.1.0/
