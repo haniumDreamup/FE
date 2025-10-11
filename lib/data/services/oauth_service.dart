@@ -77,10 +77,9 @@ class OAuthService {
         // Login via Kakao Talk
         token = await UserApi.instance.loginWithKakaoTalk();
       } else {
-        // Login via Kakao Account (web) - 한글 설정
+        // Login via Kakao Account (web)
         token = await UserApi.instance.loginWithKakaoAccount(
           prompts: [Prompt.login],
-          lang: 'ko',  // 한글로 설정
         );
       }
 
