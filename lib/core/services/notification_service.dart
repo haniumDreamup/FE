@@ -69,7 +69,12 @@ class NotificationService {
       
       Logger.debug('알림 서비스 초기화 완료');
     } catch (e) {
-      Logger.error("Error occurred", e);
+      // Firebase 중복 초기화 에러는 무시 (정상 동작에 영향 없음)
+      if (e.toString().contains('duplicate-app')) {
+        Logger.debug('Firebase 이미 초기화되어 있음 (정상)');
+      } else {
+        Logger.error("Error occurred", e);
+      }
     }
   }
   

@@ -42,10 +42,13 @@ class AuthRepository {
           'username': username,
           'email': email,
           'password': password,
-          'name': name,
+          'confirmPassword': password,  // 백엔드 요구사항
+          'fullName': name,  // 백엔드에서 fullName으로 받음
           if (phoneNumber != null) 'phoneNumber': phoneNumber,
           'deviceId': deviceId,
           'deviceType': deviceType,
+          'agreeToTerms': true,  // 백엔드 요구사항
+          'agreeToPrivacyPolicy': true,  // 백엔드 요구사항
         },
       );
 
@@ -55,6 +58,20 @@ class AuthRepository {
         // Save tokens (자동 로그인)
         await _storage.write(key: 'access_token', value: data['accessToken']);
         await _storage.write(key: 'refresh_token', value: data['refreshToken']);
+
+        // Save token expiration times
+        if (data['accessTokenExpiresIn'] != null) {
+          await _storage.write(
+            key: 'access_token_expires_in',
+            value: data['accessTokenExpiresIn'].toString(),
+          );
+        }
+        if (data['refreshTokenExpiresIn'] != null) {
+          await _storage.write(
+            key: 'refresh_token_expires_in',
+            value: data['refreshTokenExpiresIn'].toString(),
+          );
+        }
 
         // Update API client token
         _apiClient.updateAuthToken(data['accessToken']);
@@ -96,6 +113,20 @@ class AuthRepository {
         // Save tokens
         await _storage.write(key: 'access_token', value: data['accessToken']);
         await _storage.write(key: 'refresh_token', value: data['refreshToken']);
+
+        // Save token expiration times
+        if (data['accessTokenExpiresIn'] != null) {
+          await _storage.write(
+            key: 'access_token_expires_in',
+            value: data['accessTokenExpiresIn'].toString(),
+          );
+        }
+        if (data['refreshTokenExpiresIn'] != null) {
+          await _storage.write(
+            key: 'refresh_token_expires_in',
+            value: data['refreshTokenExpiresIn'].toString(),
+          );
+        }
 
         // Update API client token
         _apiClient.updateAuthToken(data['accessToken']);
@@ -167,13 +198,34 @@ class AuthRepository {
       await _storage.write(key: 'access_token', value: result['accessToken']);
       await _storage.write(key: 'refresh_token', value: result['refreshToken']);
 
+      // Save token expiration times (if available)
+      if (result['accessTokenExpiresIn'] != null) {
+        await _storage.write(
+          key: 'access_token_expires_in',
+          value: result['accessTokenExpiresIn'].toString(),
+        );
+      }
+      if (result['refreshTokenExpiresIn'] != null) {
+        await _storage.write(
+          key: 'refresh_token_expires_in',
+          value: result['refreshTokenExpiresIn'].toString(),
+        );
+      }
+
       // Update API client token
       _apiClient.updateAuthToken(result['accessToken']);
 
       // Return user
       return UserModel.fromJson(result['user']);
     } catch (e) {
-      throw Exception('Kakao 로그인 실패: ${e.toString()}');
+      // 사용자 친화적인 에러 메시지
+      String errorMessage = 'Kakao 로그인에 실패했어요';
+      if (e.toString().contains('cancelled') || e.toString().contains('취소')) {
+        errorMessage = '로그인이 취소되었어요';
+      } else if (e.toString().contains('network') || e.toString().contains('네트워크')) {
+        errorMessage = '네트워크 연결을 확인해주세요';
+      }
+      throw Exception(errorMessage);
     }
   }
 

@@ -28,42 +28,51 @@ class OAuthService {
 
   /// Google Sign In
   Future<Map<String, dynamic>> signInWithGoogle() async {
-    try {
-      // Sign out first to ensure account selection
-      await _googleSignIn.signOut();
+    // TODO: 백엔드에서 Google 모바일 로그인 구현 필요
+    throw UnsupportedOperationException('Google 로그인은 현재 지원되지 않습니다');
 
-      // Trigger Google Sign In
-      final GoogleSignInAccount? account = await _googleSignIn.signIn();
+    // try {
+    //   // Sign out first to ensure account selection
+    //   await _googleSignIn.signOut();
 
-      if (account == null) {
-        throw Exception('Google Sign In cancelled');
-      }
+    //   // Trigger Google Sign In
+    //   final GoogleSignInAccount? account = await _googleSignIn.signIn();
 
-      // Get authentication
-      final GoogleSignInAuthentication auth = await account.authentication;
+    //   if (account == null) {
+    //     throw Exception('Google Sign In cancelled');
+    //   }
 
-      if (auth.accessToken == null) {
-        throw Exception('Failed to get Google access token');
-      }
+    //   // Get authentication
+    //   final GoogleSignInAuthentication auth = await account.authentication;
 
-      // Send to backend
-      final response = await _apiClient.post(
-        '/oauth2/authorization/google',
-        data: {
-          'accessToken': auth.accessToken,
-          'idToken': auth.idToken,
-        },
-      );
+    //   if (auth.accessToken == null) {
+    //     throw Exception('Failed to get Google access token');
+    //   }
 
-      return {
-        'accessToken': response.data['accessToken'],
-        'refreshToken': response.data['refreshToken'],
-        'user': response.data['user'],
-      };
-    } catch (e) {
-      _logger.e('Google Sign In failed', error: e);
-      rethrow;
-    }
+    //   // Send to backend
+    //   final response = await _apiClient.post(
+    //     '/api/v1/auth/oauth2/authorization/google',
+    //     data: {
+    //       'accessToken': auth.accessToken,
+    //       'idToken': auth.idToken,
+    //     },
+    //   );
+
+    //   // 백엔드 응답 구조 파싱
+    //   if (response.data['success'] == true) {
+    //     final data = response.data['data'];
+    //     return {
+    //       'accessToken': data['accessToken'],
+    //       'refreshToken': data['refreshToken'],
+    //       'user': data['user'],
+    //     };
+    //   } else {
+    //     throw Exception(response.data['error']?['message'] ?? 'Google 로그인 실패');
+    //   }
+    // } catch (e) {
+    //   _logger.e('Google Sign In failed', error: e);
+    //   rethrow;
+    // }
   }
 
   /// Kakao Sign In
@@ -88,7 +97,7 @@ class OAuthService {
 
       // Send to backend
       final response = await _apiClient.post(
-        '/oauth2/authorization/kakao',
+        '/api/v1/auth/oauth2/authorization/kakao',
         data: {
           'accessToken': token.accessToken,
           'kakaoId': kakaoUser.id.toString(),
@@ -97,11 +106,23 @@ class OAuthService {
         },
       );
 
-      return {
-        'accessToken': response.data['accessToken'],
-        'refreshToken': response.data['refreshToken'],
-        'user': response.data['user'],
-      };
+      // 백엔드 응답 구조: { success: true, data: { accessToken, refreshToken, user, accessTokenExpiresIn, refreshTokenExpiresIn, ... } }
+      if (response.data['success'] == true) {
+        final data = response.data['data'];
+        return {
+          'accessToken': data['accessToken'],
+          'refreshToken': data['refreshToken'],
+          'user': data['user'],
+          'accessTokenExpiresIn': data['accessTokenExpiresIn'],
+          'refreshTokenExpiresIn': data['refreshTokenExpiresIn'],
+        };
+      } else {
+        // 백엔드 에러 응답 파싱
+        final error = response.data['error'];
+        final message = error?['message'] ?? 'Kakao 로그인 실패';
+        final userAction = error?['userAction'];
+        throw Exception(userAction != null ? '$message\n$userAction' : message);
+      }
     } catch (e) {
       _logger.e('Kakao Sign In failed', error: e);
       rethrow;
