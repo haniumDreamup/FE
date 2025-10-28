@@ -232,7 +232,6 @@ class GuardianRelationshipService {
     }
   }
 
-  /// 초대 수락
   /// 받은 초대 목록 조회
   Future<List<GuardianRelationshipModel>> getMyInvitations() async {
     try {

@@ -349,7 +349,7 @@ class _GuardianInvitationsScreenState extends State<GuardianInvitationsScreen> {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        invitation.relationshipType?.name ?? '보호자',
+                        invitation.relationship.isNotEmpty ? invitation.relationship : '보호자',
                         style: TextStyle(
                           fontSize: 14,
                           color: isExpired ? TossColors.grey400 : TossColors.grey600,
