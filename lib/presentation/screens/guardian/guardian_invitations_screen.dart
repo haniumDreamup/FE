@@ -14,7 +14,7 @@ class GuardianInvitationsScreen extends StatefulWidget {
 }
 
 class _GuardianInvitationsScreenState extends State<GuardianInvitationsScreen> {
-  final GuardianService _guardianService = GuardianService();
+  final GuardianRelationshipService _guardianService = GuardianRelationshipService();
   List<GuardianRelationshipModel> _invitations = [];
   bool _isLoading = true;
   String? _errorMessage;
