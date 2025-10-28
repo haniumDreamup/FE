@@ -1,5 +1,6 @@
 import '../models/guardian_relationship_model.dart';
 import '../../core/network/api_client.dart';
+import '../../core/constants/api_endpoints.dart';
 
 /// 보호자 관계 서비스
 class GuardianRelationshipService {
@@ -12,29 +13,41 @@ class GuardianRelationshipService {
   Future<GuardianInvitationResponse> inviteGuardian(
       GuardianInvitationRequest request) async {
     final response = await _apiClient.post(
-      '/guardian-relationships/invite',
+      ApiEndpoints.inviteGuardian,
       data: request.toJson(),
     );
-    return GuardianInvitationResponse.fromJson(response.data['data']);
+    // 통일된 ApiResponse 구조 사용
+    
+    if (response.data['success'] == true) {
+      return GuardianInvitationResponse.fromJson(response.data['data']);
+    } else {
+      throw Exception(response.data['message'] ?? '보호자 초대에 실패했습니다');
+    }
   }
 
   /// 초대 수락
   Future<GuardianRelationshipDto> acceptInvitation(
       String token, int guardianId) async {
     final response = await _apiClient.post(
-      '/guardian-relationships/accept-invitation',
+      ApiEndpoints.acceptInvitation,
       queryParameters: {
         'token': token,
         'guardianId': guardianId,
       },
     );
-    return GuardianRelationshipDto.fromJson(response.data['data']);
+    // 통일된 ApiResponse 구조 사용
+    
+    if (response.data['success'] == true) {
+      return GuardianRelationshipDto.fromJson(response.data['data']);
+    } else {
+      throw Exception(response.data['message'] ?? '초대 수락에 실패했습니다');
+    }
   }
 
   /// 초대 거부
   Future<void> rejectInvitation(String token, int guardianId) async {
     await _apiClient.post(
-      '/guardian-relationships/reject-invitation',
+      ApiEndpoints.rejectInvitation,
       queryParameters: {
         'token': token,
         'guardianId': guardianId,
@@ -46,23 +59,29 @@ class GuardianRelationshipService {
   Future<GuardianRelationshipDto> updatePermissions(
       int relationshipId, PermissionUpdateRequest request) async {
     final response = await _apiClient.put(
-      '/guardian-relationships/$relationshipId/permissions',
+      ApiEndpoints.updateRelationshipPermissionsPath(relationshipId),
       data: request.toJson(),
     );
-    return GuardianRelationshipDto.fromJson(response.data['data']);
+    // 통일된 ApiResponse 구조 사용
+    
+    if (response.data['success'] == true) {
+      return GuardianRelationshipDto.fromJson(response.data['data']);
+    } else {
+      throw Exception(response.data['message'] ?? '권한 수정에 실패했습니다');
+    }
   }
 
   /// 관계 일시 중지
   Future<void> suspendRelationship(int relationshipId) async {
     await _apiClient.post(
-      '/guardian-relationships/$relationshipId/suspend',
+      ApiEndpoints.suspendRelationshipPath(relationshipId),
     );
   }
 
   /// 관계 재활성화
   Future<void> reactivateRelationship(int relationshipId) async {
     await _apiClient.post(
-      '/guardian-relationships/$relationshipId/reactivate',
+      ApiEndpoints.reactivateRelationshipPath(relationshipId),
     );
   }
 
@@ -70,7 +89,7 @@ class GuardianRelationshipService {
   Future<void> terminateRelationship(int relationshipId,
       {String? reason}) async {
     await _apiClient.delete(
-      '/guardian-relationships/$relationshipId',
+      ApiEndpoints.terminateRelationshipPath(relationshipId),
       queryParameters: reason != null ? {'reason': reason} : null,
     );
   }
@@ -79,53 +98,77 @@ class GuardianRelationshipService {
   Future<List<GuardianRelationshipDto>> getUserGuardians(int userId,
       {bool activeOnly = true}) async {
     final response = await _apiClient.get(
-      '/guardian-relationships/user/$userId',
+      ApiEndpoints.getUserGuardiansPath(userId),
       queryParameters: {'activeOnly': activeOnly},
     );
-    return (response.data['data'] as List)
-        .map((json) => GuardianRelationshipDto.fromJson(json))
-        .toList();
+    // 통일된 ApiResponse 구조 사용
+    
+    if (response.data['success'] == true) {
+      return (response.data['data'] as List)
+          .map((json) => GuardianRelationshipDto.fromJson(json))
+          .toList();
+    } else {
+      throw Exception(response.data['message'] ?? '보호자 목록 조회에 실패했습니다');
+    }
   }
 
   /// 보호자의 피보호자 목록 조회
   Future<List<GuardianRelationshipDto>> getGuardianUsers(
       int guardianId) async {
     final response = await _apiClient.get(
-      '/guardian-relationships/guardian/$guardianId',
+      ApiEndpoints.getGuardianUsersPath(guardianId),
     );
-    return (response.data['data'] as List)
-        .map((json) => GuardianRelationshipDto.fromJson(json))
-        .toList();
+    // 통일된 ApiResponse 구조 사용
+    
+    if (response.data['success'] == true) {
+      return (response.data['data'] as List)
+          .map((json) => GuardianRelationshipDto.fromJson(json))
+          .toList();
+    } else {
+      throw Exception(response.data['message'] ?? '피보호자 목록 조회에 실패했습니다');
+    }
   }
 
   /// 긴급 연락 보호자 목록 조회
   Future<List<EmergencyContactDto>> getEmergencyContacts(int userId) async {
     final response = await _apiClient.get(
-      '/guardian-relationships/user/$userId/emergency-contacts',
+      ApiEndpoints.getEmergencyContactsFromRelationshipPath(userId),
     );
-    return (response.data['data'] as List)
-        .map((json) => EmergencyContactDto.fromJson(json))
-        .toList();
+    // 통일된 ApiResponse 구조 사용
+    
+    if (response.data['success'] == true) {
+      return (response.data['data'] as List)
+          .map((json) => EmergencyContactDto.fromJson(json))
+          .toList();
+    } else {
+      throw Exception(response.data['message'] ?? '긴급 연락처 조회에 실패했습니다');
+    }
   }
 
   /// 권한 확인
   Future<bool> checkPermission(
       int guardianId, int userId, String permissionType) async {
     final response = await _apiClient.get(
-      '/guardian-relationships/check-permission',
+      ApiEndpoints.checkPermission,
       queryParameters: {
         'guardianId': guardianId,
         'userId': userId,
         'permissionType': permissionType,
       },
     );
-    return response.data['data'] as bool;
+    // 통일된 ApiResponse 구조 사용
+    
+    if (response.data['success'] == true) {
+      return response.data['data'] as bool;
+    } else {
+      throw Exception(response.data['message'] ?? '권한 확인에 실패했습니다');
+    }
   }
 
   /// 활동 시간 업데이트
   Future<void> updateActivity(int guardianId, int userId) async {
     await _apiClient.post(
-      '/guardian-relationships/update-activity',
+      ApiEndpoints.updateActivity,
       queryParameters: {
         'guardianId': guardianId,
         'userId': userId,

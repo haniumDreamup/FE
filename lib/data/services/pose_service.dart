@@ -18,6 +18,7 @@ class PoseService {
         data: poseData.toJson(),
       );
 
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
       if (response.data['success'] == true) {
         return PoseResponseModel.fromJson(response.data['data']);
       } else {
@@ -39,6 +40,7 @@ class PoseService {
         data: poseDataList.map((e) => e.toJson()).toList(),
       );
 
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
       if (response.data['success'] == true) {
         final List<dynamic> data = response.data['data'] ?? [];
         return data.map((json) => PoseResponseModel.fromJson(json)).toList();
@@ -59,6 +61,7 @@ class PoseService {
         ApiEndpoints.fallStatusPath(userId),
       );
 
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
       if (response.data['success'] == true) {
         return FallStatusModel.fromJson(response.data['data']);
       } else {
@@ -82,6 +85,7 @@ class PoseService {
         data: feedback.toJson(),
       );
 
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
       if (response.data['success'] != true) {
         throw Exception(response.data['message'] ?? '피드백 전송 실패');
       }

@@ -12,7 +12,20 @@
           "package_name": "com.bifai.reminder.bifai_app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "361112360154-ql5m517br6oj90oghggife6qr2pbj8ic.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bifai.reminder.bifai_app",
+            "certificate_hash": "52207ca33dc3a0f968f0196989a82bdd6f8dc523"
+          }
+        },
+        {
+          "client_id": "361112360154-j0mt17u4p3ti9end0en5oih5740e7n8d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAX__g9mNxidSPqnennaTp41KA9VrERjOA"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "361112360154-j0mt17u4p3ti9end0en5oih5740e7n8d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

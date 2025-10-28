@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 import '../../../core/config/toss_theme.dart';
+import '../../../data/services/image_analysis_service.dart';
 import '../../providers/accessibility_provider.dart';
 import '../../widgets/common/accessible_button.dart';
 
@@ -14,8 +17,11 @@ class AiVisionScreen extends StatefulWidget {
 class _AiVisionScreenState extends State<AiVisionScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
+  final ImageAnalysisService _imageAnalysisService = ImageAnalysisService();
   bool _isProcessing = false;
   String? _lastResult;
+  final ImagePicker _picker = ImagePicker();
+  XFile? _selectedImage;
 
   @override
   void initState() {
@@ -181,7 +187,7 @@ class _AiVisionScreenState extends State<AiVisionScreen>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          '기능 선택',
+          '사진 분석하기',
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -189,45 +195,85 @@ class _AiVisionScreenState extends State<AiVisionScreen>
           ),
         ),
         const SizedBox(height: 16),
-        GridView.count(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          crossAxisCount: 2,
-          crossAxisSpacing: 12,
-          mainAxisSpacing: 12,
-          childAspectRatio: 1.2,
-          children: [
-            _buildFeatureCard(
-              title: '글자 읽기',
-              subtitle: '사진 속 글자를\n소리로 읽어드려요',
-              icon: Icons.text_fields,
-              color: TossColors.blue500,
-              onTap: () => _startTextRecognition(),
-            ),
-            _buildFeatureCard(
-              title: '물건 이름',
-              subtitle: '물건 이름을\n알려드려요',
-              icon: Icons.camera_alt,
-              color: TossColors.orange500,
-              onTap: () => _startObjectRecognition(),
-            ),
-            _buildFeatureCard(
-              title: '색깔 찾기',
-              subtitle: '물건의 색깔을\n알려드려요',
-              icon: Icons.palette,
-              color: TossColors.purple500,
-              onTap: () => _startColorRecognition(),
-            ),
-            _buildFeatureCard(
-              title: '운동 도움',
-              subtitle: '올바른 자세를\n알려드려요',
-              icon: Icons.accessibility_new,
-              color: TossColors.green500,
-              onTap: () => _startPoseRecognition(),
-            ),
-          ],
-        ),
+        _buildMainAnalysisButton(),
       ],
+    );
+  }
+
+  Widget _buildMainAnalysisButton() {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [TossColors.blue500, TossColors.purple500],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: TossColors.blue500.withValues(alpha: 0.3),
+            blurRadius: 15,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: _isProcessing ? null : _startAnalysis,
+          borderRadius: BorderRadius.circular(20),
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Row(
+              children: [
+                Container(
+                  width: 64,
+                  height: 64,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: const Icon(
+                    Icons.auto_awesome,
+                    color: Colors.white,
+                    size: 32,
+                  ),
+                ),
+                const SizedBox(width: 20),
+                const Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '사진 분석하기',
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        'AI가 사진 속 물건, 글자, 색깔을\n자동으로 분석해드려요',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.white,
+                          height: 1.4,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const Icon(
+                  Icons.arrow_forward_ios,
+                  color: Colors.white,
+                  size: 24,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 
@@ -256,37 +302,42 @@ class _AiVisionScreenState extends State<AiVisionScreen>
           borderRadius: BorderRadius.circular(16),
           onTap: onTap,
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  width: 48,
-                  height: 48,
+                  width: 40,
+                  height: 40,
                   decoration: BoxDecoration(
                     color: color.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Icon(icon, color: color, size: 24),
+                  child: Icon(icon, color: color, size: 22),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 8),
                 Text(
                   title,
                   style: const TextStyle(
-                    fontSize: 16,
+                    fontSize: 14,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),
                   textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 2),
                 Text(
                   subtitle,
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: 11,
                     color: TossColors.grey600,
                   ),
                   textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
@@ -345,11 +396,17 @@ class _AiVisionScreenState extends State<AiVisionScreen>
                   ],
                 ),
                 const SizedBox(height: 12),
-                Text(
-                  _lastResult!,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.black,
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxHeight: 300),
+                  child: SingleChildScrollView(
+                    child: Text(
+                      _lastResult!,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.black,
+                        height: 1.5,
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -411,133 +468,167 @@ class _AiVisionScreenState extends State<AiVisionScreen>
     );
   }
 
-  Future<void> _startTextRecognition() async {
+  Future<void> _startAnalysis() async {
     final accessibility = context.read<AccessibilityProvider>();
-    await accessibility.speak('글자 읽기를 시작해요');
+    await accessibility.speak('사진을 분석할게요');
 
-    setState(() {
-      _isProcessing = true;
-    });
+    // 이미지 소스 선택 다이얼로그 표시
+    _showImageSourceDialog('분석');
+  }
 
-    _animationController.repeat();
+  Future<void> _pickImage(ImageSource source, String featureType) async {
+    try {
+      final XFile? image = await _picker.pickImage(source: source);
+      if (image == null) return;
 
-    // Mock processing delay
-    await Future.delayed(const Duration(seconds: 3));
+      setState(() {
+        _selectedImage = image;
+        _isProcessing = true;
+      });
 
-    setState(() {
-      _isProcessing = false;
-      _lastResult = '읽은 글자: "하루 2번 아침 저녁으로 드세요"';
-    });
+      _animationController.repeat();
 
-    _animationController.stop();
-    _animationController.reset();
+      // 로딩 다이얼로그 표시
+      if (mounted) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => AlertDialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(color: TossColors.blue500),
+                const SizedBox(height: 16),
+                const Text(
+                  '사진을 분석하고 있어요...',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  '2-3초만 기다려주세요',
+                  style: TextStyle(fontSize: 14, color: TossColors.grey600),
+                ),
+              ],
+            ),
+          ),
+        );
+      }
 
-    await accessibility.speak(_lastResult!);
-
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('글자 읽기가 끝났어요'),
-          backgroundColor: TossColors.green500,
-        ),
+      // 실제 Google Vision API로 이미지 분석
+      final imageFile = File(image.path);
+      final visionResult = await _imageAnalysisService.visionAnalyze(
+        imageFile: imageFile,
       );
+
+      // 백엔드에서 제공하는 간단한 설명 사용 (모든 정보 포함)
+      final simpleDescription = visionResult['simpleDescription'] as String?;
+
+      String result = simpleDescription ?? '이미지를 분석했어요';
+
+      String successMessage = '분석이 끝났어요';
+
+      setState(() {
+        _isProcessing = false;
+        _lastResult = result;
+      });
+
+      _animationController.stop();
+      _animationController.reset();
+
+      // 로딩 다이얼로그 닫기
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
+
+      final accessibility = context.read<AccessibilityProvider>();
+      await accessibility.speak(result);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(successMessage),
+            backgroundColor: TossColors.green500,
+          ),
+        );
+      }
+    } catch (e) {
+      setState(() {
+        _isProcessing = false;
+      });
+      _animationController.stop();
+      _animationController.reset();
+
+      // 로딩 다이얼로그 닫기
+      if (mounted) {
+        Navigator.of(context, rootNavigator: true).pop();
+      }
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('분석 실패: ${e.toString().replaceAll('Exception: ', '')}'),
+            backgroundColor: TossColors.red500,
+          ),
+        );
+      }
     }
   }
 
-  Future<void> _startObjectRecognition() async {
-    final accessibility = context.read<AccessibilityProvider>();
-    await accessibility.speak('물건 이름을 찾고 있어요');
-
-    setState(() {
-      _isProcessing = true;
-    });
-
-    _animationController.repeat();
-
-    await Future.delayed(const Duration(seconds: 3));
-
-    setState(() {
-      _isProcessing = false;
-      _lastResult = '찾은 물건: 파란색 물컵';
-    });
-
-    _animationController.stop();
-    _animationController.reset();
-
-    await accessibility.speak(_lastResult!);
-
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('물건 이름을 찾았어요'),
-          backgroundColor: TossColors.green500,
+  void _showImageSourceDialog(String featureType) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Row(
+          children: [
+            Icon(Icons.photo_camera, color: TossColors.blue500),
+            SizedBox(width: 12),
+            Text('사진 선택', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          ],
         ),
-      );
-    }
-  }
-
-  Future<void> _startColorRecognition() async {
-    final accessibility = context.read<AccessibilityProvider>();
-    await accessibility.speak('색깔을 찾고 있어요');
-
-    setState(() {
-      _isProcessing = true;
-    });
-
-    _animationController.repeat();
-
-    await Future.delayed(const Duration(seconds: 2));
-
-    setState(() {
-      _isProcessing = false;
-      _lastResult = '찾은 색깔: 밝은 파란색';
-    });
-
-    _animationController.stop();
-    _animationController.reset();
-
-    await accessibility.speak(_lastResult!);
-
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('색깔을 찾았어요'),
-          backgroundColor: TossColors.green500,
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: TossColors.blue100,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Icon(Icons.camera_alt, color: TossColors.blue500),
+              ),
+              title: const Text('카메라로 찍기', style: TextStyle(fontWeight: FontWeight.w600)),
+              subtitle: const Text('새로운 사진을 찍어요'),
+              onTap: () {
+                Navigator.pop(context);
+                _pickImage(ImageSource.camera, featureType);
+              },
+            ),
+            const SizedBox(height: 8),
+            ListTile(
+              leading: Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: TossColors.purple100,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Icon(Icons.photo_library, color: TossColors.purple500),
+              ),
+              title: const Text('갤러리에서 선택', style: TextStyle(fontWeight: FontWeight.w600)),
+              subtitle: const Text('저장된 사진을 선택해요'),
+              onTap: () {
+                Navigator.pop(context);
+                _pickImage(ImageSource.gallery, featureType);
+              },
+            ),
+          ],
         ),
-      );
-    }
-  }
-
-  Future<void> _startPoseRecognition() async {
-    final accessibility = context.read<AccessibilityProvider>();
-    await accessibility.speak('자세를 확인하고 있어요');
-
-    setState(() {
-      _isProcessing = true;
-    });
-
-    _animationController.repeat();
-
-    await Future.delayed(const Duration(seconds: 3));
-
-    setState(() {
-      _isProcessing = false;
-      _lastResult = '자세 확인: 등이 조금 구부러졌어요. 허리를 펴보세요';
-    });
-
-    _animationController.stop();
-    _animationController.reset();
-
-    await accessibility.speak(_lastResult!);
-
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('자세 확인이 끝났어요'),
-          backgroundColor: TossColors.green500,
-        ),
-      );
-    }
+      ),
+    );
   }
 
   void _showHelpDialog() {

@@ -16,6 +16,7 @@ class ScheduleScreen extends StatefulWidget {
 
 class _ScheduleScreenState extends State<ScheduleScreen> {
   int _selectedIndex = 1; // 일정 탭 (0: 홈, 1: 일정, 2: 알림, 3: 내정보)
+  DateTime _selectedDate = DateTime.now();
 
   @override
   void initState() {
@@ -36,10 +37,17 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
-            onPressed: () {
-              AppNavigation.toScheduleAdd(context);
-              // GoRouter는 자동으로 뒤로가기 처리하므로 별도 리프레시 로직 필요
-              // 화면 재진입 시 initState에서 자동으로 로드됨
+            onPressed: () async {
+              final result = await context.push('/schedule/add');
+              // 일정 추가 성공 시 리프레시
+              if (result == true && mounted) {
+                print('📅 [ScheduleScreen] 일정 추가 완료, 리프레시 시작');
+                if (_isToday(_selectedDate)) {
+                  context.read<ScheduleProvider>().loadTodaySchedules();
+                } else {
+                  context.read<ScheduleProvider>().loadSchedulesByDate(_selectedDate);
+                }
+              }
             },
           ),
         ],
@@ -85,10 +93,17 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
               );
             }
 
-            final todaySchedules = scheduleProvider.todaySchedules;
+            final displayedSchedules = scheduleProvider.displayedSchedules;
+            final isToday = _isToday(_selectedDate);
 
             return RefreshIndicator(
-              onRefresh: () => scheduleProvider.loadTodaySchedules(),
+              onRefresh: () {
+                if (isToday) {
+                  return scheduleProvider.loadTodaySchedules();
+                } else {
+                  return scheduleProvider.loadSchedulesByDate(_selectedDate);
+                }
+              },
               child: ListView(
                 padding: const EdgeInsets.all(16),
                 children: [
@@ -132,34 +147,57 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                     children: List.generate(7, (index) {
                       final date = DateTime.now().add(Duration(days: index - 3));
                       final isToday = index == 3;
-                      return Column(
-                        children: [
-                          Text(
-                            _getWeekdayName(date.weekday),
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: isToday ? TossTheme.primaryColor : Colors.grey,
+                      final isSelected = _selectedDate.year == date.year &&
+                                        _selectedDate.month == date.month &&
+                                        _selectedDate.day == date.day;
+                      return GestureDetector(
+                        onTap: () {
+                          print('📅 [ScheduleScreen] 날짜 클릭: ${date.year}-${date.month}-${date.day}');
+                          setState(() {
+                            _selectedDate = date;
+                          });
+                          // 선택한 날짜의 일정 조회
+                          if (isToday) {
+                            print('📅 [ScheduleScreen] 오늘 날짜 선택 → loadTodaySchedules 호출');
+                            context.read<ScheduleProvider>().loadTodaySchedules();
+                          } else {
+                            print('📅 [ScheduleScreen] 다른 날짜 선택 → loadSchedulesByDate 호출');
+                            context.read<ScheduleProvider>().loadSchedulesByDate(date);
+                          }
+                        },
+                        child: Column(
+                          children: [
+                            Text(
+                              _getWeekdayName(date.weekday),
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: isSelected ? TossTheme.primaryColor : Colors.grey,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 4),
-                          Container(
-                            width: 40,
-                            height: 40,
-                            decoration: BoxDecoration(
-                              color: isToday ? TossTheme.primaryColor : Colors.transparent,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Center(
-                              child: Text(
-                                date.day.toString(),
-                                style: TextStyle(
-                                  color: isToday ? Colors.white : Colors.black,
-                                  fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
+                            const SizedBox(height: 4),
+                            Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: isSelected ? TossTheme.primaryColor : Colors.transparent,
+                                borderRadius: BorderRadius.circular(20),
+                                border: isToday && !isSelected
+                                    ? Border.all(color: TossTheme.primaryColor, width: 2)
+                                    : null,
+                              ),
+                              child: Center(
+                                child: Text(
+                                  date.day.toString(),
+                                  style: TextStyle(
+                                    color: isSelected ? Colors.white :
+                                           isToday ? TossTheme.primaryColor : Colors.black,
+                                    fontWeight: isSelected || isToday ? FontWeight.bold : FontWeight.normal,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       );
                     }),
                   ),
@@ -168,19 +206,19 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
             ),
             const SizedBox(height: 24),
 
-            // Today's Schedule
+            // Schedule List
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  '오늘의 일정',
-                  style: TextStyle(
+                Text(
+                  isToday ? '오늘의 일정' : '${_selectedDate.month}월 ${_selectedDate.day}일 일정',
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Text(
-                  '${todaySchedules.length}개',
+                  '${displayedSchedules.length}개',
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.grey.shade600,
@@ -190,7 +228,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
             ),
             const SizedBox(height: 12),
 
-            if (todaySchedules.isEmpty)
+            if (displayedSchedules.isEmpty)
               Center(
                 child: Padding(
                   padding: const EdgeInsets.all(32),
@@ -203,7 +241,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        '오늘 예정된 일정이 없습니다',
+                        isToday ? '오늘 예정된 일정이 없습니다' : '선택한 날짜에 일정이 없습니다',
                         style: TextStyle(
                           color: Colors.grey.shade600,
                           fontSize: 16,
@@ -214,7 +252,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                 ),
               )
             else
-              ...todaySchedules.map((schedule) => _ScheduleItem(
+              ...displayedSchedules.map((schedule) => _ScheduleItem(
                 schedule: schedule,
                 onTap: () => _showScheduleDetail(schedule),
                 onComplete: () => _toggleScheduleComplete(schedule),
@@ -411,6 +449,13 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         return '';
     }
   }
+
+  bool _isToday(DateTime date) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final checkDate = DateTime(date.year, date.month, date.day);
+    return today.isAtSameMomentAs(checkDate);
+  }
 }
 
 class _ScheduleItem extends StatelessWidget {
@@ -559,12 +604,10 @@ class _ScheduleItem extends StatelessWidget {
         return const Color(0xFF4CAF50);
       case ScheduleType.appointment:
         return TossTheme.primaryColor;
-      case ScheduleType.therapy:
-        return const Color(0xFF9C27B0);
-      case ScheduleType.hygiene:
-        return const Color(0xFF00BCD4);
-      case ScheduleType.safetyCheck:
+      case ScheduleType.emergencyCheck:
         return TossTheme.errorColor;
+      case ScheduleType.healthCheck:
+        return const Color(0xFF9C27B0);
       case ScheduleType.socialActivity:
         return const Color(0xFFFF5722);
       case ScheduleType.personalCare:
@@ -584,12 +627,10 @@ class _ScheduleItem extends StatelessWidget {
         return Icons.fitness_center;
       case ScheduleType.appointment:
         return Icons.local_hospital;
-      case ScheduleType.therapy:
-        return Icons.accessibility_new;
-      case ScheduleType.hygiene:
-        return Icons.clean_hands;
-      case ScheduleType.safetyCheck:
+      case ScheduleType.emergencyCheck:
         return Icons.verified_user;
+      case ScheduleType.healthCheck:
+        return Icons.health_and_safety;
       case ScheduleType.socialActivity:
         return Icons.people;
       case ScheduleType.personalCare:

@@ -16,6 +16,8 @@ class GeofenceService {
         data: request.toJson(),
       );
 
+      // GeofenceController는 제네릭 없는 ApiResponse를 반환하므로 OptimizedApiResponse로 래핑됨
+      
       if (response.data['success'] == true) {
         return GeofenceModel.fromJson(response.data['data']);
       } else {
@@ -36,6 +38,8 @@ class GeofenceService {
         data: request.toJson(),
       );
 
+      // GeofenceController는 제네릭 없는 ApiResponse를 반환하므로 OptimizedApiResponse로 래핑됨
+      
       if (response.data['success'] == true) {
         return GeofenceModel.fromJson(response.data['data']);
       } else {
@@ -53,6 +57,8 @@ class GeofenceService {
     try {
       final response = await _apiClient.dio.delete(ApiEndpoints.geofenceDetailPath(geofenceId));
 
+      // GeofenceController는 제네릭 없는 ApiResponse를 반환하므로 OptimizedApiResponse로 래핑됨
+      
       if (response.data['success'] != true) {
         throw Exception(response.data['message'] ?? '지오펜스를 삭제할 수 없습니다');
       }
@@ -68,6 +74,8 @@ class GeofenceService {
     try {
       final response = await _apiClient.dio.get(ApiEndpoints.geofenceDetailPath(geofenceId));
 
+      // GeofenceController는 제네릭 없는 ApiResponse를 반환하므로 OptimizedApiResponse로 래핑됨
+      
       if (response.data['success'] == true) {
         return GeofenceModel.fromJson(response.data['data']);
       } else {
@@ -85,6 +93,8 @@ class GeofenceService {
     try {
       final response = await _apiClient.dio.get(ApiEndpoints.geofences);
 
+      // GeofenceController는 제네릭 없는 ApiResponse를 반환하므로 OptimizedApiResponse로 래핑됨
+      
       if (response.data['success'] == true) {
         final List<dynamic> data = response.data['data'] ?? [];
         return data.map((json) => GeofenceModel.fromJson(json)).toList();
@@ -109,6 +119,8 @@ class GeofenceService {
         },
       );
 
+      // GeofenceController는 제네릭 없는 ApiResponse를 반환하므로 OptimizedApiResponse로 래핑됨
+      
       if (response.data['success'] == true) {
         final data = response.data['data'];
         if (data is Map && data['content'] != null) {
@@ -133,6 +145,8 @@ class GeofenceService {
     try {
       final response = await _apiClient.dio.get(ApiEndpoints.geofenceByTypePath(type));
 
+      // GeofenceController는 제네릭 없는 ApiResponse를 반환하므로 OptimizedApiResponse로 래핑됨
+      
       if (response.data['success'] == true) {
         final List<dynamic> data = response.data['data'] ?? [];
         return data.map((json) => GeofenceModel.fromJson(json)).toList();
@@ -151,6 +165,8 @@ class GeofenceService {
     try {
       final response = await _apiClient.dio.patch(ApiEndpoints.toggleGeofencePath(geofenceId));
 
+      // GeofenceController는 제네릭 없는 ApiResponse를 반환하므로 OptimizedApiResponse로 래핑됨
+      
       if (response.data['success'] == true) {
         return GeofenceModel.fromJson(response.data['data']);
       } else {
@@ -173,6 +189,8 @@ class GeofenceService {
         data: {'priorities': priorities},
       );
 
+      // GeofenceController는 제네릭 없는 ApiResponse를 반환하므로 OptimizedApiResponse로 래핑됨
+      
       if (response.data['success'] == true) {
         final List<dynamic> data = response.data['data'] ?? [];
         return data.map((json) => GeofenceModel.fromJson(json)).toList();
@@ -191,6 +209,8 @@ class GeofenceService {
     try {
       final response = await _apiClient.dio.get(ApiEndpoints.geofenceStats);
 
+      // GeofenceController는 제네릭 없는 ApiResponse를 반환하므로 OptimizedApiResponse로 래핑됨
+      
       if (response.data['success'] == true) {
         return response.data['data'] ?? {};
       } else {

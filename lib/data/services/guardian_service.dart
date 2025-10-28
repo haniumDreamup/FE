@@ -13,9 +13,15 @@ class GuardianService {
   Future<List<GuardianModel>> getMyGuardians() async {
     try {
       final response = await _apiClient.dio.get(ApiEndpoints.myGuardians);
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
+
+      // data가 비어있는 경우 빈 리스트 반환 (에러가 아님)
+      final List<dynamic> data = response.data['data'] ?? [];
+      if (data.isEmpty) {
+        return [];
+      }
 
       if (response.data['success'] == true) {
-        final List<dynamic> data = response.data['data'] ?? [];
         return data.map((json) => GuardianModel.fromJson(json)).toList();
       } else {
         throw Exception(response.data['message'] ?? '보호자 목록을 불러올 수 없습니다');
@@ -31,9 +37,15 @@ class GuardianService {
   Future<List<ProtectedUserModel>> getProtectedUsers() async {
     try {
       final response = await _apiClient.dio.get(ApiEndpoints.protectedUsers);
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
+
+      // data가 비어있는 경우 빈 리스트 반환 (에러가 아님)
+      final List<dynamic> data = response.data['data'] ?? [];
+      if (data.isEmpty) {
+        return [];
+      }
 
       if (response.data['success'] == true) {
-        final List<dynamic> data = response.data['data'] ?? [];
         return data.map((json) => ProtectedUserModel.fromJson(json)).toList();
       } else {
         throw Exception(response.data['message'] ?? '보호 사용자 목록을 불러올 수 없습니다');
@@ -52,6 +64,7 @@ class GuardianService {
         ApiEndpoints.guardians,
         data: request.toJson(),
       );
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
 
       if (response.data['success'] == true) {
         return GuardianModel.fromJson(response.data['data']);
@@ -72,6 +85,7 @@ class GuardianService {
         ApiEndpoints.approveGuardianPath(guardianId),
         data: message != null ? {'message': message} : null,
       );
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
 
       if (response.data['success'] == true) {
         return GuardianModel.fromJson(response.data['data']);
@@ -92,6 +106,7 @@ class GuardianService {
         ApiEndpoints.rejectGuardianPath(guardianId),
         data: reason != null ? {'reason': reason} : null,
       );
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
 
       if (response.data['success'] != true) {
         throw Exception(response.data['message'] ?? '보호자 요청을 거절할 수 없습니다');
@@ -113,6 +128,7 @@ class GuardianService {
         ApiEndpoints.updateGuardianPermissionsPath(guardianId),
         data: request.toJson(),
       );
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
 
       if (response.data['success'] == true) {
         return GuardianModel.fromJson(response.data['data']);
@@ -130,6 +146,7 @@ class GuardianService {
   Future<void> removeGuardian(int guardianId) async {
     try {
       final response = await _apiClient.dio.delete(ApiEndpoints.removeGuardianPath(guardianId));
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
 
       if (response.data['success'] != true) {
         throw Exception(response.data['message'] ?? '보호자를 제거할 수 없습니다');
@@ -147,6 +164,7 @@ class GuardianService {
       final response = await _apiClient.dio.delete(
         ApiEndpoints.removeGuardianRelationshipPath(guardianId),
       );
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
 
       if (response.data['success'] != true) {
         throw Exception(response.data['message'] ?? '보호 관계를 제거할 수 없습니다');
@@ -200,6 +218,7 @@ class GuardianRelationshipService {
         ApiEndpoints.inviteGuardian,
         data: request.toJson(),
       );
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
 
       if (response.data['success'] == true) {
         return GuardianRelationshipModel.fromJson(response.data['data']);
@@ -214,12 +233,36 @@ class GuardianRelationshipService {
   }
 
   /// 초대 수락
+  /// 받은 초대 목록 조회
+  Future<List<GuardianRelationshipModel>> getMyInvitations() async {
+    try {
+      final response = await _apiClient.dio.get(ApiEndpoints.myInvitations);
+
+      // 빈 목록도 정상 처리
+      final List<dynamic> data = response.data['data'] ?? [];
+      if (data.isEmpty) {
+        return [];
+      }
+
+      if (response.data['success'] == true) {
+        return data.map((json) => GuardianRelationshipModel.fromJson(json)).toList();
+      } else {
+        throw Exception(response.data['message'] ?? '초대 목록을 불러올 수 없습니다');
+      }
+    } on DioException catch (e) {
+      throw _handleDioException(e);
+    } catch (e) {
+      throw Exception('초대 목록 조회 중 오류가 발생했습니다: $e');
+    }
+  }
+
   Future<GuardianRelationshipModel> acceptInvitation(String invitationToken) async {
     try {
       final response = await _apiClient.dio.post(
         ApiEndpoints.acceptInvitation,
         data: {'invitationToken': invitationToken},
       );
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
 
       if (response.data['success'] == true) {
         return GuardianRelationshipModel.fromJson(response.data['data']);
@@ -243,6 +286,7 @@ class GuardianRelationshipService {
           if (reason != null) 'reason': reason,
         },
       );
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
 
       if (response.data['success'] != true) {
         throw Exception(response.data['message'] ?? '초대를 거절할 수 없습니다');
@@ -264,6 +308,7 @@ class GuardianRelationshipService {
         ApiEndpoints.updateRelationshipPermissionsPath(relationshipId),
         data: request.toJson(),
       );
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
 
       if (response.data['success'] == true) {
         return GuardianRelationshipModel.fromJson(response.data['data']);
@@ -284,6 +329,7 @@ class GuardianRelationshipService {
         ApiEndpoints.suspendRelationshipPath(relationshipId),
         data: reason != null ? {'reason': reason} : null,
       );
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
 
       if (response.data['success'] == true) {
         return GuardianRelationshipModel.fromJson(response.data['data']);
@@ -303,6 +349,7 @@ class GuardianRelationshipService {
       final response = await _apiClient.dio.post(
         ApiEndpoints.reactivateRelationshipPath(relationshipId),
       );
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
 
       if (response.data['success'] == true) {
         return GuardianRelationshipModel.fromJson(response.data['data']);
@@ -322,6 +369,7 @@ class GuardianRelationshipService {
       final response = await _apiClient.dio.delete(
         ApiEndpoints.terminateRelationshipPath(relationshipId),
       );
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
 
       if (response.data['success'] != true) {
         throw Exception(response.data['message'] ?? '관계를 종료할 수 없습니다');
@@ -337,6 +385,7 @@ class GuardianRelationshipService {
   Future<List<GuardianRelationshipModel>> getUserGuardians(int userId) async {
     try {
       final response = await _apiClient.dio.get(ApiEndpoints.getUserGuardiansPath(userId));
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
 
       if (response.data['success'] == true) {
         final List<dynamic> data = response.data['data'] ?? [];
@@ -355,6 +404,7 @@ class GuardianRelationshipService {
   Future<List<GuardianRelationshipModel>> getGuardianUsers(int guardianId) async {
     try {
       final response = await _apiClient.dio.get(ApiEndpoints.getGuardianUsersPath(guardianId));
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
 
       if (response.data['success'] == true) {
         final List<dynamic> data = response.data['data'] ?? [];
@@ -379,6 +429,7 @@ class GuardianRelationshipService {
           'permission': permission,
         },
       );
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
 
       if (response.data['success'] == true) {
         return response.data['data'] ?? false;
@@ -401,6 +452,7 @@ class GuardianRelationshipService {
           ...activityData,
         },
       );
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
 
       if (response.data['success'] != true) {
         throw Exception(response.data['message'] ?? '활동을 업데이트할 수 없습니다');
@@ -451,6 +503,7 @@ class GuardianDashboardService {
   Future<Map<String, dynamic>> getDailySummary(int userId) async {
     try {
       final response = await _apiClient.dio.get(ApiEndpoints.dailySummaryPath(userId));
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
 
       if (response.data['success'] == true) {
         return response.data['data'] ?? {};
@@ -468,6 +521,7 @@ class GuardianDashboardService {
   Future<Map<String, dynamic>> getWeeklySummary(int userId) async {
     try {
       final response = await _apiClient.dio.get(ApiEndpoints.weeklySummaryPath(userId));
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
 
       if (response.data['success'] == true) {
         return response.data['data'] ?? {};
@@ -485,6 +539,7 @@ class GuardianDashboardService {
   Future<GuardianDashboardModel> getIntegratedDashboard(int userId) async {
     try {
       final response = await _apiClient.dio.get(ApiEndpoints.integratedDashboardPath(userId));
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
 
       if (response.data['success'] == true) {
         return GuardianDashboardModel.fromJson(response.data['data']);

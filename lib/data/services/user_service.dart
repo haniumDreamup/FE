@@ -13,6 +13,7 @@ class UserService {
   Future<UserModel> getCurrentUser() async {
     try {
       final response = await _apiClient.dio.get(ApiEndpoints.userMe);
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
 
       if (response.data['success'] == true) {
         return UserModel.fromJson(response.data['data']);
@@ -33,6 +34,7 @@ class UserService {
         ApiEndpoints.userMe,
         data: request.toJson(),
       );
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
 
       if (response.data['success'] == true) {
         return UserModel.fromJson(response.data['data']);
@@ -50,6 +52,7 @@ class UserService {
   Future<UserModel> getUserById(int userId) async {
     try {
       final response = await _apiClient.dio.get(ApiEndpoints.userDetailPath(userId));
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
 
       if (response.data['success'] == true) {
         return UserModel.fromJson(response.data['data']);
@@ -73,6 +76,7 @@ class UserService {
           'size': size,
         },
       );
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
 
       if (response.data['success'] == true) {
         final data = response.data['data'];
@@ -97,6 +101,7 @@ class UserService {
   Future<void> deactivateUser(int userId) async {
     try {
       final response = await _apiClient.dio.put(ApiEndpoints.deactivateUserPath(userId));
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
 
       if (response.data['success'] != true) {
         throw Exception(response.data['message'] ?? '사용자를 비활성화할 수 없습니다');
@@ -112,6 +117,7 @@ class UserService {
   Future<void> activateUser(int userId) async {
     try {
       final response = await _apiClient.dio.put(ApiEndpoints.activateUserPath(userId));
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
 
       if (response.data['success'] != true) {
         throw Exception(response.data['message'] ?? '사용자를 활성화할 수 없습니다');
@@ -130,6 +136,7 @@ class UserService {
         ApiEndpoints.updateUserRolesPath(userId),
         data: {'roleIds': roleIds},
       );
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
 
       if (response.data['success'] == true) {
         return UserModel.fromJson(response.data['data']);
@@ -154,6 +161,7 @@ class UserService {
           'size': size,
         },
       );
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
 
       if (response.data['success'] == true) {
         final data = response.data['data'];

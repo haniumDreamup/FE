@@ -19,12 +19,32 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   final _formKey = GlobalKey<FormState>();
   int _selectedIndex = 3; // 내정보 탭 (0: 홈, 1: 일정, 2: 알림, 3: 내정보)
 
-  // Mock user data
-  final TextEditingController _nameController = TextEditingController(text: '홍길동');
-  final TextEditingController _emailController = TextEditingController(text: 'hong@example.com');
-  final TextEditingController _phoneController = TextEditingController(text: '010-1234-5678');
-  final TextEditingController _birthController = TextEditingController(text: '1990-01-01');
-  final TextEditingController _addressController = TextEditingController(text: '서울시 강남구 테헤란로 123');
+  // User data controllers - 초기값은 빈 문자열, initState에서 실제 데이터 설정
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _birthController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    // AuthProvider에서 실제 사용자 정보 가져오기
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final authProvider = context.read<AuthProvider>();
+      final user = authProvider.currentUser;
+      if (user != null) {
+        setState(() {
+          _nameController.text = user.fullName ?? user.username;
+          _emailController.text = user.email;
+          // 나머지 정보는 추후 백엔드 API에서 가져올 수 있음
+          _phoneController.text = ''; // 백엔드에 추가 필요
+          _birthController.text = ''; // 백엔드에 추가 필요
+          _addressController.text = ''; // 백엔드에 추가 필요
+        });
+      }
+    });
+  }
 
   @override
   void dispose() {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:dio/dio.dart';
 import '../../../core/config/toss_theme.dart';
 import '../../../core/utils/error_handler.dart';
 import '../../../data/services/guardian_relationship_service.dart';
@@ -77,6 +78,25 @@ class _AddGuardianScreenState extends State<AddGuardianScreen> {
         ErrorHandler.showSuccessSnackBar(context, '보호자 초대를 보냈습니다');
         Navigator.pop(context, true);
       }
+    } on DioException catch (e) {
+      if (mounted) {
+        String errorMsg = '보호자 초대에 실패했습니다';
+
+        // 에러 메시지 추출
+        if (e.error is Map) {
+          final errorMap = e.error as Map;
+          if (errorMap['message'] != null) {
+            errorMsg = errorMap['message'].toString();
+          }
+        } else if (e.response?.data != null) {
+          final data = e.response!.data;
+          if (data is Map && data['message'] != null) {
+            errorMsg = data['message'].toString();
+          }
+        }
+
+        ErrorHandler.showErrorSnackBar(context, errorMsg);
+      }
     } catch (e) {
       if (mounted) {
         ErrorHandler.showErrorSnackBar(
@@ -93,14 +113,24 @@ class _AddGuardianScreenState extends State<AddGuardianScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: TossTheme.backgroundColor,
-      appBar: AppBar(
-        title: const Text('보호자 초대'),
-        backgroundColor: Colors.white,
-        elevation: 0,
-      ),
-      body: SafeArea(
+    return PopScope(
+      canPop: !_isLoading,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        if (_isLoading) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('초대를 보내는 중입니다. 잠시만 기다려주세요.')),
+          );
+        }
+      },
+      child: Scaffold(
+        backgroundColor: TossTheme.backgroundColor,
+        appBar: AppBar(
+          title: const Text('보호자 초대'),
+          backgroundColor: Colors.white,
+          elevation: 0,
+        ),
+        body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
           child: Form(
@@ -242,6 +272,7 @@ class _AddGuardianScreenState extends State<AddGuardianScreen> {
             ),
           ),
         ),
+      ),
       ),
     );
   }

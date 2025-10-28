@@ -1,3 +1,5 @@
+import 'guardian_relationship_model.dart' show RelationshipType;
+
 /// 보호자 승인 상태
 enum ApprovalStatus {
   pending('PENDING', '대기'),
@@ -16,24 +18,75 @@ enum ApprovalStatus {
   }
 }
 
-/// 보호자 관계 유형
-enum RelationshipType {
-  parent('PARENT', '부모', '👨‍👩‍👧'),
-  sibling('SIBLING', '형제자매', '👫'),
-  caregiver('CAREGIVER', '돌봄제공자', '🤝'),
-  doctor('DOCTOR', '의사', '👨‍⚕️'),
-  other('OTHER', '기타', '📋');
+/// 관계 유형 helper (백엔드와 동기화된 RelationshipType enum 사용)
+class RelationshipTypeHelper {
+  static String getIcon(RelationshipType type) {
+    switch (type) {
+      case RelationshipType.parent:
+        return '👨‍👩‍👧';
+      case RelationshipType.sibling:
+        return '👫';
+      case RelationshipType.caregiver:
+        return '🤝';
+      case RelationshipType.professional:
+        return '👨‍⚕️';
+      case RelationshipType.spouse:
+        return '💑';
+      case RelationshipType.child:
+        return '👶';
+      case RelationshipType.relative:
+        return '👨‍👩‍👧‍👦';
+      case RelationshipType.friend:
+        return '🤝';
+      case RelationshipType.other:
+        return '📋';
+    }
+  }
 
-  const RelationshipType(this.code, this.description, this.icon);
-  final String code;
-  final String description;
-  final String icon;
+  static String getDescription(RelationshipType type) {
+    switch (type) {
+      case RelationshipType.parent:
+        return '부모';
+      case RelationshipType.spouse:
+        return '배우자';
+      case RelationshipType.child:
+        return '자녀';
+      case RelationshipType.sibling:
+        return '형제자매';
+      case RelationshipType.relative:
+        return '친척';
+      case RelationshipType.caregiver:
+        return '간병인';
+      case RelationshipType.professional:
+        return '전문가';
+      case RelationshipType.friend:
+        return '친구';
+      case RelationshipType.other:
+        return '기타';
+    }
+  }
 
-  static RelationshipType fromCode(String code) {
-    return RelationshipType.values.firstWhere(
-      (type) => type.code == code,
-      orElse: () => RelationshipType.other,
-    );
+  static RelationshipType fromString(String code) {
+    switch (code.toUpperCase()) {
+      case 'PARENT':
+        return RelationshipType.parent;
+      case 'SPOUSE':
+        return RelationshipType.spouse;
+      case 'CHILD':
+        return RelationshipType.child;
+      case 'SIBLING':
+        return RelationshipType.sibling;
+      case 'RELATIVE':
+        return RelationshipType.relative;
+      case 'CAREGIVER':
+        return RelationshipType.caregiver;
+      case 'PROFESSIONAL':
+        return RelationshipType.professional;
+      case 'FRIEND':
+        return RelationshipType.friend;
+      default:
+        return RelationshipType.other;
+    }
   }
 }
 
@@ -103,7 +156,7 @@ class GuardianModel {
       name: json['name'] ?? '',
       relationship: json['relationship'] ?? '',
       relationshipType: json['relationshipType'] != null
-          ? RelationshipType.fromCode(json['relationshipType'])
+          ? RelationshipTypeHelper.fromString(json['relationshipType'])
           : null,
       primaryPhone: json['primaryPhone'] ?? '',
       secondaryPhone: json['secondaryPhone'],
@@ -147,7 +200,7 @@ class GuardianModel {
       'id': id,
       'name': name,
       'relationship': relationship,
-      'relationshipType': relationshipType?.code,
+      'relationshipType': relationshipType?.name.toUpperCase(),
       'primaryPhone': primaryPhone,
       'secondaryPhone': secondaryPhone,
       'email': email,
@@ -176,7 +229,7 @@ class GuardianModel {
   /// 표시용 아이콘
   String get categoryIcon {
     if (relationshipType != null) {
-      return relationshipType!.icon;
+      return RelationshipTypeHelper.getIcon(relationshipType!);
     }
     // 관계 문자열로 폴백
     final rel = relationship.toLowerCase();

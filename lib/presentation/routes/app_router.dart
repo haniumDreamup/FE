@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import '../providers/auth_provider.dart';
 import '../screens/auth/login_screen.dart';
 import '../screens/auth/splash_screen.dart';
 import '../screens/auth/register_screen.dart';
 import '../screens/auth/onboarding_screen.dart';
-import '../screens/auth/forgot_password_screen.dart';
 import '../screens/home/home_screen.dart';
 import '../screens/schedule/schedule_screen.dart';
-import '../screens/medication/medication_list_screen.dart';
-import '../screens/medication/add_medication_screen.dart';
 import '../screens/schedule/add_schedule_screen.dart';
 import '../screens/schedule/schedule_detail_screen.dart';
-import '../screens/medication/medication_detail_screen.dart';
 import '../screens/profile/edit_profile_screen.dart';
 import '../screens/emergency/add_emergency_contact_screen.dart';
 import '../screens/guardian/add_guardian_screen.dart';
@@ -32,13 +29,10 @@ import '../screens/camera/wearable_camera_screen.dart';
 import '../screens/network/network_discovery_screen.dart';
 import '../screens/settings/accessibility_settings_screen.dart';
 import '../screens/settings/theme_settings_screen.dart';
-import '../screens/settings/notification_settings_screen.dart';
-import '../screens/settings/account_settings_screen.dart';
 import '../screens/schedule/schedule_edit_screen.dart';
-import '../screens/medication/medication_edit_screen.dart';
-import '../screens/medication/medication_history_screen.dart';
 import '../screens/emergency/edit_emergency_contact_screen.dart';
 import '../screens/guardian/guardian_detail_screen.dart';
+import '../screens/guardian/guardian_invitations_screen.dart';
 import '../screens/geofence/geofence_detail_screen.dart';
 
 class AppRouter {
@@ -49,25 +43,46 @@ class AppRouter {
     return GoRouter(
       initialLocation: '/splash',
       refreshListenable: authProvider,
-      redirect: (BuildContext context, GoRouterState state) {
+      onException: (BuildContext context, GoRouterState state, GoRouter router) {
+        // Kakao OAuth 딥링크 에러 무시 (Kakao SDK가 자동 처리)
+        if (state.uri.scheme.startsWith('kakao') || state.uri.scheme == 'kakaotalk') {
+          debugPrint('[DEBUG] Kakao OAuth 딥링크 에러 무시: ${state.uri}');
+          return; // 에러를 무시하고 그대로 진행
+        }
+        // 다른 에러는 404 페이지로
+        router.go('/login');
+      },
+      redirect: (BuildContext context, GoRouterState state) async {
         final isAuthenticated = authProvider.isAuthenticated;
         final currentLocation = state.matchedLocation;
+
+        // OAuth 콜백 딥링크는 무시 (Kakao SDK가 자동 처리)
+        final uri = state.uri;
+        if (uri.scheme.startsWith('kakao') || uri.scheme == 'kakaotalk') {
+          return null;
+        }
 
         // Splash 화면은 항상 허용 (인증 체크 로직이 내부에 있음)
         if (currentLocation == '/splash') {
           return null;
         }
 
-        // 로그인 페이지인지 확인
-        final isLoginPage = currentLocation == '/login';
+        // 로그인/회원가입 페이지
+        final isAuthPage = currentLocation == '/login' || currentLocation == '/register' || currentLocation == '/onboarding';
 
         // 미인증 상태에서 보호된 페이지 접근 시도
-        if (!isAuthenticated && !isLoginPage) {
-          return '/login';
+        // (하지만 토큰이 있으면 허용 - checkAuthStatus가 실패해도 토큰만 있으면 됨)
+        if (!isAuthenticated && !isAuthPage) {
+          // 토큰이 있는지 확인
+          final hasToken = await authProvider.validateToken();
+          if (!hasToken) {
+            return '/login';
+          }
+          // 토큰이 있으면 접근 허용
         }
 
         // 이미 로그인된 상태에서 로그인 페이지 접근 시도
-        if (isAuthenticated && isLoginPage) {
+        if (isAuthenticated && isAuthPage) {
           return '/home';
         }
 
@@ -95,11 +110,6 @@ class AppRouter {
         path: '/register',
         name: 'register',
         builder: (context, state) => const RegisterScreen(),
-      ),
-      GoRoute(
-        path: '/forgot-password',
-        name: 'forgot-password',
-        builder: (context, state) => const ForgotPasswordScreen(),
       ),
 
       // ============ 메인 화면 ============
@@ -134,46 +144,6 @@ class AppRouter {
                 builder: (context, state) {
                   final id = state.pathParameters['id']!;
                   return ScheduleEditScreen(scheduleId: id);
-                },
-              ),
-            ],
-          ),
-        ],
-      ),
-
-      // ============ 약물 관리 ============
-      GoRoute(
-        path: '/medication',
-        name: 'medication',
-        builder: (context, state) => const MedicationListScreen(),
-        routes: [
-          GoRoute(
-            path: 'add',
-            name: 'medication-add',
-            builder: (context, state) => const AddMedicationScreen(),
-          ),
-          GoRoute(
-            path: ':id',
-            name: 'medication-detail',
-            builder: (context, state) {
-              final id = state.pathParameters['id']!;
-              return MedicationDetailScreen(medicationId: id);
-            },
-            routes: [
-              GoRoute(
-                path: 'edit',
-                name: 'medication-edit',
-                builder: (context, state) {
-                  final id = state.pathParameters['id']!;
-                  return MedicationEditScreen(medicationId: id);
-                },
-              ),
-              GoRoute(
-                path: 'history',
-                name: 'medication-history',
-                builder: (context, state) {
-                  final id = state.pathParameters['id']!;
-                  return MedicationHistoryScreen(medicationId: id);
                 },
               ),
             ],
@@ -242,6 +212,11 @@ class AppRouter {
             path: 'add',
             name: 'guardian-add',
             builder: (context, state) => const AddGuardianScreen(),
+          ),
+          GoRoute(
+            path: 'invitations',
+            name: 'guardian-invitations',
+            builder: (context, state) => const GuardianInvitationsScreen(),
           ),
           GoRoute(
             path: ':id',
@@ -319,43 +294,9 @@ class AppRouter {
             name: 'settings-network',
             builder: (context, state) => const NetworkDiscoveryScreen(),
           ),
-          GoRoute(
-            path: 'notifications',
-            name: 'settings-notifications',
-            builder: (context, state) => const NotificationSettingsScreen(),
-          ),
-          GoRoute(
-            path: 'account',
-            name: 'settings-account',
-            builder: (context, state) => const AccountSettingsScreen(),
-          ),
         ],
       ),
     ],
-    errorBuilder: (context, state) => Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(
-              Icons.error_outline,
-              size: 64,
-              color: Colors.red,
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              '페이지를 찾을 수 없어요',
-              style: TextStyle(fontSize: 18),
-            ),
-            const SizedBox(height: 8),
-            ElevatedButton(
-              onPressed: () => context.go('/home'),
-              child: const Text('홈으로 가기'),
-            ),
-          ],
-        ),
-      ),
-    ),
     );
   }
 

@@ -746,7 +746,8 @@ class _AddScheduleScreenState extends State<AddScheduleScreen> {
   }
 
   String _formatDate(DateTime date) {
-    return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+    // Backend expects LocalDateTime format (ISO 8601 with time)
+    return date.toIso8601String();
   }
 
   Color _getTypeColor(ScheduleType type) {
@@ -759,12 +760,10 @@ class _AddScheduleScreenState extends State<AddScheduleScreen> {
         return const Color(0xFF4CAF50);
       case ScheduleType.appointment:
         return TossTheme.primaryColor;
-      case ScheduleType.therapy:
-        return const Color(0xFF9C27B0);
-      case ScheduleType.hygiene:
-        return const Color(0xFF00BCD4);
-      case ScheduleType.safetyCheck:
+      case ScheduleType.emergencyCheck:
         return TossTheme.errorColor;
+      case ScheduleType.healthCheck:
+        return const Color(0xFF9C27B0);
       case ScheduleType.socialActivity:
         return const Color(0xFFFF5722);
       case ScheduleType.personalCare:

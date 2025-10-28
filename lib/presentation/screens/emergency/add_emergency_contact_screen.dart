@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/config/toss_theme.dart';
 import '../../../core/utils/error_handler.dart';
+import '../../../data/services/emergency_contact_service.dart';
+import '../../../data/models/emergency_model.dart';
 
 class AddEmergencyContactScreen extends StatefulWidget {
   const AddEmergencyContactScreen({super.key});
@@ -15,7 +17,9 @@ class _AddEmergencyContactScreenState extends State<AddEmergencyContactScreen> {
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
   final _relationController = TextEditingController();
-  String _contactType = '가족';
+  final _emergencyContactService = EmergencyContactService();
+
+  ContactType _contactType = ContactType.family;
   bool _isLoading = false;
 
   @override
@@ -35,15 +39,48 @@ class _AddEmergencyContactScreenState extends State<AddEmergencyContactScreen> {
       _isLoading = true;
     });
 
-    await Future.delayed(const Duration(seconds: 1));
+    try {
+      // 긴급 연락처 생성 요청
+      final newContact = EmergencyContactModel(
+        id: 0, // 서버에서 생성됨
+        name: _nameController.text.trim(),
+        phoneNumber: _phoneController.text.trim(),
+        relationship: _relationController.text.trim(),
+        contactType: _contactType,
+        isActive: true,
+        isPrimary: false,
+      );
 
-    if (mounted) {
-      setState(() {
-        _isLoading = false;
-      });
+      await _emergencyContactService.createContact(newContact);
 
-      ErrorHandler.showSuccessSnackBar(context, '긴급 연락처가 추가되었어요');
-      context.pop();
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+
+        // 성공 시 true 반환하고 화면 닫기
+        Navigator.pop(context, true);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('긴급 연락처가 추가되었습니다'),
+            backgroundColor: TossTheme.successColor,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('긴급 연락처 추가 실패: ${e.toString()}'),
+            backgroundColor: TossTheme.errorColor,
+          ),
+        );
+      }
     }
   }
 
@@ -131,7 +168,7 @@ class _AddEmergencyContactScreenState extends State<AddEmergencyContactScreen> {
                 const SizedBox(height: 16),
 
                 // Contact Type
-                DropdownButtonFormField<String>(
+                DropdownButtonFormField<ContactType>(
                   value: _contactType,
                   decoration: InputDecoration(
                     labelText: '연락처 유형',
@@ -143,10 +180,16 @@ class _AddEmergencyContactScreenState extends State<AddEmergencyContactScreen> {
                       borderSide: BorderSide.none,
                     ),
                   ),
-                  items: ['가족', '보호자', '의료기관', '기타']
+                  items: ContactType.values
                       .map((type) => DropdownMenuItem(
                             value: type,
-                            child: Text(type),
+                            child: Row(
+                              children: [
+                                Text(type.icon, style: const TextStyle(fontSize: 20)),
+                                const SizedBox(width: 8),
+                                Text(type.description),
+                              ],
+                            ),
                           ))
                       .toList(),
                   onChanged: (value) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:geolocator/geolocator.dart';
 import '../../../core/config/toss_theme.dart';
 import '../../../data/models/emergency_model.dart';
 import '../../providers/emergency_provider.dart';
@@ -114,7 +115,13 @@ class _EmergencyScreenState extends State<EmergencyScreen> {
             mainAxisSpacing: 12.h,
             crossAxisSpacing: 12.w,
             childAspectRatio: 1.2,
-            children: EmergencyType.values.map((type) {
+            children: [
+              // 사용자가 수동으로 누를 수 있는 긴급 버튼만 표시
+              EmergencyType.panicButton,
+              EmergencyType.medical,
+              EmergencyType.lost,
+              EmergencyType.manualAlert,
+            ].map((type) {
               return EmergencyButton(
                 emergencyType: type,
                 onPressed: () => _showEmergencyDialog(type),
@@ -432,46 +439,41 @@ class _EmergencyScreenState extends State<EmergencyScreen> {
         ),
         actions: [
           // 취소 버튼 강조
-          Expanded(
-            child: OutlinedButton(
-              onPressed: () => Navigator.pop(context),
-              style: OutlinedButton.styleFrom(
-                side: BorderSide(color: TossColors.grey300, width: 1.5),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.r),
-                ),
-                padding: EdgeInsets.symmetric(vertical: 14.h),
+          OutlinedButton(
+            onPressed: () => Navigator.pop(context),
+            style: OutlinedButton.styleFrom(
+              side: BorderSide(color: TossColors.grey300, width: 1.5),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.r),
               ),
-              child: Text(
-                '취소',
-                style: TossTextStyle.body1.copyWith(
-                  color: TossColors.grey700,
-                  fontWeight: FontWeight.w600,
-                ),
+              padding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 24.w),
+            ),
+            child: Text(
+              '취소',
+              style: TossTextStyle.body1.copyWith(
+                color: TossColors.grey700,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),
-          SizedBox(width: 12.w),
-          Expanded(
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-                _handleEmergencyCall(type);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: TossColors.red500,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.r),
-                ),
-                padding: EdgeInsets.symmetric(vertical: 14.h),
-                elevation: 0,
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _handleEmergencyCall(type);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: TossColors.red500,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.r),
               ),
-              child: Text(
-                '도움 요청',
-                style: TossTextStyle.body1.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                ),
+              padding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 24.w),
+              elevation: 0,
+            ),
+            child: Text(
+              '도움 요청',
+              style: TossTextStyle.body1.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),
@@ -555,26 +557,67 @@ class _EmergencyScreenState extends State<EmergencyScreen> {
     );
   }
 
-  void _shareLocation(EmergencyProvider provider) {
-    // 위치 권한 확인 및 공유 로직 (실제 구현에서는 location 패키지 사용)
-    provider.shareLocation(37.5665, 126.9780); // 예시 좌표
+  Future<void> _shareLocation(EmergencyProvider provider) async {
+    try {
+      // 위치 권한 확인
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          throw Exception('위치 권한이 거부되었습니다.');
+        }
+      }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          '현재 위치를 보호자와 공유했습니다.',
-          style: TossTextStyle.body1.copyWith(
-            color: Colors.white,
+      if (permission == LocationPermission.deniedForever) {
+        throw Exception('위치 권한이 영구적으로 거부되었습니다. 설정에서 권한을 허용해주세요.');
+      }
+
+      // 실제 GPS 위치 가져오기
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      // 위치 공유
+      await provider.shareLocation(position.latitude, position.longitude);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              '현재 위치를 보호자와 공유했습니다.',
+              style: TossTextStyle.body1.copyWith(
+                color: Colors.white,
+              ),
+            ),
+            backgroundColor: TossColors.blue500,
+            duration: const Duration(seconds: 2),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.r),
+            ),
           ),
-        ),
-        backgroundColor: TossColors.blue500,
-        duration: const Duration(seconds: 2),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8.r),
-        ),
-      ),
-    );
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              '위치 공유 실패: ${e.toString()}',
+              style: TossTextStyle.body1.copyWith(
+                color: Colors.white,
+              ),
+            ),
+            backgroundColor: TossColors.red500,
+            duration: const Duration(seconds: 3),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.r),
+            ),
+          ),
+        );
+      }
+    }
   }
 
   void _callContact(EmergencyContactModel contact) {
@@ -678,23 +721,13 @@ class _EmergencyScreenState extends State<EmergencyScreen> {
   }
 
   void _showAddContactDialog() {
-    // 연락처 추가 다이얼로그 또는 화면으로 이동
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          '설정에서 긴급 연락처를 추가할 수 있습니다.',
-          style: TossTextStyle.body1.copyWith(
-            color: Colors.white,
-          ),
-        ),
-        backgroundColor: TossColors.blue500,
-        duration: const Duration(seconds: 2),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8.r),
-        ),
-      ),
-    );
+    // 연락처 추가 화면으로 이동
+    Navigator.of(context).pushNamed('/emergency/contacts/add').then((result) {
+      // 연락처 추가 후 돌아오면 목록 새로고침
+      if (result == true) {
+        context.read<EmergencyProvider>().loadEmergencyContacts();
+      }
+    });
   }
   
   Future<void> _makePhoneCall(String phoneNumber) async {

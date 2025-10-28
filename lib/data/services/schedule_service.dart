@@ -13,20 +13,25 @@ class ScheduleService {
 
   /// 일정 생성 (POST /api/v1/schedules)
   Future<ScheduleResponse> createSchedule(ScheduleRequest request) async {
+    print('🟡 [ScheduleService] 일정 생성 요청: ${request.toJson()}');
     try {
       final response = await _apiClient.dio.post(
         ApiEndpoints.schedules,
         data: request.toJson(),
       );
+      print('✅ [ScheduleService] 일정 생성 응답: ${response.data}');
 
+      // 통일된 ApiResponse 구조: {success: true, data: {...}, message: "...", timestamp: "..."}
       if (response.data['success'] == true) {
         return ScheduleResponse.fromJson(response.data['data']);
       } else {
         throw Exception(response.data['message'] ?? '일정 생성에 실패했습니다');
       }
     } on DioException catch (e) {
+      print('❌ [ScheduleService] DioException: ${e.response?.statusCode} - ${e.response?.data}');
       throw _handleDioException(e, '일정 생성');
     } catch (e) {
+      print('❌ [ScheduleService] 일반 에러: $e');
       throw Exception('일정 생성 중 오류가 발생했습니다: $e');
     }
   }
@@ -38,6 +43,7 @@ class ScheduleService {
         ApiEndpoints.scheduleDetailPath(scheduleId),
       );
 
+      // 통일된 ApiResponse 구조
       if (response.data['success'] == true) {
         return ScheduleResponse.fromJson(response.data['data']);
       } else {
@@ -61,6 +67,7 @@ class ScheduleService {
         },
       );
 
+      // 통일된 ApiResponse 구조
       if (response.data['success'] == true) {
         return SchedulePageResponse.fromJson(response.data['data']);
       } else {
@@ -81,6 +88,8 @@ class ScheduleService {
         data: request.toJson(),
       );
 
+      // 통일된 ApiResponse 구조: {success: true, data: {...}, message: "...", timestamp: "..."}
+      
       if (response.data['success'] == true) {
         return ScheduleResponse.fromJson(response.data['data']);
       } else {
@@ -100,6 +109,8 @@ class ScheduleService {
         ApiEndpoints.scheduleDetailPath(scheduleId),
       );
 
+      // 통일된 ApiResponse 구조: {success: true, data: {...}, message: "...", timestamp: "..."}
+      
       if (response.data['success'] != true) {
         throw Exception(response.data['message'] ?? '일정 삭제에 실패했습니다');
       }
@@ -114,20 +125,27 @@ class ScheduleService {
 
   /// 오늘의 일정 조회 (GET /api/v1/schedules/today)
   Future<List<ScheduleResponse>> getTodaySchedules() async {
+    print('🟡 [ScheduleService] 오늘의 일정 조회 요청');
     try {
       final response = await _apiClient.dio.get(
         ApiEndpoints.schedulesToday,
       );
+      print('✅ [ScheduleService] 오늘의 일정 응답: ${response.data}');
 
+      // 응답 구조: {s: true, d: {success: true, data: [...], message: "...", timestamp: [...]}, t: [...]}
+      
       if (response.data['success'] == true) {
         final List<dynamic> data = response.data['data'];
+        print('📋 [ScheduleService] 조회된 일정 개수: ${data.length}');
         return data.map((json) => ScheduleResponse.fromJson(json)).toList();
       } else {
         throw Exception(response.data['message'] ?? '오늘의 일정을 가져올 수 없습니다');
       }
     } on DioException catch (e) {
+      print('❌ [ScheduleService] DioException: ${e.response?.statusCode} - ${e.response?.data}');
       throw _handleDioException(e, '오늘의 일정 조회');
     } catch (e) {
+      print('❌ [ScheduleService] 일반 에러: $e');
       throw Exception('오늘의 일정 조회 중 오류가 발생했습니다: $e');
     }
   }
@@ -140,6 +158,8 @@ class ScheduleService {
         queryParameters: {'days': days},
       );
 
+      // 응답 구조: {s: true, d: {success: true, data: [...], message: "...", timestamp: [...]}, t: [...]}
+      
       if (response.data['success'] == true) {
         final List<dynamic> data = response.data['data'];
         return data.map((json) => ScheduleResponse.fromJson(json)).toList();
@@ -155,23 +175,31 @@ class ScheduleService {
 
   /// 특정 날짜 일정 조회 (GET /api/v1/schedules/date)
   Future<List<ScheduleResponse>> getSchedulesByDate(DateTime date) async {
+    final formattedDate = _formatDate(date);
+    print('🟡 [ScheduleService] 날짜별 일정 조회 요청: $formattedDate');
     try {
       final response = await _apiClient.dio.get(
         ApiEndpoints.schedulesDate,
         queryParameters: {
-          'date': _formatDate(date), // YYYY-MM-DD
+          'date': formattedDate, // YYYY-MM-DD
         },
       );
+      print('✅ [ScheduleService] 날짜별 일정 응답: ${response.data}');
 
+      // 응답 구조: {s: true, d: {success: true, data: [...], message: "...", timestamp: [...]}, t: [...]}
+      
       if (response.data['success'] == true) {
         final List<dynamic> data = response.data['data'];
+        print('📋 [ScheduleService] 조회된 일정 개수: ${data.length}');
         return data.map((json) => ScheduleResponse.fromJson(json)).toList();
       } else {
         throw Exception(response.data['message'] ?? '일정을 가져올 수 없습니다');
       }
     } on DioException catch (e) {
+      print('❌ [ScheduleService] DioException: ${e.response?.statusCode} - ${e.response?.data}');
       throw _handleDioException(e, '특정 날짜 일정 조회');
     } catch (e) {
+      print('❌ [ScheduleService] 일반 에러: $e');
       throw Exception('일정 조회 중 오류가 발생했습니다: $e');
     }
   }
@@ -187,6 +215,8 @@ class ScheduleService {
         },
       );
 
+      // 응답 구조: {s: true, d: {success: true, data: [...], message: "...", timestamp: [...]}, t: [...]}
+      
       if (response.data['success'] == true) {
         final List<dynamic> data = response.data['data'];
         return data.map((json) => ScheduleResponse.fromJson(json)).toList();
@@ -209,6 +239,8 @@ class ScheduleService {
         ApiEndpoints.scheduleCompletePath(scheduleId),
       );
 
+      // 통일된 ApiResponse 구조: {success: true, data: {...}, message: "...", timestamp: "..."}
+      
       if (response.data['success'] == true) {
         return ScheduleResponse.fromJson(response.data['data']);
       } else {
@@ -228,6 +260,8 @@ class ScheduleService {
         ApiEndpoints.scheduleUncompletePath(scheduleId),
       );
 
+      // 통일된 ApiResponse 구조: {success: true, data: {...}, message: "...", timestamp: "..."}
+      
       if (response.data['success'] == true) {
         return ScheduleResponse.fromJson(response.data['data']);
       } else {
@@ -247,6 +281,8 @@ class ScheduleService {
         ApiEndpoints.scheduleActivatePath(scheduleId),
       );
 
+      // 통일된 ApiResponse 구조: {success: true, data: {...}, message: "...", timestamp: "..."}
+      
       if (response.data['success'] == true) {
         return ScheduleResponse.fromJson(response.data['data']);
       } else {
@@ -266,6 +302,8 @@ class ScheduleService {
         ApiEndpoints.scheduleDeactivatePath(scheduleId),
       );
 
+      // 통일된 ApiResponse 구조: {success: true, data: {...}, message: "...", timestamp: "..."}
+      
       if (response.data['success'] == true) {
         return ScheduleResponse.fromJson(response.data['data']);
       } else {
@@ -287,6 +325,8 @@ class ScheduleService {
         ApiEndpoints.scheduleSkipNextPath(scheduleId),
       );
 
+      // 통일된 ApiResponse 구조: {success: true, data: {...}, message: "...", timestamp: "..."}
+      
       if (response.data['success'] == true) {
         return ScheduleResponse.fromJson(response.data['data']);
       } else {
@@ -307,6 +347,8 @@ class ScheduleService {
         queryParameters: {'count': count},
       );
 
+      // 응답 구조: {s: true, d: {success: true, data: [...], message: "...", timestamp: [...]}, t: [...]}
+      
       if (response.data['success'] == true) {
         final List<dynamic> data = response.data['data'];
         return data.map((item) => item.toString()).toList();

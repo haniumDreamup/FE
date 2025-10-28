@@ -2,7 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'schedule_model.g.dart';
 
-/// 일정 유형 (ScheduleType)
+/// 일정 유형 (ScheduleType) - 백엔드와 동기화됨
 enum ScheduleType {
   @JsonValue('MEDICATION')
   medication('약물 복용'),
@@ -14,12 +14,10 @@ enum ScheduleType {
   appointment('약속/병원'),
   @JsonValue('REMINDER')
   reminder('알림'),
-  @JsonValue('THERAPY')
-  therapy('치료'),
-  @JsonValue('HYGIENE')
-  hygiene('위생 관리'),
-  @JsonValue('SAFETY_CHECK')
-  safetyCheck('안전 확인'),
+  @JsonValue('EMERGENCY_CHECK')
+  emergencyCheck('응급 확인'),
+  @JsonValue('HEALTH_CHECK')
+  healthCheck('건강 체크'),
   @JsonValue('SOCIAL_ACTIVITY')
   socialActivity('사회 활동'),
   @JsonValue('PERSONAL_CARE')
@@ -179,8 +177,65 @@ class ScheduleResponse {
     required this.simpleDescription,
   });
 
-  factory ScheduleResponse.fromJson(Map<String, dynamic> json) =>
-      _$ScheduleResponseFromJson(json);
+  factory ScheduleResponse.fromJson(Map<String, dynamic> json) {
+    // 백엔드가 LocalTime을 배열 [hour, minute]로 반환
+    String parseExecutionTime(dynamic value) {
+      if (value is String) return value;
+      if (value is List && value.length >= 2) {
+        return '${value[0].toString().padLeft(2, '0')}:${value[1].toString().padLeft(2, '0')}';
+      }
+      return '00:00';
+    }
+
+    // 백엔드가 LocalDateTime을 배열 [year, month, day, hour, minute]로 반환
+    String? parseDateTime(dynamic value) {
+      if (value == null) return null;
+      if (value is String) return value;
+      if (value is List && value.length >= 3) {
+        final year = value[0];
+        final month = value[1].toString().padLeft(2, '0');
+        final day = value[2].toString().padLeft(2, '0');
+        final hour = value.length > 3 ? value[3].toString().padLeft(2, '0') : '00';
+        final minute = value.length > 4 ? value[4].toString().padLeft(2, '0') : '00';
+        return '$year-$month-${day}T$hour:$minute:00';
+      }
+      return null;
+    }
+
+    return ScheduleResponse(
+      id: json['id'] as int,
+      userId: json['userId'] as int,
+      userName: json['userName'] as String,
+      title: json['title'] as String,
+      description: json['description'] as String?,
+      scheduleType: $enumDecode(_$ScheduleTypeEnumMap, json['scheduleType']),
+      scheduleTypeDescription: json['scheduleTypeDescription'] as String,
+      recurrenceType: $enumDecode(_$RecurrenceTypeEnumMap, json['recurrenceType']),
+      recurrenceTypeDescription: json['recurrenceTypeDescription'] as String,
+      executionTime: parseExecutionTime(json['executionTime']),
+      nextExecutionTime: parseDateTime(json['nextExecutionTime']),
+      lastExecutionTime: parseDateTime(json['lastExecutionTime']),
+      startDate: parseDateTime(json['startDate']) ?? '',
+      endDate: parseDateTime(json['endDate']),
+      selectedDays: (json['selectedDays'] as List<dynamic>?)
+          ?.map((e) => $enumDecode(_$DayOfWeekEnumMap, e))
+          .toList(),
+      dayOfMonth: json['dayOfMonth'] as int?,
+      intervalValue: json['intervalValue'] as int,
+      isActive: json['isActive'] as bool,
+      priority: json['priority'] as int,
+      visualIndicator: json['visualIndicator'] as String?,
+      reminderMinutesBefore: json['reminderMinutesBefore'] as int?,
+      requiresConfirmation: json['requiresConfirmation'] as bool,
+      createdByType: json['createdByType'] as String,
+      createdByTypeDescription: json['createdByTypeDescription'] as String,
+      createdAt: parseDateTime(json['createdAt']) ?? '',
+      updatedAt: parseDateTime(json['updatedAt']) ?? '',
+      isDueSoon: json['isDueSoon'] as bool,
+      isHighPriority: json['isHighPriority'] as bool,
+      simpleDescription: json['simpleDescription'] as String,
+    );
+  }
 
   Map<String, dynamic> toJson() => _$ScheduleResponseToJson(this);
 

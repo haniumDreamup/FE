@@ -22,6 +22,7 @@ class StatisticsService {
         },
       );
 
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
       if (response.data['success'] == true) {
         return GeofenceStatisticsModel.fromJson(response.data['data']);
       } else {
@@ -48,6 +49,7 @@ class StatisticsService {
         },
       );
 
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
       if (response.data['success'] == true) {
         return DailyActivityStatisticsModel.fromJson(response.data['data']);
       } else {
@@ -71,6 +73,7 @@ class StatisticsService {
         },
       );
 
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
       if (response.data['success'] == true) {
         return SingleDayActivityModel.fromJson(response.data['data']);
       } else {
@@ -99,6 +102,7 @@ class StatisticsService {
         },
       );
 
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
       if (response.data['success'] == true) {
         return SafetyStatisticsModel.fromJson(response.data['data']);
       } else {
@@ -125,6 +129,7 @@ class StatisticsService {
         },
       );
 
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
       if (response.data['success'] == true) {
         return StatisticsSummaryModel.fromJson(response.data['data']);
       } else {

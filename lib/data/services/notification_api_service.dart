@@ -16,10 +16,9 @@ class NotificationApiService {
         data: {
           'fcmToken': fcmToken,
           'deviceId': deviceId,
-          'platform': _getPlatform(),
-          'appVersion': await _getAppVersion(),
         },
       );
+      
 
       if (response.data['success'] != true) {
         throw Exception(response.data['message'] ?? 'FCM 토큰을 업데이트할 수 없습니다');
@@ -37,6 +36,7 @@ class NotificationApiService {
       final response = await _apiClient.dio.delete(
         ApiEndpoints.removeFcmTokenPath(deviceId),
       );
+      
 
       if (response.data['success'] != true) {
         throw Exception(response.data['message'] ?? 'FCM 토큰을 제거할 수 없습니다');
@@ -52,6 +52,7 @@ class NotificationApiService {
   Future<Map<String, dynamic>> getNotificationSettings() async {
     try {
       final response = await _apiClient.dio.get(ApiEndpoints.notificationSettings);
+      
 
       if (response.data['success'] == true) {
         return response.data['data'] ?? {};
@@ -74,6 +75,7 @@ class NotificationApiService {
         ApiEndpoints.notificationSettings,
         data: settings,
       );
+      
 
       if (response.data['success'] == true) {
         return response.data['data'] ?? {};
@@ -96,6 +98,7 @@ class NotificationApiService {
           if (message != null) 'message': message,
         },
       );
+      
 
       if (response.data['success'] != true) {
         throw Exception(response.data['message'] ?? '테스트 알림을 전송할 수 없습니다');
@@ -122,6 +125,7 @@ class NotificationApiService {
           if (longitude != null) 'longitude': longitude,
         },
       );
+      
 
       if (response.data['success'] != true) {
         throw Exception(response.data['message'] ?? '긴급 알림을 전송할 수 없습니다');
@@ -140,6 +144,7 @@ class NotificationApiService {
         ApiEndpoints.validateToken,
         queryParameters: {'token': fcmToken},
       );
+      
 
       if (response.data['success'] == true) {
         return response.data['data'] ?? false;
@@ -150,18 +155,6 @@ class NotificationApiService {
     } catch (e) {
       throw Exception('FCM 토큰 검증 중 오류가 발생했습니다: $e');
     }
-  }
-
-  String _getPlatform() {
-    // This should be implemented based on the platform
-    // For now, return a default value
-    return 'flutter';
-  }
-
-  Future<String> _getAppVersion() async {
-    // This should be implemented using package_info_plus or similar
-    // For now, return a default value
-    return '1.0.0';
   }
 
   Exception _handleDioException(DioException e) {

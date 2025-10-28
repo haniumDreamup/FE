@@ -428,12 +428,14 @@ class _ActiveEmergencyScreenState extends State<ActiveEmergencyScreen> {
         return Colors.green;
       case EmergencyStatus.cancelled:
         return Colors.grey;
-      case EmergencyStatus.responded:
+      case EmergencyStatus.falseAlarm:
+        return Colors.orange;
+      case EmergencyStatus.acknowledged:
         return Colors.blue;
       case EmergencyStatus.notified:
         return TossTheme.warningColor;
       case EmergencyStatus.triggered:
-      case EmergencyStatus.pending:
+      case EmergencyStatus.active:
         return TossTheme.errorColor;
     }
   }

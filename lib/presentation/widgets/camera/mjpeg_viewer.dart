@@ -8,11 +8,13 @@ import 'package:http/http.dart' as http;
 class MjpegViewer extends StatefulWidget {
   final String streamUrl;
   final Widget Function(BuildContext context, Object error)? onError;
+  final Function(Uint8List frame)? onFrameReceived;
 
   const MjpegViewer({
     super.key,
     required this.streamUrl,
     this.onError,
+    this.onFrameReceived,
   });
 
   @override
@@ -41,12 +43,22 @@ class _MjpegViewerState extends State<MjpegViewer> {
   /// MJPEG 스트림 시작
   Future<void> _startStream() async {
     try {
+      print('[MjpegViewer] 스트림 시작: ${widget.streamUrl}');
       _httpClient = http.Client();
       final request = http.Request('GET', Uri.parse(widget.streamUrl));
 
-      final streamedResponse = await _httpClient!.send(request);
+      print('[MjpegViewer] HTTP 요청 전송 중...');
+      final streamedResponse = await _httpClient!.send(request).timeout(
+        const Duration(seconds: 10),
+        onTimeout: () {
+          throw Exception('연결 시간 초과 (10초)');
+        },
+      );
+
+      print('[MjpegViewer] 응답 받음: ${streamedResponse.statusCode}');
 
       if (streamedResponse.statusCode != 200) {
+        print('[MjpegViewer] 에러 응답: ${streamedResponse.statusCode}');
         setState(() {
           _errorMessage = 'HTTP ${streamedResponse.statusCode}';
           _isLoading = false;
@@ -54,6 +66,7 @@ class _MjpegViewerState extends State<MjpegViewer> {
         return;
       }
 
+      print('[MjpegViewer] 스트리밍 시작 성공');
       final List<int> buffer = [];
       const String boundary = '--frame';
 
@@ -73,10 +86,17 @@ class _MjpegViewerState extends State<MjpegViewer> {
             // 완전한 JPEG 프레임 추출
             final frame = data.sublist(startIndex, endIndex + 2);
 
+            print('[MjpegViewer] 프레임 수신: ${frame.length} bytes');
+
             setState(() {
               _currentFrame = frame;
               _isLoading = false;
             });
+
+            // 프레임 콜백 호출
+            if (widget.onFrameReceived != null) {
+              widget.onFrameReceived!(frame);
+            }
 
             // 처리된 데이터 제거
             buffer.clear();
@@ -88,16 +108,19 @@ class _MjpegViewerState extends State<MjpegViewer> {
           // 버퍼 크기 제한 (메모리 누수 방지)
           if (buffer.length > 1024 * 1024) {
             // 1MB 이상이면 초기화
+            print('[MjpegViewer] 버퍼 크기 초과, 초기화: ${buffer.length} bytes');
             buffer.clear();
           }
         },
         onError: (error) {
+          print('[MjpegViewer] 스트림 에러: $error');
           setState(() {
             _errorMessage = error.toString();
             _isLoading = false;
           });
         },
         onDone: () {
+          print('[MjpegViewer] 스트림 종료');
           setState(() {
             _errorMessage = '스트림 종료';
             _isLoading = false;
@@ -105,6 +128,7 @@ class _MjpegViewerState extends State<MjpegViewer> {
         },
       );
     } catch (e) {
+      print('[MjpegViewer] 예외 발생: $e');
       setState(() {
         _errorMessage = e.toString();
         _isLoading = false;

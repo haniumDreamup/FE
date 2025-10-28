@@ -57,8 +57,9 @@ const _$RelationshipTypeEnumMap = {
   RelationshipType.child: 'CHILD',
   RelationshipType.sibling: 'SIBLING',
   RelationshipType.relative: 'RELATIVE',
-  RelationshipType.friend: 'FRIEND',
+  RelationshipType.caregiver: 'CAREGIVER',
   RelationshipType.professional: 'PROFESSIONAL',
+  RelationshipType.friend: 'FRIEND',
   RelationshipType.other: 'OTHER',
 };
 

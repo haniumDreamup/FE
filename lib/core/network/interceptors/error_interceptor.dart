@@ -25,11 +25,27 @@ class ErrorInterceptor extends Interceptor {
       case DioExceptionType.badResponse:
         final statusCode = err.response?.statusCode;
         final responseData = err.response?.data;
-        
-        if (responseData != null && responseData['error'] != null) {
-          errorMessage = responseData['error']['message'] ?? errorMessage;
-          userAction = responseData['error']['userAction'] ?? userAction;
-        } else {
+
+        // 서버 응답 데이터에서 메시지 추출
+        if (responseData != null) {
+          // success: false인 경우 message 추출
+          if (responseData is Map && responseData['message'] != null) {
+            errorMessage = responseData['message'];
+          } else if (responseData['error'] != null) {
+            errorMessage = responseData['error']['message'] ?? errorMessage;
+            userAction = responseData['error']['userAction'] ?? userAction;
+          }
+
+          // 중복 오류 체크
+          final errorStr = responseData.toString().toLowerCase();
+          if (errorStr.contains('duplicate') || errorStr.contains('중복')) {
+            errorMessage = '이미 등록된 보호자입니다';
+            userAction = '다른 이메일로 시도해주세요';
+          }
+        }
+
+        // 상태 코드별 기본 메시지
+        if (errorMessage == '문제가 발생했어요') {
           switch (statusCode) {
             case 400:
               errorMessage = '입력한 정보를 확인해주세요';

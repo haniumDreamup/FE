@@ -30,6 +30,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
 
   # UI Components
   cupertino_icons: ^1.0.8
@@ -56,7 +58,7 @@ dependencies:
   hive_flutter: ^1.1.0
   
   # Utilities
-  intl: ^0.19.0
+  intl: ^0.20.2
   equatable: ^2.0.5
   flutter_dotenv: ^5.1.0
   logger: ^2.0.2
@@ -80,6 +82,7 @@ dependencies:
   network_info_plus: ^6.1.4
   jwt_decoder: ^2.0.1
   timezone: ^0.10.1
+  uuid: ^4.5.1
 
   # Social Login
   google_sign_in: ^6.2.1
@@ -91,6 +94,7 @@ dependencies:
   # Code Generation (required at runtime)
   json_annotation: ^4.9.0
   freezed_annotation: ^2.4.1
+  camera: ^0.11.2
 
 dev_dependencies:
   flutter_test:

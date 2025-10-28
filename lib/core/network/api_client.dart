@@ -11,12 +11,14 @@ class ApiClient {
   ApiClient._internal() {
     _dio = Dio(
       BaseOptions(
-        baseUrl: dotenv.env['API_BASE_URL'] ?? 'http://localhost:8080/api/v1',
-        connectTimeout: const Duration(seconds: 30),
-        receiveTimeout: const Duration(seconds: 30),
+        baseUrl: dotenv.env['API_BASE_URL'] ?? 'http://localhost:8080',
+        connectTimeout: const Duration(seconds: 60),
+        receiveTimeout: const Duration(seconds: 60),
+        sendTimeout: const Duration(seconds: 60),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
+          'Accept-Encoding': 'identity',  // Disable compression to avoid parsing errors
         },
       ),
     );

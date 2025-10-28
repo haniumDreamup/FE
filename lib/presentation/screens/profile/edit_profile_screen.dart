@@ -3,6 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../../core/config/toss_theme.dart';
 import '../../../core/utils/error_handler.dart';
+import '../../../data/services/user_service.dart';
+import '../../../data/models/user_model.dart';
 import '../../providers/user_provider.dart';
 
 class EditProfileScreen extends StatefulWidget {
@@ -17,23 +19,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
   final _emailController = TextEditingController();
-  bool _isLoading = false;
+  final _userService = UserService();
+
+  bool _isLoading = true;
+  UserModel? _originalUser;
 
   @override
   void initState() {
     super.initState();
     _loadUserData();
-  }
-
-  void _loadUserData() {
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
-    final user = userProvider.currentUser;
-
-    if (user != null) {
-      _nameController.text = user.name ?? '';
-      _phoneController.text = user.phoneNumber ?? '';
-      _emailController.text = user.email ?? '';
-    }
   }
 
   @override
@@ -42,6 +36,35 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     _phoneController.dispose();
     _emailController.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadUserData() async {
+    try {
+      final user = await _userService.getCurrentUser();
+
+      if (mounted) {
+        setState(() {
+          _originalUser = user;
+          _nameController.text = user.name;
+          _phoneController.text = user.phoneNumber ?? '';
+          _emailController.text = user.email;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('사용자 정보 조회 실패: ${e.toString()}'),
+            backgroundColor: TossTheme.errorColor,
+          ),
+        );
+        Navigator.pop(context);
+      }
+    }
   }
 
   Future<void> _saveProfile() async {
@@ -53,22 +76,60 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       _isLoading = true;
     });
 
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    try {
+      final updateRequest = UserUpdateRequest(
+        name: _nameController.text.trim(),
+        phoneNumber: _phoneController.text.trim().isNotEmpty
+            ? _phoneController.text.trim()
+            : null,
+      );
 
-    await Future.delayed(const Duration(seconds: 1));
+      final updatedUser = await _userService.updateCurrentUser(updateRequest);
 
-    if (mounted) {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
 
-      ErrorHandler.showSuccessSnackBar(context, '프로필이 수정되었어요');
-      context.pop();
+        // Provider는 자동으로 업데이트됨 (UserService가 이미 백엔드와 동기화)
+        // 필요시 현재 사용자 정보를 다시 로드
+        final userProvider = Provider.of<UserProvider>(context, listen: false);
+        await userProvider.loadCurrentUser();
+
+        Navigator.pop(context, true);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('프로필이 수정되었습니다'),
+            backgroundColor: TossTheme.successColor,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('프로필 수정 실패: ${e.toString()}'),
+            backgroundColor: TossTheme.errorColor,
+          ),
+        );
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading && _originalUser == null) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('프로필 수정')),
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('프로필 수정'),

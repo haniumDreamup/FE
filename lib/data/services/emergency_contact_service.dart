@@ -19,6 +19,7 @@ class EmergencyContactService {
         ApiEndpoints.emergencyContacts,
         data: contact.toJson(),
       );
+      
 
       if (response.data['success'] == true) {
         return EmergencyContactModel.fromJson(response.data['data']);
@@ -42,6 +43,7 @@ class EmergencyContactService {
         ApiEndpoints.emergencyContactDetailPath(contactId),
         data: contact.toJson(),
       );
+      
 
       if (response.data['success'] == true) {
         return EmergencyContactModel.fromJson(response.data['data']);
@@ -61,6 +63,7 @@ class EmergencyContactService {
       final response = await _apiClient.dio.delete(
         ApiEndpoints.emergencyContactDetailPath(contactId),
       );
+      
 
       if (response.data['success'] != true) {
         throw Exception(response.data['message'] ?? '연락처 삭제에 실패했습니다');
@@ -78,6 +81,7 @@ class EmergencyContactService {
       final response = await _apiClient.dio.get(
         ApiEndpoints.emergencyContactDetailPath(contactId),
       );
+      
 
       if (response.data['success'] == true) {
         return EmergencyContactModel.fromJson(response.data['data']);
@@ -97,6 +101,7 @@ class EmergencyContactService {
       final response = await _apiClient.dio.get(
         ApiEndpoints.emergencyContacts,
       );
+      
 
       if (response.data['success'] == true) {
         final List<dynamic> data = response.data['data'] ?? [];
@@ -117,6 +122,7 @@ class EmergencyContactService {
       final response = await _apiClient.dio.get(
         ApiEndpoints.activeContacts,
       );
+      
 
       if (response.data['success'] == true) {
         final List<dynamic> data = response.data['data'] ?? [];
@@ -137,6 +143,7 @@ class EmergencyContactService {
       final response = await _apiClient.dio.get(
         ApiEndpoints.availableContacts,
       );
+      
 
       if (response.data['success'] == true) {
         final List<dynamic> data = response.data['data'] ?? [];
@@ -159,6 +166,7 @@ class EmergencyContactService {
       final response = await _apiClient.dio.get(
         ApiEndpoints.medicalContacts,
       );
+      
 
       if (response.data['success'] == true) {
         final List<dynamic> data = response.data['data'] ?? [];
@@ -182,6 +190,7 @@ class EmergencyContactService {
       final response = await _apiClient.dio.post(
         ApiEndpoints.verifyContactPath(contactId, verificationCode),
       );
+      
 
       if (response.data['success'] == true) {
         return EmergencyContactModel.fromJson(response.data['data']);
@@ -201,6 +210,7 @@ class EmergencyContactService {
       final response = await _apiClient.dio.patch(
         ApiEndpoints.toggleContactActivePath(contactId),
       );
+      
 
       if (response.data['success'] == true) {
         return EmergencyContactModel.fromJson(response.data['data']);
@@ -221,6 +231,7 @@ class EmergencyContactService {
         ApiEndpoints.updateContactPriorities,
         data: contactIds,
       );
+      
 
       if (response.data['success'] != true) {
         throw Exception(response.data['message'] ?? '우선순위 변경에 실패했습니다');
@@ -246,6 +257,7 @@ class EmergencyContactService {
           'responseTimeMinutes': responseTimeMinutes,
         },
       );
+      
 
       if (response.data['success'] != true) {
         throw Exception(response.data['message'] ?? '연락 기록 업데이트에 실패했습니다');

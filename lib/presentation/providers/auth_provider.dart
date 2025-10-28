@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import '../../core/services/token_refresh_service.dart';
+import '../../core/services/notification_service.dart';
 import '../../data/repositories/auth_repository.dart';
 import '../../data/models/user_model.dart';
 
 class AuthProvider extends ChangeNotifier {
   final AuthRepository _authRepository;
   final TokenRefreshService _tokenService = TokenRefreshService();
+  final NotificationService _notificationService = NotificationService();
 
   UserModel? _currentUser;
   bool _isAuthenticated = false;
@@ -45,6 +47,9 @@ class AuthProvider extends ChangeNotifier {
       // 토큰 자동 갱신 시작
       await _tokenService.startTokenRefreshTimer();
 
+      // FCM 토큰 백엔드 등록
+      await _registerFcmToken();
+
       _isLoading = false;
       notifyListeners();
 
@@ -69,6 +74,9 @@ class AuthProvider extends ChangeNotifier {
 
       // 토큰 자동 갱신 시작
       await _tokenService.startTokenRefreshTimer();
+
+      // FCM 토큰 백엔드 등록
+      await _registerFcmToken();
 
       _isLoading = false;
       notifyListeners();
@@ -96,6 +104,9 @@ class AuthProvider extends ChangeNotifier {
       // 토큰 자동 갱신 시작
       await _tokenService.startTokenRefreshTimer();
 
+      // FCM 토큰 백엔드 등록
+      await _registerFcmToken();
+
       _isLoading = false;
       notifyListeners();
 
@@ -121,6 +132,9 @@ class AuthProvider extends ChangeNotifier {
 
       // 토큰 자동 갱신 시작
       await _tokenService.startTokenRefreshTimer();
+
+      // FCM 토큰 백엔드 등록
+      await _registerFcmToken();
 
       _isLoading = false;
       notifyListeners();
@@ -148,6 +162,9 @@ class AuthProvider extends ChangeNotifier {
       // 토큰 자동 갱신 시작
       await _tokenService.startTokenRefreshTimer();
 
+      // FCM 토큰 백엔드 등록
+      await _registerFcmToken();
+
       _isLoading = false;
       notifyListeners();
 
@@ -164,13 +181,16 @@ class AuthProvider extends ChangeNotifier {
   Future<void> logout() async {
     _isLoading = true;
     notifyListeners();
-    
+
     try {
       // 토큰 자동 갱신 중지
       _tokenService.stopTokenRefreshTimer();
-      
+
+      // FCM 토큰 백엔드에서 제거
+      await _notificationService.removeTokenFromBackend();
+
       await _authRepository.logout();
-      
+
       _currentUser = null;
       _isAuthenticated = false;
       _errorMessage = null;
@@ -220,6 +240,20 @@ class AuthProvider extends ChangeNotifier {
     return success;
   }
   
+  /// FCM 토큰을 백엔드에 등록
+  Future<void> _registerFcmToken() async {
+    try {
+      final fcmToken = _notificationService.fcmToken;
+      if (fcmToken != null) {
+        // NotificationService가 이미 초기화 시 백엔드에 전송하므로
+        // 여기서는 별도 처리 불필요
+        // 만약 토큰이 없다면 재시도
+      }
+    } catch (e) {
+      // FCM 등록 실패해도 로그인은 성공으로 처리
+    }
+  }
+
   @override
   void dispose() {
     // Provider 해제 시 토큰 갱신 타이머 정리

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/config/toss_theme.dart';
 import '../../../core/utils/error_handler.dart';
+import '../../../data/services/emergency_contact_service.dart';
+import '../../../data/models/emergency_model.dart';
 
 class EditEmergencyContactScreen extends StatefulWidget {
   final String contactId;
@@ -20,8 +22,11 @@ class _EditEmergencyContactScreenState extends State<EditEmergencyContactScreen>
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
   final _relationController = TextEditingController();
-  String _contactType = '가족';
+  final _emergencyContactService = EmergencyContactService();
+
+  ContactType _contactType = ContactType.family;
   bool _isLoading = true;
+  EmergencyContactModel? _originalContact;
 
   @override
   void initState() {
@@ -38,17 +43,32 @@ class _EditEmergencyContactScreenState extends State<EditEmergencyContactScreen>
   }
 
   Future<void> _loadContactData() async {
-    // TODO: 실제 API에서 연락처 데이터 로드
-    await Future.delayed(const Duration(seconds: 1));
+    try {
+      final contact = await _emergencyContactService.getContact(int.parse(widget.contactId));
 
-    if (mounted) {
-      setState(() {
-        _nameController.text = '김영희';
-        _phoneController.text = '010-1234-5678';
-        _relationController.text = '어머니';
-        _contactType = '가족';
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _originalContact = contact;
+          _nameController.text = contact.name;
+          _phoneController.text = contact.phoneNumber;
+          _relationController.text = contact.relationship;
+          _contactType = contact.contactType ?? ContactType.family;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('연락처 조회 실패: ${e.toString()}'),
+            backgroundColor: TossTheme.errorColor,
+          ),
+        );
+        Navigator.pop(context);
+      }
     }
   }
 
@@ -61,16 +81,49 @@ class _EditEmergencyContactScreenState extends State<EditEmergencyContactScreen>
       _isLoading = true;
     });
 
-    // TODO: 실제 API 호출
-    await Future.delayed(const Duration(seconds: 1));
+    try {
+      final updatedContact = EmergencyContactModel(
+        id: _originalContact!.id,
+        name: _nameController.text.trim(),
+        phoneNumber: _phoneController.text.trim(),
+        relationship: _relationController.text.trim(),
+        contactType: _contactType,
+        isActive: _originalContact!.isActive,
+        isPrimary: _originalContact!.isPrimary,
+      );
 
-    if (mounted) {
-      setState(() {
-        _isLoading = false;
-      });
+      await _emergencyContactService.updateContact(
+        int.parse(widget.contactId),
+        updatedContact,
+      );
 
-      ErrorHandler.showSuccessSnackBar(context, '긴급 연락처가 수정되었어요');
-      context.pop();
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+
+        Navigator.pop(context, true);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('긴급 연락처가 수정되었습니다'),
+            backgroundColor: TossTheme.successColor,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('긴급 연락처 수정 실패: ${e.toString()}'),
+            backgroundColor: TossTheme.errorColor,
+          ),
+        );
+      }
     }
   }
 
@@ -99,12 +152,32 @@ class _EditEmergencyContactScreenState extends State<EditEmergencyContactScreen>
         _isLoading = true;
       });
 
-      // TODO: 실제 API 호출
-      await Future.delayed(const Duration(seconds: 1));
+      try {
+        await _emergencyContactService.deleteContact(int.parse(widget.contactId));
 
-      if (mounted) {
-        ErrorHandler.showSuccessSnackBar(context, '긴급 연락처가 삭제되었어요');
-        context.pop();
+        if (mounted) {
+          Navigator.pop(context, true);
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('긴급 연락처가 삭제되었습니다'),
+              backgroundColor: TossTheme.successColor,
+            ),
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('긴급 연락처 삭제 실패: ${e.toString()}'),
+              backgroundColor: TossTheme.errorColor,
+            ),
+          );
+        }
       }
     }
   }
@@ -207,7 +280,7 @@ class _EditEmergencyContactScreenState extends State<EditEmergencyContactScreen>
                 const SizedBox(height: 16),
 
                 // Contact Type
-                DropdownButtonFormField<String>(
+                DropdownButtonFormField<ContactType>(
                   value: _contactType,
                   decoration: InputDecoration(
                     labelText: '연락처 유형',
@@ -219,10 +292,16 @@ class _EditEmergencyContactScreenState extends State<EditEmergencyContactScreen>
                       borderSide: BorderSide.none,
                     ),
                   ),
-                  items: ['가족', '보호자', '의료기관', '기타']
+                  items: ContactType.values
                       .map((type) => DropdownMenuItem(
                             value: type,
-                            child: Text(type),
+                            child: Row(
+                              children: [
+                                Text(type.icon, style: const TextStyle(fontSize: 20)),
+                                const SizedBox(width: 8),
+                                Text(type.description),
+                              ],
+                            ),
                           ))
                       .toList(),
                   onChanged: (value) {

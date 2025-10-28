@@ -229,16 +229,19 @@ class EmergencyCallRequest {
 }
 
 enum EmergencyType {
-  fallDetected('FALL_DETECTED', '낙상 감지', '🚨'),
-  fallDetection('FALL_DETECTION', '낙상 감지', '🚨'),
+  // 사용자가 직접 누르는 긴급 버튼 (수동)
   panicButton('PANIC_BUTTON', '긴급 버튼', '🆘'),
-  manualAlert('MANUAL_ALERT', '수동 호출', '📞'),
   lost('LOST', '길 잃음', '🗺️'),
   medical('MEDICAL', '의료 긴급', '🚑'),
+  manualAlert('MANUAL_ALERT', '수동 호출', '📞'),
+
+  // 시스템이 자동 감지하는 항목들 (자동 - UI에 표시 안함)
+  fallDetected('FALL_DETECTED', '낙상 감지', '🚨'),
   geofenceExit('GEOFENCE_EXIT', '안전구역 이탈', '⚠️'),
   deviceOffline('DEVICE_OFFLINE', '기기 오프라인', '📱'),
   medicationMissed('MEDICATION_MISSED', '약물 미복용', '💊'),
   abnormalPattern('ABNORMAL_PATTERN', '비정상 패턴', '⚡'),
+
   other('OTHER', '기타', '📋');
 
   const EmergencyType(this.code, this.displayName, this.emoji);
@@ -255,14 +258,15 @@ enum EmergencyType {
   }
 }
 
-/// 긴급 상황 상태
+/// 긴급 상황 상태 - 백엔드와 동기화됨
 enum EmergencyStatus {
-  @JsonValue('PENDING') pending,
   @JsonValue('TRIGGERED') triggered,
+  @JsonValue('ACTIVE') active,
   @JsonValue('NOTIFIED') notified,
-  @JsonValue('RESPONDED') responded,
+  @JsonValue('ACKNOWLEDGED') acknowledged,
   @JsonValue('RESOLVED') resolved,
   @JsonValue('CANCELLED') cancelled,
+  @JsonValue('FALSE_ALARM') falseAlarm,
 }
 
 /// 긴급 상황 심각도
@@ -273,14 +277,13 @@ enum EmergencySeverity {
   @JsonValue('CRITICAL') critical,
 }
 
-/// 발동 소스
+/// 발동 소스 - 백엔드와 동기화됨
 enum TriggerSource {
   @JsonValue('USER') user,
+  @JsonValue('DEVICE') device,
+  @JsonValue('AI_DETECTION') aiDetection,
   @JsonValue('GUARDIAN') guardian,
   @JsonValue('SYSTEM') system,
-  @JsonValue('SENSOR') sensor,
-  @JsonValue('MANUAL') manual,
-  @JsonValue('AUTO') auto,
 }
 
 /// 긴급 상황 응답 DTO

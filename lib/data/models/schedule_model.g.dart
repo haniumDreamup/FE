@@ -54,9 +54,8 @@ const _$ScheduleTypeEnumMap = {
   ScheduleType.exercise: 'EXERCISE',
   ScheduleType.appointment: 'APPOINTMENT',
   ScheduleType.reminder: 'REMINDER',
-  ScheduleType.therapy: 'THERAPY',
-  ScheduleType.hygiene: 'HYGIENE',
-  ScheduleType.safetyCheck: 'SAFETY_CHECK',
+  ScheduleType.emergencyCheck: 'EMERGENCY_CHECK',
+  ScheduleType.healthCheck: 'HEALTH_CHECK',
   ScheduleType.socialActivity: 'SOCIAL_ACTIVITY',
   ScheduleType.personalCare: 'PERSONAL_CARE',
 };

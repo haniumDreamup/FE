@@ -42,6 +42,7 @@ class ImageAnalysisService {
         ),
       );
 
+      // ImageAnalysisController는 BifApiResponse 사용 (OptimizedApiResponse 아님)
       if (response.data['success'] == true) {
         return ImageAnalysisResponse.fromJson(response.data['data']);
       } else {
@@ -61,6 +62,7 @@ class ImageAnalysisService {
         ApiEndpoints.analysisResultPath(analysisId),
       );
 
+      // BifApiResponse 사용
       if (response.data['success'] == true) {
         return ImageAnalysisResponse.fromJson(response.data['data']);
       } else {
@@ -96,6 +98,7 @@ class ImageAnalysisService {
         ),
       );
 
+      // BifApiResponse 사용
       if (response.data['success'] == true) {
         return QuickAnalysisResponse.fromJson(response.data['data']);
       } else {
@@ -135,6 +138,7 @@ class ImageAnalysisService {
         ),
       );
 
+      // BifApiResponse 사용
       if (response.data['success'] == true) {
         return Map<String, dynamic>.from(response.data['data']);
       } else {
@@ -170,6 +174,7 @@ class ImageAnalysisService {
         ),
       );
 
+      // BifApiResponse 사용
       if (response.data['success'] == true) {
         return QuickAnalysisResponse.fromJson(response.data['data']);
       } else {

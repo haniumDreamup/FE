@@ -46,6 +46,7 @@ class AuthRepository {
         },
       );
 
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
       if (response.data['success'] == true) {
         final data = response.data['data'];
 
@@ -95,6 +96,7 @@ class AuthRepository {
         },
       );
 
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
       if (response.data['success'] == true) {
         final data = response.data['data'];
 
@@ -167,6 +169,20 @@ class AuthRepository {
       await _storage.write(key: 'access_token', value: result['accessToken']);
       await _storage.write(key: 'refresh_token', value: result['refreshToken']);
 
+      // Save token expiration times (if available)
+      if (result['accessTokenExpiresIn'] != null) {
+        await _storage.write(
+          key: 'access_token_expires_in',
+          value: result['accessTokenExpiresIn'].toString(),
+        );
+      }
+      if (result['refreshTokenExpiresIn'] != null) {
+        await _storage.write(
+          key: 'refresh_token_expires_in',
+          value: result['refreshTokenExpiresIn'].toString(),
+        );
+      }
+
       // Update API client token
       _apiClient.updateAuthToken(result['accessToken']);
 
@@ -226,6 +242,20 @@ class AuthRepository {
       await _storage.write(key: 'access_token', value: result['accessToken']);
       await _storage.write(key: 'refresh_token', value: result['refreshToken']);
 
+      // Save token expiration times (if available)
+      if (result['accessTokenExpiresIn'] != null) {
+        await _storage.write(
+          key: 'access_token_expires_in',
+          value: result['accessTokenExpiresIn'].toString(),
+        );
+      }
+      if (result['refreshTokenExpiresIn'] != null) {
+        await _storage.write(
+          key: 'refresh_token_expires_in',
+          value: result['refreshTokenExpiresIn'].toString(),
+        );
+      }
+
       // Update API client token
       _apiClient.updateAuthToken(result['accessToken']);
 
@@ -250,6 +280,7 @@ class AuthRepository {
       // Get user info (from /api/v1/users/me)
       final response = await _apiClient.get(ApiEndpoints.userMe);
 
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
       if (response.data['success'] == true) {
         return UserModel.fromJson(response.data['data']);
       }
@@ -277,20 +308,21 @@ class AuthRepository {
           'deviceId': deviceId,
         },
       );
-      
+
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
       if (response.data['success'] == true) {
         final data = response.data['data'];
-        
+
         // Save new tokens
         await _storage.write(key: 'access_token', value: data['accessToken']);
         await _storage.write(key: 'refresh_token', value: data['refreshToken']);
-        
+
         // Update API client token
         _apiClient.updateAuthToken(data['accessToken']);
-        
+
         return UserModel.fromJson(data['user']);
       }
-      
+
       return null;
     } catch (e) {
       await _storage.deleteAll();

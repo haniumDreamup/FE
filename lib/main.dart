@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'core/config/toss_theme.dart';
 import 'core/services/offline_service.dart';
 import 'core/services/notification_service.dart';
@@ -53,7 +54,7 @@ void main() async {
   runApp(BifAiApp(notificationService: notificationService));
 }
 
-class BifAiApp extends StatelessWidget {
+class BifAiApp extends StatefulWidget {
   final NotificationService notificationService;
 
   const BifAiApp({
@@ -61,6 +62,11 @@ class BifAiApp extends StatelessWidget {
     required this.notificationService,
   });
 
+  @override
+  State<BifAiApp> createState() => _BifAiAppState();
+}
+
+class _BifAiAppState extends State<BifAiApp> {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
@@ -94,7 +100,7 @@ class BifAiApp extends StatelessWidget {
               AppRouter.setRouter(router);
 
               // NotificationService에 router 주입
-              notificationService.setRouter(router);
+              widget.notificationService.setRouter(router);
 
               return NetworkStatusBanner(
                 child: MaterialApp.router(
@@ -104,6 +110,16 @@ class BifAiApp extends StatelessWidget {
                   themeMode: themeProvider.themeMode,
                   routerConfig: router,
                   debugShowCheckedModeBanner: false,
+                  localizationsDelegates: const [
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
+                  ],
+                  supportedLocales: const [
+                    Locale('ko', 'KR'),
+                    Locale('en', 'US'),
+                  ],
+                  locale: const Locale('ko', 'KR'),
                 ),
               );
             },

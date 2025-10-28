@@ -2,15 +2,16 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'guardian_relationship_model.g.dart';
 
-/// 관계 유형
+/// 관계 유형 - 백엔드와 동기화됨
 enum RelationshipType {
   @JsonValue('PARENT') parent,
   @JsonValue('SPOUSE') spouse,
   @JsonValue('CHILD') child,
   @JsonValue('SIBLING') sibling,
   @JsonValue('RELATIVE') relative,
-  @JsonValue('FRIEND') friend,
+  @JsonValue('CAREGIVER') caregiver,
   @JsonValue('PROFESSIONAL') professional,
+  @JsonValue('FRIEND') friend,
   @JsonValue('OTHER') other,
 }
 
@@ -87,10 +88,12 @@ class GuardianRelationshipDto {
         return '형제자매';
       case RelationshipType.relative:
         return '친척';
-      case RelationshipType.friend:
-        return '친구';
+      case RelationshipType.caregiver:
+        return '간병인';
       case RelationshipType.professional:
         return '전문가';
+      case RelationshipType.friend:
+        return '친구';
       case RelationshipType.other:
         return '기타';
     }

@@ -195,12 +195,11 @@ Map<String, dynamic> _$EmergencyResponseToJson(EmergencyResponse instance) =>
     };
 
 const _$EmergencyTypeEnumMap = {
-  EmergencyType.fallDetected: 'fallDetected',
-  EmergencyType.fallDetection: 'fallDetection',
   EmergencyType.panicButton: 'panicButton',
-  EmergencyType.manualAlert: 'manualAlert',
   EmergencyType.lost: 'lost',
   EmergencyType.medical: 'medical',
+  EmergencyType.manualAlert: 'manualAlert',
+  EmergencyType.fallDetected: 'fallDetected',
   EmergencyType.geofenceExit: 'geofenceExit',
   EmergencyType.deviceOffline: 'deviceOffline',
   EmergencyType.medicationMissed: 'medicationMissed',
@@ -209,12 +208,13 @@ const _$EmergencyTypeEnumMap = {
 };
 
 const _$EmergencyStatusEnumMap = {
-  EmergencyStatus.pending: 'PENDING',
   EmergencyStatus.triggered: 'TRIGGERED',
+  EmergencyStatus.active: 'ACTIVE',
   EmergencyStatus.notified: 'NOTIFIED',
-  EmergencyStatus.responded: 'RESPONDED',
+  EmergencyStatus.acknowledged: 'ACKNOWLEDGED',
   EmergencyStatus.resolved: 'RESOLVED',
   EmergencyStatus.cancelled: 'CANCELLED',
+  EmergencyStatus.falseAlarm: 'FALSE_ALARM',
 };
 
 const _$EmergencySeverityEnumMap = {
@@ -226,11 +226,10 @@ const _$EmergencySeverityEnumMap = {
 
 const _$TriggerSourceEnumMap = {
   TriggerSource.user: 'USER',
+  TriggerSource.device: 'DEVICE',
+  TriggerSource.aiDetection: 'AI_DETECTION',
   TriggerSource.guardian: 'GUARDIAN',
   TriggerSource.system: 'SYSTEM',
-  TriggerSource.sensor: 'SENSOR',
-  TriggerSource.manual: 'MANUAL',
-  TriggerSource.auto: 'AUTO',
 };
 
 FallDetectionRequest _$FallDetectionRequestFromJson(

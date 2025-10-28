@@ -19,6 +19,7 @@ class AccessibilityService {
         },
       );
 
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
       if (response.data['success'] == true) {
         return response.data['data']['guidance'] ?? text;
       } else {
@@ -42,6 +43,7 @@ class AccessibilityService {
         },
       );
 
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
       if (response.data['success'] == true) {
         return response.data['data']['ariaLabel'] ?? '';
       } else {
@@ -65,6 +67,7 @@ class AccessibilityService {
         },
       );
 
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
       if (response.data['success'] == true) {
         return response.data['data']['hint'] ?? '';
       } else {
@@ -82,6 +85,7 @@ class AccessibilityService {
     try {
       final response = await _apiClient.dio.get(ApiEndpoints.accessibilitySettings);
 
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
       if (response.data['success'] == true) {
         return AccessibilitySettingsModel.fromJson(response.data['data']);
       } else {
@@ -104,6 +108,7 @@ class AccessibilityService {
         data: settings.toJson(),
       );
 
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
       if (response.data['success'] == true) {
         return AccessibilitySettingsModel.fromJson(response.data['data']);
       } else {
@@ -124,6 +129,7 @@ class AccessibilityService {
         data: {'profileType': profileType},
       );
 
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
       if (response.data['success'] == true) {
         return AccessibilitySettingsModel.fromJson(response.data['data']);
       } else {
@@ -141,6 +147,7 @@ class AccessibilityService {
     try {
       final response = await _apiClient.dio.get(ApiEndpoints.colorSchemes);
 
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
       if (response.data['success'] == true) {
         final List<dynamic> data = response.data['data'] ?? [];
         return data.map((json) => ColorSchemeModel.fromJson(json)).toList();
@@ -159,6 +166,7 @@ class AccessibilityService {
     try {
       final response = await _apiClient.dio.get(ApiEndpoints.currentColorScheme);
 
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
       if (response.data['success'] == true) {
         return ColorSchemeModel.fromJson(response.data['data']);
       } else {
@@ -176,6 +184,7 @@ class AccessibilityService {
     try {
       final response = await _apiClient.dio.get(ApiEndpoints.simplifiedNavigation);
 
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
       if (response.data['success'] == true) {
         return response.data['data'] ?? {};
       } else {
@@ -193,6 +202,7 @@ class AccessibilityService {
     try {
       final response = await _apiClient.dio.get(ApiEndpoints.touchTargets);
 
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
       if (response.data['success'] == true) {
         return response.data['data'] ?? {};
       } else {
@@ -216,6 +226,7 @@ class AccessibilityService {
         },
       );
 
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
       if (response.data['success'] == true) {
         return response.data['data']['simplifiedText'] ?? text;
       } else {
@@ -233,6 +244,7 @@ class AccessibilityService {
     try {
       final response = await _apiClient.dio.post(ApiEndpoints.syncSettings);
 
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
       if (response.data['success'] == true) {
         return AccessibilitySettingsModel.fromJson(response.data['data']);
       } else {
@@ -250,6 +262,7 @@ class AccessibilityService {
     try {
       final response = await _apiClient.dio.get(ApiEndpoints.accessibilityStatistics);
 
+      // ApiResponse는 OptimizedApiResponse로 래핑되지 않음
       if (response.data['success'] == true) {
         return response.data['data'] ?? {};
       } else {

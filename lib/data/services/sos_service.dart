@@ -28,6 +28,7 @@ class SosService {
         },
       );
 
+      
       if (response.data['success'] == true) {
         return Map<String, dynamic>.from(response.data['data']);
       } else {
@@ -50,6 +51,7 @@ class SosService {
         },
       );
 
+      
       if (response.data['success'] == true) {
         return Map<String, dynamic>.from(response.data['data']);
       } else {
@@ -73,6 +75,7 @@ class SosService {
         },
       );
 
+      
       if (response.data['success'] == true) {
         final data = response.data['data'];
         if (data is Map && data['content'] != null) {
@@ -97,6 +100,7 @@ class SosService {
     try {
       final response = await _apiClient.dio.post(ApiEndpoints.quickSos);
 
+      
       if (response.data['success'] == true) {
         return Map<String, dynamic>.from(response.data['data']);
       } else {
@@ -152,6 +156,7 @@ class EnhancedEmergencyContactService {
         data: contact.toJson(),
       );
 
+      
       if (response.data['success'] == true) {
         return EmergencyContactModel.fromJson(response.data['data']);
       } else {
@@ -172,6 +177,7 @@ class EnhancedEmergencyContactService {
         data: contact.toJson(),
       );
 
+      
       if (response.data['success'] == true) {
         return EmergencyContactModel.fromJson(response.data['data']);
       } else {
@@ -191,6 +197,7 @@ class EnhancedEmergencyContactService {
         ApiEndpoints.emergencyContactDetailPath(contactId),
       );
 
+      
       if (response.data['success'] != true) {
         throw Exception(response.data['message'] ?? '연락처를 삭제할 수 없습니다');
       }
@@ -208,6 +215,7 @@ class EnhancedEmergencyContactService {
         ApiEndpoints.emergencyContactDetailPath(contactId),
       );
 
+      
       if (response.data['success'] == true) {
         return EmergencyContactModel.fromJson(response.data['data']);
       } else {
@@ -225,6 +233,7 @@ class EnhancedEmergencyContactService {
     try {
       final response = await _apiClient.dio.get(ApiEndpoints.emergencyContacts);
 
+      
       if (response.data['success'] == true) {
         final List<dynamic> data = response.data['data'] ?? [];
         return data.map((json) => EmergencyContactModel.fromJson(json)).toList();
@@ -243,6 +252,7 @@ class EnhancedEmergencyContactService {
     try {
       final response = await _apiClient.dio.get(ApiEndpoints.activeContacts);
 
+      
       if (response.data['success'] == true) {
         final List<dynamic> data = response.data['data'] ?? [];
         return data.map((json) => EmergencyContactModel.fromJson(json)).toList();
@@ -261,6 +271,7 @@ class EnhancedEmergencyContactService {
     try {
       final response = await _apiClient.dio.get(ApiEndpoints.availableContacts);
 
+      
       if (response.data['success'] == true) {
         final List<dynamic> data = response.data['data'] ?? [];
         return data.map((json) => EmergencyContactModel.fromJson(json)).toList();
@@ -279,6 +290,7 @@ class EnhancedEmergencyContactService {
     try {
       final response = await _apiClient.dio.get(ApiEndpoints.medicalContacts);
 
+      
       if (response.data['success'] == true) {
         final List<dynamic> data = response.data['data'] ?? [];
         return data.map((json) => EmergencyContactModel.fromJson(json)).toList();
@@ -297,6 +309,7 @@ class EnhancedEmergencyContactService {
     try {
       final response = await _apiClient.dio.post(ApiEndpoints.verifyContactPath(contactId, verificationCode));
 
+      
       if (response.data['success'] == true) {
         return EmergencyContactModel.fromJson(response.data['data']);
       } else {
@@ -314,6 +327,7 @@ class EnhancedEmergencyContactService {
     try {
       final response = await _apiClient.dio.patch(ApiEndpoints.toggleContactActivePath(contactId));
 
+      
       if (response.data['success'] == true) {
         return EmergencyContactModel.fromJson(response.data['data']);
       } else {
@@ -336,6 +350,7 @@ class EnhancedEmergencyContactService {
         data: {'priorities': priorities},
       );
 
+      
       if (response.data['success'] == true) {
         final List<dynamic> data = response.data['data'] ?? [];
         return data.map((json) => EmergencyContactModel.fromJson(json)).toList();
@@ -360,6 +375,7 @@ class EnhancedEmergencyContactService {
         data: recordData,
       );
 
+      
       if (response.data['success'] == true) {
         return EmergencyContactModel.fromJson(response.data['data']);
       } else {

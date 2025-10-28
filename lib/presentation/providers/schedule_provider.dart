@@ -27,6 +27,9 @@ class ScheduleProvider extends ChangeNotifier {
   ScheduleProvider({ScheduleService? scheduleService})
       : _scheduleService = scheduleService ?? ScheduleService();
 
+  // 현재 표시 중인 날짜
+  DateTime? _displayedDate;
+
   // Getters
   List<ScheduleResponse> get schedules => _schedules;
   List<ScheduleResponse> get todaySchedules => _todaySchedules;
@@ -38,11 +41,25 @@ class ScheduleProvider extends ChangeNotifier {
   int get totalPages => _totalPages;
   int get totalElements => _totalElements;
   bool get hasMore => _hasMore;
+  DateTime? get displayedDate => _displayedDate;
+
+  /// 현재 표시되어야 할 일정 목록 (선택된 날짜에 따라)
+  List<ScheduleResponse> get displayedSchedules {
+    if (_displayedDate == null) {
+      return _todaySchedules;
+    }
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final displayed = DateTime(_displayedDate!.year, _displayedDate!.month, _displayedDate!.day);
+
+    return displayed.isAtSameMomentAs(today) ? _todaySchedules : _schedules;
+  }
 
   /// 오늘의 일정 조회
   Future<void> loadTodaySchedules() async {
     _isLoading = true;
     _errorMessage = null;
+    _displayedDate = DateTime.now();
     notifyListeners();
 
     try {
@@ -114,6 +131,7 @@ class ScheduleProvider extends ChangeNotifier {
   Future<void> loadSchedulesByDate(DateTime date) async {
     _isLoading = true;
     _errorMessage = null;
+    _displayedDate = date;
     notifyListeners();
 
     try {

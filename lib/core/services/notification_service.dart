@@ -7,6 +7,8 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/timezone.dart' as tz;
 import '../../firebase_options.dart';
+import '../../data/services/notification_api_service.dart';
+import '../utils/device_utils.dart';
 import '../utils/logger.dart';
 
 class NotificationService {
@@ -16,6 +18,7 @@ class NotificationService {
 
   FirebaseMessaging? _firebaseMessaging;
   final FlutterLocalNotificationsPlugin _localNotifications = FlutterLocalNotificationsPlugin();
+  final NotificationApiService _apiService = NotificationApiService();
   GoRouter? _router;
 
   String? _fcmToken;
@@ -132,6 +135,7 @@ class NotificationService {
       if (_fcmToken != null) {
         Logger.debug('FCM 토큰: $_fcmToken');
         await _saveToken(_fcmToken!);
+        await _sendTokenToBackend(_fcmToken!);
       }
     } catch (e) {
       Logger.error("Error occurred", e);
@@ -147,7 +151,34 @@ class NotificationService {
     _fcmToken = newToken;
     await _saveToken(newToken);
     Logger.debug('FCM 토큰 갱신됨: $newToken');
-    // TODO: Send new token to backend
+    await _sendTokenToBackend(newToken);
+  }
+
+  /// FCM 토큰을 백엔드로 전송
+  Future<void> _sendTokenToBackend(String token) async {
+    try {
+      final deviceId = await DeviceUtils.getDeviceId();
+      Logger.debug('FCM 토큰을 백엔드로 전송: deviceId=$deviceId');
+
+      await _apiService.updateFcmToken(token, deviceId);
+      Logger.debug('✅ FCM 토큰 백엔드 등록 성공');
+    } catch (e) {
+      // 백엔드 전송 실패해도 로컬 기능은 동작하도록 에러만 로깅
+      Logger.error('FCM 토큰 백엔드 전송 실패 (로컬 알림은 정상 동작)', e);
+    }
+  }
+
+  /// FCM 토큰을 백엔드에서 제거 (로그아웃 시 호출)
+  Future<void> removeTokenFromBackend() async {
+    try {
+      final deviceId = await DeviceUtils.getDeviceId();
+      Logger.debug('FCM 토큰을 백엔드에서 제거: deviceId=$deviceId');
+
+      await _apiService.removeFcmToken(deviceId);
+      Logger.debug('✅ FCM 토큰 백엔드 제거 성공');
+    } catch (e) {
+      Logger.error('FCM 토큰 백엔드 제거 실패', e);
+    }
   }
   
   void _setupMessageHandlers() {

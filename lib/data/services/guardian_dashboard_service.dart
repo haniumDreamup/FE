@@ -21,7 +21,13 @@ class GuardianDashboardService {
       },
     );
 
-    return DailyStatusSummary.fromJson(response.data['data']);
+    // GuardianDashboardController는 response.ApiResponse를 반환하므로 OptimizedApiResponse로 래핑됨
+    
+    if (response.data['success'] == true) {
+      return DailyStatusSummary.fromJson(response.data['data']);
+    } else {
+      throw Exception(response.data['message'] ?? '일일 요약을 불러올 수 없습니다');
+    }
   }
 
   /// 주간 요약 리포트 조회
@@ -39,7 +45,13 @@ class GuardianDashboardService {
       },
     );
 
-    return WeeklySummary.fromJson(response.data['data']);
+    // GuardianDashboardController는 response.ApiResponse를 반환하므로 OptimizedApiResponse로 래핑됨
+    
+    if (response.data['success'] == true) {
+      return WeeklySummary.fromJson(response.data['data']);
+    } else {
+      throw Exception(response.data['message'] ?? '주간 요약을 불러올 수 없습니다');
+    }
   }
 
   /// 통합 대시보드 조회 (오늘 + 주간 요약)
@@ -55,6 +67,12 @@ class GuardianDashboardService {
       },
     );
 
-    return IntegratedDashboard.fromJson(response.data['data']);
+    // GuardianDashboardController는 response.ApiResponse를 반환하므로 OptimizedApiResponse로 래핑됨
+    
+    if (response.data['success'] == true) {
+      return IntegratedDashboard.fromJson(response.data['data']);
+    } else {
+      throw Exception(response.data['message'] ?? '통합 대시보드를 불러올 수 없습니다');
+    }
   }
 }

@@ -78,6 +78,11 @@ class _GuardianListScreenState extends State<GuardianListScreen> {
         iconTheme: const IconThemeData(color: Colors.black),
         actions: [
           IconButton(
+            onPressed: () => context.push('/guardians/invitations'),
+            icon: const Icon(Icons.mail_outline, size: 28),
+            tooltip: '받은 초대',
+          ),
+          IconButton(
             onPressed: () => context.read<GuardianProvider>().loadMyGuardians(),
             icon: const Icon(Icons.refresh, size: 28),
             tooltip: '새로고침',

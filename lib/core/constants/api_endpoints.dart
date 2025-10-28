@@ -63,6 +63,7 @@ class ApiEndpoints {
 
   // Guardian Relationship endpoints
   static const String inviteGuardian = '$apiVersion/guardian-relationships/invite';
+  static const String myInvitations = '$apiVersion/guardian-relationships/my-invitations';  // NEW: 받은 초대 목록
   static const String acceptInvitation = '$apiVersion/guardian-relationships/accept-invitation';
   static const String rejectInvitation = '$apiVersion/guardian-relationships/reject-invitation';
   static const String updateRelationshipPermissions = '$apiVersion/guardian-relationships/{id}/permissions';

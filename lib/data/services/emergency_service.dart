@@ -15,6 +15,7 @@ class EmergencyService {
         ApiEndpoints.emergencyAlert,
         data: request.toJson(),
       );
+      
 
       if (response.data['success'] == true) {
         return EmergencyResponse.fromJson(response.data['data']);
@@ -35,6 +36,7 @@ class EmergencyService {
         '${ApiEndpoints.apiVersion}/emergency/fall-detection',
         data: request.toJson(),
       );
+      
 
       if (response.data['success'] == true) {
         return EmergencyResponse.fromJson(response.data['data']);
@@ -54,6 +56,7 @@ class EmergencyService {
       final response = await _apiClient.dio.get(
         '${ApiEndpoints.apiVersion}/emergency/status/$emergencyId',
       );
+      
 
       if (response.data['success'] == true) {
         return EmergencyResponse.fromJson(response.data['data']);
@@ -73,6 +76,7 @@ class EmergencyService {
       final response = await _apiClient.dio.get(
         '${ApiEndpoints.apiVersion}/emergency',
       );
+      
 
       if (response.data['success'] == true) {
         final List<dynamic> data = response.data['data'] ?? [];
@@ -95,6 +99,7 @@ class EmergencyService {
           : '${ApiEndpoints.apiVersion}/emergency/history';
 
       final response = await _apiClient.dio.get(url);
+      
 
       if (response.data['success'] == true) {
         final List<dynamic> data = response.data['data'] ?? [];
@@ -115,6 +120,7 @@ class EmergencyService {
       final response = await _apiClient.dio.get(
         '${ApiEndpoints.apiVersion}/emergency/active',
       );
+      
 
       if (response.data['success'] == true) {
         final List<dynamic> data = response.data['data'] ?? [];
@@ -143,6 +149,7 @@ class EmergencyService {
           if (notes != null) 'notes': notes,
         },
       );
+      
 
       if (response.data['success'] == true) {
         return EmergencyResponse.fromJson(response.data['data']);
@@ -163,6 +170,7 @@ class EmergencyService {
         '${ApiEndpoints.apiVersion}/emergency/sos/trigger',
         data: request.toJson(),
       );
+      
 
       if (response.data['success'] == true) {
         return SOSResponse.fromJson(response.data['data']);
@@ -186,6 +194,7 @@ class EmergencyService {
           'longitude': longitude,
         },
       );
+      
 
       if (response.data['success'] == true) {
         return SOSResponse.fromJson(response.data['data']);
@@ -208,6 +217,7 @@ class EmergencyService {
           if (reason != null) 'reason': reason,
         },
       );
+      
 
       if (response.data['success'] != true) {
         throw Exception(response.data['message'] ?? 'SOS를 취소할 수 없습니다');
@@ -225,6 +235,7 @@ class EmergencyService {
       final response = await _apiClient.dio.get(
         '${ApiEndpoints.apiVersion}/emergency/sos/history',
       );
+      
 
       if (response.data['success'] == true) {
         final List<dynamic> data = response.data['data'] ?? [];
@@ -244,6 +255,7 @@ class EmergencyService {
     try {
       final response = await _apiClient.dio.get(ApiEndpoints.emergencyContacts);
       
+
       if (response.data['success'] == true) {
         final List<dynamic> data = response.data['data'] ?? [];
         return data.map((json) => EmergencyContactModel.fromJson(json)).toList();
@@ -268,6 +280,7 @@ class EmergencyService {
         data: contact.toJson(),
       );
       
+
       if (response.data['success'] == true) {
         return EmergencyContactModel.fromJson(response.data['data']);
       } else {
@@ -288,6 +301,7 @@ class EmergencyService {
         data: contact.toJson(),
       );
       
+
       if (response.data['success'] == true) {
         return EmergencyContactModel.fromJson(response.data['data']);
       } else {
@@ -307,6 +321,7 @@ class EmergencyService {
         '${ApiEndpoints.emergencyContacts}/$contactId',
       );
       
+
       if (response.data['success'] != true) {
         throw Exception(response.data['message'] ?? '연락처를 삭제할 수 없습니다');
       }
@@ -324,6 +339,7 @@ class EmergencyService {
         '${ApiEndpoints.emergencyContacts}/$contactId',
       );
       
+
       if (response.data['success'] == true) {
         return EmergencyContactModel.fromJson(response.data['data']);
       } else {
